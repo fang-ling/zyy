@@ -1,8 +1,12 @@
 //
-//  File.swift
+//  post.swift
 //  
 //
-//  Created by Louis Shen on 2022/11/7.
+//  Created by Fang Ling on 2022/11/7.
 //
 
-import Foundation
+struct Post {
+    let id : Int
+    let created : Int
+    let title : String
+}
