@@ -15,12 +15,17 @@ let package = Package(
         .executableTarget(
             name: "zyy",
             dependencies: [
-                "CMark"
+                "CMark",
+                "CSQLite"
             ]),
         .target(
             name: "CMark",
             path: "Sources/CMark"//,
             //exclude: ["include/case_fold_switch.inc"]
+        ),
+        .target(
+            name: "CSQLite",
+            path: "Sources/CSQLite"
         ),
         .testTarget(
             name: "zyyTests",
