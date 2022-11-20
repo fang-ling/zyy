@@ -17,6 +17,13 @@ func commandLineError(msg : String) {
     exit(-1)
 }
 
+/* Database releated error */
+func databaseError(msg: String) {
+    print("Database Error:")
+    print(msg)
+    exit(-1)
+}
+
 func generalError(msg : String) {
     print("Error:")
     print(msg)
