@@ -17,12 +17,15 @@ struct SQLite {
     
     init(at path : String) {
         db = nil
-        if sqlite3_open(path, &db) != 0 {
+        if sqlite3_open(path, &db) != SQLITE_OK {
             databaseError(msg: "Can't open database: " +
                                "\(String(cString: sqlite3_errmsg(db)!))")
         }
     }
     
+    /* This wrapper can only handle single sql statement, the remaining will be
+     * ignored. It just tedious to use `const char **pzTail` in swift. Instead,
+     * just call `exec(sql: String)` how many time you want. */
     private func prepare(sql : String) -> SQLite3StmtPointer? {
         var stmt : SQLite3StmtPointer? = nil
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
