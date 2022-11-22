@@ -24,6 +24,7 @@ Usage: zyy <command> [<switches>...]
     private static let DB_SETTING_TABLE_COL_VALUE = "value"
     /* Setting table field names */
     private static let DB_SETTING_FIELD_SITENAME = "sitename"
+    private static let DB_SETTING_FIELD_SITEURL = "site_url"
     
     public static func main() {
         if CommandLine.arguments.count > 1 {
@@ -52,6 +53,13 @@ Usage: zyy <command> [<switches>...]
                 if site_name != "" { /* User input something */
                     setSetting(field: DB_SETTING_FIELD_SITENAME,
                                value: site_name)
+                }
+                /* Site url */
+                var site_url = getSetting(field: DB_SETTING_FIELD_SITEURL)
+                print("What's the URL of your site[\(site_url)]: ")
+                site_url = readLine() ?? site_url /* May be unnecessary */
+                if site_url != "" {
+                    setSetting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
                 }
                 
             } else if CommandLine.arguments[1] == "version" {
