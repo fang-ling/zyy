@@ -25,6 +25,17 @@ Usage: zyy <command> [<switches>...]
     /* Setting table field names */
     private static let DB_SETTING_FIELD_SITENAME = "sitename"
     private static let DB_SETTING_FIELD_SITEURL = "site_url"
+    /* Don't forget to change these two when `SITE_MAX_CUSTOM_FIELDS` changed */
+    private static let DB_SETTING_FIELD_CUSTOM_FIELDS = ["cf1", "cf2", "cf3",
+                                                         "cf4", "cf5", "cf6",
+                                                         "cf7", "cf8"]
+    private static let DB_SETTING_FIELD_CUSTOM_FIELD_URLS = ["cf1u", "cf2u",
+                                                             "cf3u", "cf4u",
+                                                             "cf5u", "cf6u",
+                                                             "cf7u", "cf8u"]
+    
+    /* Maximum custom fields in head box */
+    private static let SITE_MAX_CUSTOM_FIELDS = 8
     
     public static func main() {
         if CommandLine.arguments.count > 1 {
@@ -60,6 +71,30 @@ Usage: zyy <command> [<switches>...]
                 site_url = readLine() ?? site_url /* May be unnecessary */
                 if site_url != "" {
                     setSetting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
+                }
+                /* Head box custom fields */
+                for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
+                    var c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+                    print("What's the \(getOrdinalNumbers(i+1)) custom field " +
+                          "in head box of the index page[\(c)]: ")
+                    c = readLine() ?? c
+                    if c != "" {
+                        setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
+                                   value: c)
+                    }
+                    c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+                    print("Does it have a link[\(c)]: ")
+                    c = readLine() ?? c
+                    if c != "" {
+                        setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
+                                   value: c)
+                    }
+                    print("Need more?[y / n (Default is no)]")
+                    if let ans = readLine() {
+                        if ans.count == 0 || ans.starts(with: "n") {
+                            break
+                        }
+                    }
                 }
                 
             } else if CommandLine.arguments[1] == "version" {
@@ -129,5 +164,19 @@ Usage: zyy <command> [<switches>...]
         }
         sqlite.SQLite3_close()
         return value
+    }
+    
+    /* Maybe there exists a better way to do this. :< */
+    /* Return `i-st`, `i-nd`, `i-rd` or `i-th`, i is a number. */
+    private static func getOrdinalNumbers(_ i : Int) -> String {
+        if i == 1 {
+            return "1-st"
+        } else if i == 2 {
+            return "2-nd"
+        } else if i == 3 {
+            return "3-rd"
+        } else {
+            return "\(i)-th"
+        }
     }
 }
