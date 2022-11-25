@@ -33,6 +33,7 @@ Usage: zyy <command> [<switches>...]
                                                              "cf3u", "cf4u",
                                                              "cf5u", "cf6u",
                                                              "cf7u", "cf8u"]
+    private static let DB_SETTING_FIELD_AUTHOR = "author"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
@@ -95,6 +96,13 @@ Usage: zyy <command> [<switches>...]
                             break
                         }
                     }
+                }
+                /* Author */
+                var author = getSetting(field: DB_SETTING_FIELD_AUTHOR)
+                print("What's your name:[\(author)]: ")
+                author = readLine() ?? author /* May be unnecessary */
+                if author != "" {
+                    setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
                 }
                 
             } else if CommandLine.arguments[1] == "version" {
