@@ -14,6 +14,18 @@ Usage: zyy <command> [<switches>...]
   init:                 Initialize website database in current directory
   configure:            Set up the website
   version:              Print version information and exit
+
+Subcommands:
+
+  section:              Create, delete and work on sections
+
+    Usage: zyy section <subcommand> <name>
+
+    <subcommand>
+
+      add:              Add a section named <name>
+      edit:             Modify the section named <name>
+      remove:           Remove the section named <name>
 """
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
@@ -63,7 +75,7 @@ Usage: zyy <command> [<switches>...]
                 /* Check if database exists */
                 if !FileManager.default.fileExists(atPath: DB_FILENAME) {
                     generalError(msg: "Database file: \(DB_FILENAME): " +
-                                      "No such file or directory")
+                                 "No such file or directory")
                 }
                 print("Hint: Press enter directly to leave it as-is")
                 /* Website name*/
@@ -120,13 +132,26 @@ Usage: zyy <command> [<switches>...]
                     setSetting(field: DB_SETTING_FIELD_START_YEAR,
                                value: st_year)
                 }
-                
-                
+            } else if CommandLine.arguments[1] == "section" {
+                if CommandLine.arguments.count < 4 {
+                    commandLineError(msg: "Missing argument near:\n" +
+                                          CommandLine.arguments.last!)
+                }
+                if CommandLine.arguments[2] == "add" {
+                    
+                } else if CommandLine.arguments[2] == "remove" {
+                   
+                } else if CommandLine.arguments[2] == "edit" {
+                    
+                } else {
+                    commandLineError(msg: "Unsupported command:\n" +
+                                          CommandLine.arguments[2])
+                }
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
             } else {
                 commandLineError(msg: "Unsupported command:\n" +
-                                      "\(CommandLine.arguments[1])")
+                                      CommandLine.arguments[1])
             }
         } else {
             print(WELCOME_MSG)
