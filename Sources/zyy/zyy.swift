@@ -19,22 +19,29 @@ Usage: zyy <command> [<switches>...]
     private static let DB_FILENAME = "zyy.db"
     /* Database table name */
     private static let DB_SETTING_TABLE_NAME = "Setting"
+    private static let DB_SECTION_TABLE_NAME = "Section"
     /* Database table column name */
-    private static let DB_SETTING_TABLE_COL_FIELD = "field"
-    private static let DB_SETTING_TABLE_COL_VALUE = "value"
+    private static let DB_SETTING_TABLE_COL_FIELD   = "field"
+    private static let DB_SETTING_TABLE_COL_VALUE   = "value"
+    private static let DB_SECTION_TABLE_COL_HEADING = "heading"
+    private static let DB_SECTION_TABLE_COL_CAPTION = "caption"
+    private static let DB_SECTION_TABLE_COL_COVER   = "cover"
+    private static let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
+    private static let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
     /* Setting table field names */
-    private static let DB_SETTING_FIELD_SITENAME = "sitename"
-    private static let DB_SETTING_FIELD_SITEURL = "site_url"
+    private static let DB_SETTING_FIELD_SITENAME          = "sitename"
+    private static let DB_SETTING_FIELD_SITEURL           = "site_url"
     /* Don't forget to change these two when `SITE_MAX_CUSTOM_FIELDS` changed */
-    private static let DB_SETTING_FIELD_CUSTOM_FIELDS = ["cf1", "cf2", "cf3",
-                                                         "cf4", "cf5", "cf6",
-                                                         "cf7", "cf8"]
+    private static let DB_SETTING_FIELD_CUSTOM_FIELDS     = ["cf1", "cf2",
+                                                             "cf3", "cf4",
+                                                             "cf5", "cf6",
+                                                             "cf7", "cf8"]
     private static let DB_SETTING_FIELD_CUSTOM_FIELD_URLS = ["cf1u", "cf2u",
                                                              "cf3u", "cf4u",
                                                              "cf5u", "cf6u",
                                                              "cf7u", "cf8u"]
-    private static let DB_SETTING_FIELD_AUTHOR = "author"
-    private static let DB_SETTING_FIELD_START_YEAR = "st_year"
+    private static let DB_SETTING_FIELD_AUTHOR            = "author"
+    private static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
@@ -127,13 +134,25 @@ Usage: zyy <command> [<switches>...]
     }
     
     private static func createDatabase() {
-        let SQL = """
+        /* Setting table */
+        var SQL = """
                   CREATE TABLE if not exists \(DB_SETTING_TABLE_NAME)(
                       \(DB_SETTING_TABLE_COL_FIELD) TEXT PRIMARY KEY NOT NULL,
                       \(DB_SETTING_TABLE_COL_VALUE) TEXT
                   );
                   """
         let sqlite = SQLite(at: DB_FILENAME)
+        sqlite.exec(sql: SQL)
+        /* Section table */
+            SQL = """
+                  CREATE TABLE if not exists \(DB_SECTION_TABLE_NAME)(
+                      \(DB_SECTION_TABLE_COL_HEADING) TEXT PRIMARY KEY NOT NULL,
+                      \(DB_SECTION_TABLE_COL_CAPTION) TEXT,
+                      \(DB_SECTION_TABLE_COL_COVER)   TEXT,
+                      \(DB_SECTION_TABLE_COL_HLINK)   TEXT,
+                      \(DB_SECTION_TABLE_COL_CLINK)   TEXT
+                  );
+                  """
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
