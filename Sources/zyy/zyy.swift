@@ -34,6 +34,7 @@ Usage: zyy <command> [<switches>...]
                                                              "cf5u", "cf6u",
                                                              "cf7u", "cf8u"]
     private static let DB_SETTING_FIELD_AUTHOR = "author"
+    private static let DB_SETTING_FIELD_START_YEAR = "st_year"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
@@ -99,11 +100,20 @@ Usage: zyy <command> [<switches>...]
                 }
                 /* Author */
                 var author = getSetting(field: DB_SETTING_FIELD_AUTHOR)
-                print("What's your name:[\(author)]: ")
+                print("What's your name[\(author)]: ")
                 author = readLine() ?? author /* May be unnecessary */
                 if author != "" {
                     setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
                 }
+                /* Start year */
+                var st_year = getSetting(field: DB_SETTING_FIELD_START_YEAR)
+                print("Start year of the website[\(st_year)]: ")
+                st_year = readLine() ?? st_year
+                if st_year != "" {
+                    setSetting(field: DB_SETTING_FIELD_START_YEAR,
+                               value: st_year)
+                }
+                
                 
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
