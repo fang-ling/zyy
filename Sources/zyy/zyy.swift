@@ -138,7 +138,21 @@ Subcommands:
                                           CommandLine.arguments.last!)
                 }
                 if CommandLine.arguments[2] == "add" {
-                    
+                    var sec = getSection(heading: CommandLine.arguments[3])
+                    if sec.heading == CommandLine.arguments[3] {
+                        commandLineError(msg: "Already existed:\n" +
+                                              CommandLine.arguments[3])
+                    }
+                    sec.heading = CommandLine.arguments[3]
+                    print("Caption:")
+                    sec.caption = readLine() ?? ""
+                    print("Cover:")
+                    sec.cover = readLine() ?? ""
+                    print("Heading link:")
+                    sec.hlink = readLine() ?? ""
+                    print("Cover link:")
+                    sec.clink = readLine() ?? ""
+                    setSection(sec)
                 } else if CommandLine.arguments[2] == "remove" {
                    
                 } else if CommandLine.arguments[2] == "edit" {
@@ -189,7 +203,8 @@ Subcommands:
          * Use the `INSERT OR IGNORE` followed by an `UPDATE`.
          */
         var SQL = """
-                  INSERT OR IGNORE INTO \(DB_SETTING_TABLE_NAME) (field, value)
+                  INSERT OR IGNORE INTO \(DB_SETTING_TABLE_NAME)
+                  (\(DB_SETTING_TABLE_COL_FIELD), \(DB_SETTING_TABLE_COL_VALUE)
                   VALUES(
                       '\(field)', '\(value)'
                   );
@@ -210,7 +225,7 @@ Subcommands:
     private static func getSetting(field : String) -> String {
         let SQL = """
                   SELECT * FROM \(DB_SETTING_TABLE_NAME)
-                  WHERE field = '\(field)';
+                  WHERE \(DB_SETTING_TABLE_COL_FIELD) = '\(field)';
                   """
         let sqlite = SQLite(at: DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
@@ -222,6 +237,70 @@ Subcommands:
                 if let v = val {
                     value = v
                 }
+            }
+        }
+        sqlite.SQLite3_close()
+        return value
+    }
+    
+    /* Add a new section in table, and will replace the old one if exists. */
+    /* Use the `INSERT OR IGNORE` followed by an `UPDATE`. */
+    private static func setSection(_ s : Section) {
+        var SQL = """
+                  INSERT OR IGNORE INTO \(DB_SECTION_TABLE_NAME)
+                  (\(DB_SECTION_TABLE_COL_HEADING),
+                   \(DB_SECTION_TABLE_COL_CAPTION),
+                   \(DB_SECTION_TABLE_COL_COVER),
+                   \(DB_SECTION_TABLE_COL_HLINK),
+                   \(DB_SECTION_TABLE_COL_CLINK))
+                  VALUES(
+                      '\(s.heading)', '\(s.caption)',
+                      '\(s.cover)', '\(s.hlink)', '\(s.clink)'
+                  );
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        sqlite.exec(sql: SQL)
+            SQL = """
+                  UPDATE \(DB_SECTION_TABLE_NAME)
+                  SET \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)',
+                      \(DB_SECTION_TABLE_COL_CAPTION) = '\(s.caption)',
+                      \(DB_SECTION_TABLE_COL_COVER) = '\(s.cover)',
+                      \(DB_SECTION_TABLE_COL_HLINK) = '\(s.hlink)',
+                      \(DB_SECTION_TABLE_COL_CLINK) = '\(s.clink)'
+                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)';
+                  """
+        sqlite.exec(sql: SQL)
+        sqlite.SQLite3_close()
+    }
+    
+    /* Get a setting value from given section `heading`.
+     * Return nil if not exists
+     */
+    private static func getSection(heading : String) -> Section {
+        let SQL = """
+                  SELECT * FROM \(DB_SECTION_TABLE_NAME)
+                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        let result = sqlite.exec(sql: SQL)
+        var value = Section()
+        /* Already find result in SQL, so result.count should be either 0 or 1*/
+        if let row = result.first {
+            /* Will result a String?? (nasty) */
+            if let val = row[DB_SECTION_TABLE_COL_HEADING] {
+                if let v = val { value.heading = v }
+            }
+            if let val = row[DB_SECTION_TABLE_COL_CAPTION] {
+                if let v = val { value.caption = v }
+            }
+            if let val = row[DB_SECTION_TABLE_COL_COVER] {
+                if let v = val { value.cover = v }
+            }
+            if let val = row[DB_SECTION_TABLE_COL_HLINK] {
+                if let v = val { value.hlink = v }
+            }
+            if let val = row[DB_SECTION_TABLE_COL_CLINK] {
+                if let v = val { value.clink = v }
             }
         }
         sqlite.SQLite3_close()
