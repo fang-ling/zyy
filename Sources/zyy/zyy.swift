@@ -154,7 +154,12 @@ Subcommands:
                     sec.clink = readLine() ?? ""
                     setSection(sec)
                 } else if CommandLine.arguments[2] == "remove" {
-                   
+                    let sec = getSection(heading: CommandLine.arguments[3])
+                    if sec.heading != CommandLine.arguments[3] {
+                        commandLineError(msg: "No such section:\n" +
+                                              CommandLine.arguments[3])
+                    }
+                    removeSection(heading: CommandLine.arguments[3])
                 } else if CommandLine.arguments[2] == "edit" {
                     
                 } else {
@@ -273,8 +278,7 @@ Subcommands:
         sqlite.SQLite3_close()
     }
     
-    /* Get a setting value from given section `heading`.
-     * Return nil if not exists
+    /* Get a section value from given section `heading`.
      */
     private static func getSection(heading : String) -> Section {
         let SQL = """
@@ -305,6 +309,17 @@ Subcommands:
         }
         sqlite.SQLite3_close()
         return value
+    }
+    
+    /* Remove a section */
+    private static func removeSection(heading : String) {
+        let SQL = """
+                  DELETE FROM \(DB_SECTION_TABLE_NAME)
+                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        sqlite.exec(sql: SQL)
+        sqlite.SQLite3_close()
     }
     
     /* Maybe there exists a better way to do this. :< */
