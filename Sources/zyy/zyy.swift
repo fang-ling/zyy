@@ -26,6 +26,7 @@ Subcommands:
       add:              Add a section named <name>
       edit:             Modify the section named <name>
       remove:           Remove the section named <name>
+      list:             List all sections
 """
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
@@ -133,11 +134,16 @@ Subcommands:
                                value: st_year)
                 }
             } else if CommandLine.arguments[1] == "section" {
-                if CommandLine.arguments.count < 4 {
+                if CommandLine.arguments.count < 4 &&
+                   CommandLine.arguments[2] != "list" {
                     commandLineError(msg: "Missing argument near:\n" +
                                           CommandLine.arguments.last!)
                 }
-                if CommandLine.arguments[2] == "add" {
+                if CommandLine.arguments[2] == "list" {
+                    for i in listSection() {
+                        print(i.heading)
+                    }
+                } else if CommandLine.arguments[2] == "add" {
                     var sec = getSection(heading: CommandLine.arguments[3])
                     if sec.heading == CommandLine.arguments[3] {
                         commandLineError(msg: "Already existed:\n" +
@@ -320,6 +326,38 @@ Subcommands:
         let sqlite = SQLite(at: DB_FILENAME)
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
+    }
+    
+    /* List sections */
+    private static func listSection() -> [Section] {
+        let SQL = """
+                  SELECT * FROM \(DB_SECTION_TABLE_NAME);
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        let result = sqlite.exec(sql: SQL)
+        var ret = [Section]()
+        for i in result {
+            var value = Section()
+            /* Will result a String?? (nasty) */
+            if let val = i[DB_SECTION_TABLE_COL_HEADING] {
+                if let v = val { value.heading = v }
+            }
+            if let val = i[DB_SECTION_TABLE_COL_CAPTION] {
+                if let v = val { value.caption = v }
+            }
+            if let val = i[DB_SECTION_TABLE_COL_COVER] {
+                if let v = val { value.cover = v }
+            }
+            if let val = i[DB_SECTION_TABLE_COL_HLINK] {
+                if let v = val { value.hlink = v }
+            }
+            if let val = i[DB_SECTION_TABLE_COL_CLINK] {
+                if let v = val { value.clink = v }
+            }
+            ret.append(value)
+        }
+        sqlite.SQLite3_close()
+        return ret
     }
     
     /* Maybe there exists a better way to do this. :< */
