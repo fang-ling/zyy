@@ -167,7 +167,20 @@ Subcommands:
                     }
                     removeSection(heading: CommandLine.arguments[3])
                 } else if CommandLine.arguments[2] == "edit" {
-                    
+                    var sec = getSection(heading: CommandLine.arguments[3])
+                    if sec.heading != CommandLine.arguments[3] {
+                        commandLineError(msg: "No such section:\n" +
+                                              CommandLine.arguments[3])
+                    }
+                    print("Caption[\(sec.caption)]:")
+                    sec.caption = readLine() ?? ""
+                    print("Cover[\(sec.cover)]:")
+                    sec.cover = readLine() ?? ""
+                    print("Heading link[\(sec.hlink)]:")
+                    sec.hlink = readLine() ?? ""
+                    print("Cover link[\(sec.clink)]:")
+                    sec.clink = readLine() ?? ""
+                    setSection(sec)
                 } else {
                     commandLineError(msg: "Unsupported command:\n" +
                                           CommandLine.arguments[2])
