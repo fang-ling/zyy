@@ -228,7 +228,7 @@ Subcommands:
          */
         var SQL = """
                   INSERT OR IGNORE INTO \(DB_SETTING_TABLE_NAME)
-                  (\(DB_SETTING_TABLE_COL_FIELD), \(DB_SETTING_TABLE_COL_VALUE)
+                  (\(DB_SETTING_TABLE_COL_FIELD), \(DB_SETTING_TABLE_COL_VALUE))
                   VALUES(
                       '\(field)', '\(value)'
                   );
@@ -376,12 +376,12 @@ Subcommands:
     /* Maybe there exists a better way to do this. :< */
     /* Return `i-st`, `i-nd`, `i-rd` or `i-th`, i is a number. */
     private static func getOrdinalNumbers(_ i : Int) -> String {
-        if i == 1 {
-            return "1-st"
-        } else if i == 2 {
-            return "2-nd"
-        } else if i == 3 {
-            return "3-rd"
+        if i % 10 == 1 {
+            return "\(i)-st"
+        } else if i % 10 == 2 {
+            return "\(i)-nd"
+        } else if i % 10 == 3 {
+            return "\(i)-rd"
         } else {
             return "\(i)-th"
         }
