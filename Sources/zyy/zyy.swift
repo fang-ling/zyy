@@ -13,6 +13,7 @@ Usage: zyy <command> [<switches>...]
 <Commands>
   init:                 Initialize website database in current directory
   configure:            Set up the website
+  generate:             Generate static files
   version:              Print version information and exit
 
 Subcommands:
@@ -185,6 +186,8 @@ Subcommands:
                     commandLineError(msg: "Unsupported command:\n" +
                                           CommandLine.arguments[2])
                 }
+            } else if CommandLine.arguments[1] == "generate" {
+                
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
             } else {
