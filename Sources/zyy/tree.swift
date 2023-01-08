@@ -29,22 +29,32 @@ class TreeNode {
         self.begin = begin
         self.end = end
     }
+    
+    public static func inorder_tree_traversal(_ node : TreeNode) {
+        print(node.begin)
+        for i in node.child {
+            inorder_tree_traversal(i)
+        }
+        print(node.end)
+    }
 }
 
+
+
 /* Each node can have arbitrary number of children */
-class Tree {
-    var `nil` : TreeNode /* Sentinel */
-    var root : TreeNode
-    
-    /* Create a empty html tree */
-    init() {
-        `nil` = TreeNode()
-        root = `nil`
-    }
-    
-    /* Insert a node to a subtree */
-    static func subtree_insert(_ subtree : TreeNode,
-                               node : TreeNode) {
-        subtree.child.append(node)
-    }
-}
+//class Tree {
+//    var `nil` : TreeNode /* Sentinel */
+//    var root : TreeNode
+//
+//    /* Create a empty html tree */
+//    init() {
+//        `nil` = TreeNode()
+//        root = `nil`
+//    }
+//
+//    /* Insert a node to a subtree */
+//    static func subtree_insert(_ subtree : TreeNode,
+//                               node : TreeNode) {
+//        subtree.child.append(node)
+//    }
+//}
