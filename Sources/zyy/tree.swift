@@ -31,11 +31,11 @@ class TreeNode {
     }
     
     public static func inorder_tree_traversal(_ node : TreeNode) {
-        print(node.begin)
+        print(node.begin, terminator: "")
         for i in node.child {
             inorder_tree_traversal(i)
         }
-        print(node.end)
+        print(node.end, terminator: "")
     }
 }
 
