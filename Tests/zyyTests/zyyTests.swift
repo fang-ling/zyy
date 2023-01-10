@@ -3,6 +3,6 @@ import XCTest
 
 final class zyyTests: XCTestCase {
     func testExample() throws {
-        TreeNode.inorder_tree_traversal(HTML.render_head(title: "test"))
+        DOMTreeNode.inorder_tree_traversal(HTML.render_head(titleText: "test"))
     }
 }

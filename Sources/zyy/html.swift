@@ -862,7 +862,7 @@ struct HTML {
 //        return TreeNode(begin: "<title>", content: content, end: "</title>")
 //    }
     
-    public static func render_head(title : String) -> DOMTreeNode {
+    public static func render_head(titleText : String) -> DOMTreeNode {
         let head = DOMTreeNode(name: "head", attr: [:])
         head.add(DOMTreeNode(name: "meta", attr: ["charset" : "UTF-8"]))
         head.add(DOMTreeNode(
@@ -872,9 +872,12 @@ struct HTML {
         head.add(DOMTreeNode(name: "link", attr: ["href" : FONT_LINK,
                                                   "rel" : "stylesheet",
                                                   "type" : "text/css"]))
-        head.child.append(render_style(attribute: "type='text/css'",
-                                       content: MAIN_STYLE_CSS))
-        head.child.append(render_title(content: title))
+        let style = DOMTreeNode(name: "style", attr: ["type": "text/css"])
+        style.add(MAIN_STYLE_CSS)
+        head.add(style)
+        let title = DOMTreeNode(name: "title", attr: [:])
+        title.add(titleText)
+        head.add(title)
         return head
     }
 

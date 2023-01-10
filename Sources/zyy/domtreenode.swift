@@ -28,7 +28,7 @@ class DOMTreeNode {
      */
     var name : String
     var attr : [String : String]
-    var text : String
+    private var text : String
     var isVoidElement : Bool
     
     init(name : String, attr : [String : String]) {
@@ -39,8 +39,21 @@ class DOMTreeNode {
         isVoidElement = DOMTreeNode.VOID_ELEMENTS.contains(name)
     }
     
+    /* Internal use, create a pure text node */
+    private init(text : String) {
+        name = ""
+        child = [DOMTreeNode]()
+        self.text = text
+        isVoidElement = false
+        self.attr = [:]
+    }
+    
     func add(_ node : DOMTreeNode) {
         child.append(node)
+    }
+    
+    func add(_ text : String) {
+        child.append(DOMTreeNode(text: text))
     }
     
     public static func inorder_tree_traversal(_ node : DOMTreeNode) {
