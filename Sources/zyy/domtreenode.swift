@@ -57,11 +57,21 @@ class DOMTreeNode {
     }
     
     public static func inorder_tree_traversal(_ node : DOMTreeNode) {
-        print(node.name, terminator: "")
+        if (node.text != "") { /* Pure text node have zero child. */
+            print(node.text)
+            return
+        }
+        print("<\(node.name)", terminator: "")
+        for i in node.attr {
+            print(" \(i.key)='\(i.value)'", terminator: "")
+        }
+        print(">")
         for i in node.child {
             inorder_tree_traversal(i)
         }
-        print(node.name, terminator: "")
+        if (!node.isVoidElement) {
+            print("</\(node.name)>")
+        }
     }
 }
 
