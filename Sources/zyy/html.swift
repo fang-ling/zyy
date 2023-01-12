@@ -1573,6 +1573,9 @@ struct HTML {
         "https://fonts.loli.net/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext"
     private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
     
+    private static let TITLE_TEXT_STYLE =
+        "border-bottom:none;font-variant:small-caps;padding-bottom:0em;text-shadow: 2px 2px 2px #aaa;"
+    
     public static func write_css_to_file() {
         do {
             try MAIN_STYLE_CSS.write(toFile: MAIN_STYLE_CSS_FILE_NAME,
@@ -1583,7 +1586,7 @@ struct HTML {
         }
     }
     
-    public static func render_head(titleText : String) -> DOMTreeNode {
+    private static func render_head(titleText : String) -> DOMTreeNode {
         let head = DOMTreeNode(name: "head", attr: [:])
         head.add(DOMTreeNode(name: "meta", attr: ["charset" : "UTF-8"]))
         head.add(DOMTreeNode(
@@ -1602,5 +1605,34 @@ struct HTML {
         head.add(title)
         return head
     }
-
+    
+    /*
+     *  <center>
+     *      <h1>
+     *          <strong>...</strong>
+     *      </h1>
+     *  </center>
+     */
+    private static func render_title(titleText : String) -> DOMTreeNode {
+        let strong = DOMTreeNode(name: "strong", attr: [:])
+        strong.add(titleText)
+        let h1 = DOMTreeNode(name: "h1", attr: ["style" : TITLE_TEXT_STYLE])
+        h1.add(strong)
+        let center = DOMTreeNode(name: "center", attr: [:])
+        center.add(h1)
+        return center
+    }
+    
+//    private static func render_headbox() -> DOMTreeNode {
+//        
+//    }
+    
+//    private static func render_body() -> DOMTreeNode {
+//        let body = DOMTreeNode(name: "body", attr: [:])
+//        let typora_export_content = DOMTreeNode(name: "div",
+//                                                attr: ["class" :
+//                                                       "typora-export-content"])
+//        let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
+//
+//    }
 }

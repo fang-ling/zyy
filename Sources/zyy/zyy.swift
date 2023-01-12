@@ -389,4 +389,21 @@ Subcommands:
             return "\(i)-th"
         }
     }
+    
+    public static func getAllHeadBoxCustomFields() -> [[String]] {
+        var res = [[String]](repeating: [String](), count: 2)
+        /* Head box custom fields */
+        for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
+            var c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+            if c != "" {
+                res[0].append(c)
+            }
+            
+            c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+            if c != "" {
+                res[1].append(c)
+            }
+        }
+        return res
+    }
 }
