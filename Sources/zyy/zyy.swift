@@ -402,6 +402,8 @@ Subcommands:
             c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
             if c != "" {
                 res[1].append(c)
+            } else { /* Required for matching fields and urls */
+                res[1].append("")
             }
         }
         return res
