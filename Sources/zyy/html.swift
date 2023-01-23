@@ -1570,11 +1570,19 @@ input {
 
 struct HTML {
     private static let FONT_LINK =
-        "https://fonts.loli.net/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext"
+        "https://fonts.loli.net/css" +
+        "?family=PT+Serif:400,400italic,700,700italic" +
+        "&subset=latin,cyrillic-ext,cyrillic,latin-ext"
     private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
     
-    private static let TITLE_TEXT_STYLE =
-        "border-bottom:none;font-variant:small-caps;padding-bottom:0em;text-shadow: 2px 2px 2px #aaa;"
+    private static let TITLE_TEXT_STYLE = "border-bottom:none;" +
+                                          "font-variant:small-caps;" +
+                                          "padding-bottom:0em;" +
+                                          "text-shadow: 2px 2px 2px #aaa;"
+    private static let HEAD_BOX_STYLE = "text-align: center;" +
+                                        "background: #c5d1d3;" +
+                                        "color: #000;padding: 1ex 1em;" +
+                                        "font-weight:bold;"
     
     public static func write_css_to_file() {
         do {
@@ -1623,9 +1631,26 @@ struct HTML {
         return center
     }
     
-//    private static func render_headbox() -> DOMTreeNode {
-//        
-//    }
+    /*
+     *  <div>
+     *      Plain text or <a> separated by dots.
+     *  </div>
+     */
+    private static func render_headbox() -> DOMTreeNode {
+        var fields = zyy.getAllHeadBoxCustomFields()
+        var div = DOMTreeNode(name: "div", attr: ["style" : HEAD_BOX_STYLE])
+        for i in fields[0].indices {
+            if (fields[1][i] == "") { /* Plain text node */
+                div.add(fields[0][i])
+            } else {
+                div.add(DOMTreeNode(name: "a", attr: ["href" : fields[1][i]]))
+            }
+            if (i != fields[0].count - 1) { /* Add separater */
+                div.add("&nbsp;&bull;&nbsp;");
+            }
+        }
+        return div
+    }
     
 //    private static func render_body() -> DOMTreeNode {
 //        let body = DOMTreeNode(name: "body", attr: [:])
