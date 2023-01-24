@@ -1583,6 +1583,9 @@ struct HTML {
                                         "background: #c5d1d3;" +
                                         "color: #000;padding: 1ex 1em;" +
                                         "font-weight:bold;"
+    /* The height of stack preview div is determined by javascript. */
+    private static let STACK_PREVIEW_STYLE = "width: 300px;"
+    private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
     
     public static func write_css_to_file() {
         do {
@@ -1637,8 +1640,8 @@ struct HTML {
      *  </div>
      */
     private static func render_headbox() -> DOMTreeNode {
-        var fields = zyy.getAllHeadBoxCustomFields()
-        var div = DOMTreeNode(name: "div", attr: ["style" : HEAD_BOX_STYLE])
+        let fields = zyy.getAllHeadBoxCustomFields()
+        let div = DOMTreeNode(name: "div", attr: ["style" : HEAD_BOX_STYLE])
         for i in fields[0].indices {
             if (fields[1][i] == "") { /* Plain text node */
                 div.add(fields[0][i])
@@ -1650,6 +1653,37 @@ struct HTML {
             }
         }
         return div
+    }
+    
+    private static
+    func render_stack_preview(by section : Section) -> DOMTreeNode {
+        let stack_preview = DOMTreeNode(name: "div",
+                                        attr: ["class" : "stackpreview",
+                                               "style" : STACK_PREVIEW_STYLE])
+        /* Image */
+        let img_p = DOMTreeNode(name: "p",
+                                attr: ["class" : "image",
+                                       "style" : STACK_PREVIEW_P_STYLE])
+        let img_p_a = DOMTreeNode(name: "a", attr: ["href" : section.hlink])
+        img_p_a.add(DOMTreeNode(name: "img", attr: ["width" : "300",
+                                                    "height" : "300",
+                                                    "src" : section.cover]))
+        img_p.add(img_p_a)
+        /* Heading */
+        let heading_p = DOMTreeNode(name: "p",
+                                    attr: ["class" : "heading",
+                                           "style" : STACK_PREVIEW_P_STYLE])
+        let heading_p_a = DOMTreeNode(name: "a", attr: ["href" : section.hlink])
+        heading_p_a.add(section.heading)
+        /* Caption */
+        let caption_p = DOMTreeNode(name: "p",
+                                    attr: ["class" : "caption",
+                                           "style" : STACK_PREVIEW_P_STYLE])
+        caption_p.add(section.caption)
+        stack_preview.add(img_p)
+        stack_preview.add(heading_p)
+        stack_preview.add(caption_p)
+        return stack_preview
     }
     
 //    private static func render_body() -> DOMTreeNode {
