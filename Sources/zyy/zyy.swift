@@ -44,7 +44,7 @@ Subcommands:
     private static let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
     /* Setting table field names */
     private static let DB_SETTING_FIELD_SITENAME          = "sitename"
-    private static let DB_SETTING_FIELD_SITEURL           = "site_url"
+    static let DB_SETTING_FIELD_SITEURL           = "site_url"
     /* Don't forget to change these two when `SITE_MAX_CUSTOM_FIELDS` changed */
     private static let DB_SETTING_FIELD_CUSTOM_FIELDS     = ["cf1", "cf2",
                                                              "cf3", "cf4",
@@ -54,7 +54,7 @@ Subcommands:
                                                              "cf3u", "cf4u",
                                                              "cf5u", "cf6u",
                                                              "cf7u", "cf8u"]
-    private static let DB_SETTING_FIELD_AUTHOR            = "author"
+    static let DB_SETTING_FIELD_AUTHOR            = "author"
     private static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     
     /* Maximum custom fields in head box */
@@ -81,7 +81,7 @@ Subcommands:
                 }
                 print("Hint: Press enter directly to leave it as-is")
                 /* Website name*/
-                var site_name = getSetting(field: DB_SETTING_FIELD_SITENAME)
+                var site_name = get_setting(field: DB_SETTING_FIELD_SITENAME)
                 print("What's the name of your site[\(site_name)]: ")
                 site_name = readLine() ?? site_name /* May be unnecessary */
                 if site_name != "" { /* User input something */
@@ -89,7 +89,7 @@ Subcommands:
                                value: site_name)
                 }
                 /* Site url */
-                var site_url = getSetting(field: DB_SETTING_FIELD_SITEURL)
+                var site_url = get_setting(field: DB_SETTING_FIELD_SITEURL)
                 print("What's the URL of your site[\(site_url)]: ")
                 site_url = readLine() ?? site_url /* May be unnecessary */
                 if site_url != "" {
@@ -97,7 +97,7 @@ Subcommands:
                 }
                 /* Head box custom fields */
                 for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
-                    var c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+                    var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
                     print("What's the \(getOrdinalNumbers(i+1)) custom field " +
                           "in head box of the index page[\(c)]: ")
                     c = readLine() ?? c
@@ -105,7 +105,7 @@ Subcommands:
                         setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
                                    value: c)
                     }
-                    c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+                    c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
                     print("Does it have a link[\(c)]: ")
                     c = readLine() ?? c
                     if c != "" {
@@ -120,14 +120,14 @@ Subcommands:
                     }
                 }
                 /* Author */
-                var author = getSetting(field: DB_SETTING_FIELD_AUTHOR)
+                var author = get_setting(field: DB_SETTING_FIELD_AUTHOR)
                 print("What's your name[\(author)]: ")
                 author = readLine() ?? author /* May be unnecessary */
                 if author != "" {
                     setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
                 }
                 /* Start year */
-                var st_year = getSetting(field: DB_SETTING_FIELD_START_YEAR)
+                var st_year = get_setting(field: DB_SETTING_FIELD_START_YEAR)
                 print("Start year of the website[\(st_year)]: ")
                 st_year = readLine() ?? st_year
                 if st_year != "" {
@@ -249,7 +249,7 @@ Subcommands:
     }
     
     /* Get a setting value from given `field`. */
-    private static func getSetting(field : String) -> String {
+    static func get_setting(field : String) -> String {
         let SQL = """
                   SELECT * FROM \(DB_SETTING_TABLE_NAME)
                   WHERE \(DB_SETTING_TABLE_COL_FIELD) = '\(field)';
@@ -394,12 +394,12 @@ Subcommands:
         var res = [[String]](repeating: [String](), count: 2)
         /* Head box custom fields */
         for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
-            var c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+            var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
             if c != "" {
                 res[0].append(c)
             }
             
-            c = getSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+            c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
             if c != "" {
                 res[1].append(c)
             } else { /* Required for matching fields and urls */

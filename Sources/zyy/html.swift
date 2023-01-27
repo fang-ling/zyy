@@ -1579,10 +1579,12 @@ struct HTML {
                                           "font-variant:small-caps;" +
                                           "padding-bottom:0em;" +
                                           "text-shadow: 2px 2px 2px #aaa;"
-    private static let HEAD_BOX_STYLE = "text-align: center;" +
-                                        "background: #c5d1d3;" +
-                                        "color: #000;padding: 1ex 1em;" +
-                                        "font-weight:bold;"
+    private static let BOX_STYLE = "background: #c5d1d3;" +
+                                   "color: #000;" +
+                                   "padding: 1ex 1em;" +
+                                   "font-weight:bold;"
+    private static let HEAD_BOX_STYLE = "text-align: center;" + BOX_STYLE
+    private static let FOOT_BOX_STYLE = "text-align: right;" + BOX_STYLE
     /* The height of stack preview div is determined by javascript. */
     private static let STACK_PREVIEW_STYLE = "width: 300px;"
     private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
@@ -1640,7 +1642,7 @@ struct HTML {
      *      Plain text or <a> separated by dots.
      *  </div>
      */
-    private static func render_headbox() -> DOMTreeNode {
+    private static func render_head_box() -> DOMTreeNode {
         let fields = zyy.getAllHeadBoxCustomFields()
         let div = DOMTreeNode(name: "div", attr: ["style" : HEAD_BOX_STYLE])
         for i in fields[0].indices {
@@ -1693,6 +1695,22 @@ struct HTML {
         for section in zyy.list_section() {
             div.add(render_stack_preview(by: section))
         }
+        return div
+    }
+    
+    private static func render_foot_box() -> DOMTreeNode {
+        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
+        let div = DOMTreeNode(name: "div", attr: ["style" : FOOT_BOX_STYLE])
+        let i = DOMTreeNode(name: "i", attr: [:])
+        let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
+        a.add(author)
+        let df = DateFormatter()
+        df.dateStyle = .long
+        i.add("Last updated \(df.string(from: Date())) by ")
+        i.add(a)
+        i.add(".")
+        div.add(i)
         return div
     }
     
