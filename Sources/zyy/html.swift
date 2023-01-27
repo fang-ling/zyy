@@ -1586,6 +1586,7 @@ struct HTML {
     /* The height of stack preview div is determined by javascript. */
     private static let STACK_PREVIEW_STYLE = "width: 300px;"
     private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
+    private static let STACK_PREVIEW_CONTAINER_STYLE = "text-align:center";
     
     public static func write_css_to_file() {
         do {
@@ -1684,6 +1685,15 @@ struct HTML {
         stack_preview.add(heading_p)
         stack_preview.add(caption_p)
         return stack_preview
+    }
+    
+    private static func render_stack_preview_container() -> DOMTreeNode {
+        let div = DOMTreeNode(name: "div",
+                              attr: ["style" : STACK_PREVIEW_CONTAINER_STYLE])
+        for section in zyy.list_section() {
+            div.add(render_stack_preview(by: section))
+        }
+        return div
     }
     
 //    private static func render_body() -> DOMTreeNode {

@@ -141,7 +141,7 @@ Subcommands:
                                           CommandLine.arguments.last!)
                 }
                 if CommandLine.arguments[2] == "list" {
-                    for i in listSection() {
+                    for i in list_section() {
                         print(i.heading)
                     }
                 } else if CommandLine.arguments[2] == "add" {
@@ -345,7 +345,7 @@ Subcommands:
     }
     
     /* List sections */
-    private static func listSection() -> [Section] {
+    static func list_section() -> [Section] {
         let SQL = """
                   SELECT * FROM \(DB_SECTION_TABLE_NAME);
                   """
