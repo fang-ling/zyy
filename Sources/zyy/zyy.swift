@@ -55,7 +55,7 @@ Subcommands:
                                                              "cf5u", "cf6u",
                                                              "cf7u", "cf8u"]
     static let DB_SETTING_FIELD_AUTHOR            = "author"
-    private static let DB_SETTING_FIELD_START_YEAR        = "st_year"
+    static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8

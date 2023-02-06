@@ -1589,6 +1589,15 @@ struct HTML {
     private static let STACK_PREVIEW_STYLE = "width: 300px;"
     private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
     private static let STACK_PREVIEW_CONTAINER_STYLE = "text-align:center";
+    private static let FOOTER_CLASS = "footer foot-font"
+    private static let FOOTER_STYLE = "text-align: center;"
+    private static let FOOTER_A_STYLE = "color: #fbfbfb;" +
+                                        "text-decoration: none;" +
+                                        "font-size: 13px;" +
+                                        "padding: 4px 8px;" +
+                                        //"-webkit-border-radius: 3px;" +
+                                        "border-radius: 3px;" +
+                                        "background: #c5d1d3;"
     
     public static func write_css_to_file() {
         do {
@@ -1711,6 +1720,28 @@ struct HTML {
         i.add(a)
         i.add(".")
         div.add(i)
+        return div
+    }
+    
+    private static func render_footer() -> DOMTreeNode {
+        let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
+        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let st_year = zyy.get_setting(field: zyy.DB_SETTING_FIELD_START_YEAR)
+        var cr_year = 1970
+        if let year = Calendar(identifier: .gregorian)
+                            .dateComponents([.year], from: Date()).year {
+            cr_year = year
+        }
+        let div = DOMTreeNode(name: "div", attr: ["class" : FOOTER_CLASS,
+                                                  "style" : FOOTER_STYLE])
+        div.add("Made with ❤️ ")
+        let a = DOMTreeNode(name: "a", attr: ["href" : site_url,
+                                              "style" : FOOTER_A_STYLE])
+        a.add("by \(author)")
+        div.add(a)
+        let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])
+        p.add("© \(st_year)-\(cr_year) \(author)")
+        div.add(p)
         return div
     }
     
