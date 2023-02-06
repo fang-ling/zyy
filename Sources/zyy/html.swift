@@ -1555,6 +1555,26 @@ input {
 }
 """
 
+let STACK_PREVIEW_JS =
+"""
+/* Written by Erik Demaine <edemaine@mit.edu>, 2012.
+ * Distributed under the MIT License
+ * [http://www.opensource.org/licenses/mit-license.php]
+ */
+  var divs = document.getElementsByTagName ('div');
+  var maxHeight = 0;
+  for (var i = 0; i < divs.length; i++) {
+    if ((' ' + divs[i].className + ' ').indexOf (' stackpreview ') >= 0) {
+      maxHeight = Math.max (maxHeight, divs[i].offsetHeight);
+    }
+  }
+  for (var i = 0; i < divs.length; i++) {
+    if ((' ' + divs[i].className + ' ').indexOf (' stackpreview ') >= 0) {
+      divs[i].style.height = maxHeight + 'px';
+    }
+  }
+"""
+
 /* Main index html:
  * <!doctype html>
  * <html>
@@ -1636,9 +1656,9 @@ struct HTML {
      *      </h1>
      *  </center>
      */
-    private static func render_title(titleText : String) -> DOMTreeNode {
+    private static func render_title(title_text : String) -> DOMTreeNode {
         let strong = DOMTreeNode(name: "strong", attr: [:])
-        strong.add(titleText)
+        strong.add(title_text)
         let h1 = DOMTreeNode(name: "h1", attr: ["style" : TITLE_TEXT_STYLE])
         h1.add(strong)
         let center = DOMTreeNode(name: "center", attr: [:])
@@ -1745,12 +1765,34 @@ struct HTML {
         return div
     }
     
-//    private static func render_body() -> DOMTreeNode {
-//        let body = DOMTreeNode(name: "body", attr: [:])
-//        let typora_export_content = DOMTreeNode(name: "div",
-//                                                attr: ["class" :
-//                                                       "typora-export-content"])
-//        let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
-//
-//    }
+    private static func render_index_body() -> DOMTreeNode {
+        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
+        let typora_export_content = DOMTreeNode(name: "div",
+                                                attr: ["class" :
+                                                       "typora-export-content"])
+        let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
+        write.add(render_title(title_text: author))
+        write.add(render_head_box())
+        write.add(render_stack_preview_container())
+        write.add(render_foot_box())
+        write.add(DOMTreeNode(name: "br", attr: [:]))
+        write.add(render_footer())
+        let js = DOMTreeNode(name: "script", attr: ["type" : "text/javascript"])
+        js.add(STACK_PREVIEW_JS)
+        write.add(js)
+        typora_export_content.add(write)
+        body.add(typora_export_content)
+        return body
+    }
+    
+    public static func render_index() -> String {
+        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let html = DOMTreeNode(name: "html", attr: [:])
+        html.add(render_head(titleText: author))
+        html.add(render_index_body())
+        var string = ""
+        DOMTreeNode.inorder_tree_traversal(html, &string)
+        return "<!DOCTYPE html>\n" + string
+    }
 }

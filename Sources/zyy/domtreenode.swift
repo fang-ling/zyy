@@ -56,21 +56,27 @@ class DOMTreeNode {
         child.append(DOMTreeNode(text: text))
     }
     
-    public static func inorder_tree_traversal(_ node : DOMTreeNode) {
+    public static func inorder_tree_traversal(_ node : DOMTreeNode,
+                                              _ string : inout String) {
         if (node.text != "") { /* Pure text node have zero child. */
-            print(node.text)
+            //print(node.text)
+            string += node.text + "\n"
             return
         }
-        print("<\(node.name)", terminator: "")
+        //print("<\(node.name)", terminator: "")
+        string += "<\(node.name)"
         for i in node.attr {
-            print(" \(i.key)='\(i.value)'", terminator: "")
+            //print(" \(i.key)='\(i.value)'", terminator: "")
+            string += " \(i.key)='\(i.value)'"
         }
-        print(">")
+        //print(">")
+        string += ">" + "\n"
         for i in node.child {
-            inorder_tree_traversal(i)
+            inorder_tree_traversal(i, &string)
         }
         if (!node.isVoidElement) {
-            print("</\(node.name)>")
+            //print("</\(node.name)>")
+            string += "</\(node.name)>" + "\n"
         }
     }
 }
