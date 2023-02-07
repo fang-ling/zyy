@@ -104,7 +104,7 @@ body.typora-export {
 .typora-export .footnote-line,
 .typora-export li,
 .typora-export p {
-    white-space: pre-wrap
+    /*white-space: pre-wrap*/
 }
 
 .typora-export .task-list-item input {
@@ -1619,11 +1619,16 @@ struct HTML {
                                         "border-radius: 3px;" +
                                         "background: #c5d1d3;"
     
-    public static func write_css_to_file() {
+    public static func write_to_file() {
         do {
+            /* style.css */
             try MAIN_STYLE_CSS.write(toFile: MAIN_STYLE_CSS_FILE_NAME,
                                      atomically: true,
                                      encoding: .utf8)
+            /* index.html */
+            try HTML.render_index().write(toFile: "index.html",
+                                          atomically: true,
+                                          encoding: .utf8)
         } catch {
             print(error.localizedDescription)
         }
@@ -1678,7 +1683,9 @@ struct HTML {
             if (fields[1][i] == "") { /* Plain text node */
                 div.add(fields[0][i])
             } else {
-                div.add(DOMTreeNode(name: "a", attr: ["href" : fields[1][i]]))
+                let a = DOMTreeNode(name: "a", attr: ["href" : fields[1][i]])
+                a.add(fields[0][i])
+                div.add(a)
             }
             if (i != fields[0].count - 1) { /* Add separater */
                 div.add("&nbsp;&bull;&nbsp;");
@@ -1707,6 +1714,7 @@ struct HTML {
                                            "style" : STACK_PREVIEW_P_STYLE])
         let heading_p_a = DOMTreeNode(name: "a", attr: ["href" : section.hlink])
         heading_p_a.add(section.heading)
+        heading_p.add(heading_p_a)
         /* Caption */
         let caption_p = DOMTreeNode(name: "p",
                                     attr: ["class" : "caption",
@@ -1760,6 +1768,12 @@ struct HTML {
                                               "style" : FOOTER_A_STYLE])
         a.add("by \(author)")
         div.add(a)
+        div.add(" ")
+        let a2 = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO,
+                                               "style" : "margin-left: 4px;" +
+                                                         FOOTER_A_STYLE])
+        a2.add("zyy v\(zyy.VERSION)")
+        div.add(a2)
         let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])
         p.add("© \(st_year)-\(cr_year) \(author)")
         div.add(p)

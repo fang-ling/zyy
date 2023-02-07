@@ -2,10 +2,9 @@ import Foundation
 
 @main
 public struct zyy {
-    public private(set) var text = "Hello, World!"
-    
     /* Command Line related String constants */
-    private static let VERSION = "0.0.1-pre_alpha"
+    public static let VERSION = "0.0.1-pre_alpha"
+    public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     private static let WELCOME_MSG =
 """
 Usage: zyy <command> [<switches>...]
@@ -43,7 +42,7 @@ Subcommands:
     private static let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
     private static let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
     /* Setting table field names */
-    private static let DB_SETTING_FIELD_SITENAME          = "sitename"
+    static let DB_SETTING_FIELD_SITENAME          = "sitename"
     static let DB_SETTING_FIELD_SITEURL           = "site_url"
     /* Don't forget to change these two when `SITE_MAX_CUSTOM_FIELDS` changed */
     private static let DB_SETTING_FIELD_CUSTOM_FIELDS     = ["cf1", "cf2",
@@ -135,64 +134,69 @@ Subcommands:
                                value: st_year)
                 }
             } else if CommandLine.arguments[1] == "section" {
-                if CommandLine.arguments.count < 4 &&
-                   CommandLine.arguments[2] != "list" {
-                    commandLineError(msg: "Missing argument near:\n" +
-                                          CommandLine.arguments.last!)
-                }
-                if CommandLine.arguments[2] == "list" {
-                    for i in list_section() {
-                        print(i.heading)
+                if CommandLine.arguments.count > 3 {
+                    if CommandLine.arguments[2] == "add" {
+                        var sec = getSection(heading: CommandLine.arguments[3])
+                        if sec.heading == CommandLine.arguments[3] {
+                            commandLineError(msg: "Already existed:\n" +
+                                             CommandLine.arguments[3])
+                        }
+                        sec.heading = CommandLine.arguments[3]
+                        print("Caption:")
+                        sec.caption = readLine() ?? ""
+                        print("Cover:")
+                        sec.cover = readLine() ?? ""
+                        print("Heading link:")
+                        sec.hlink = readLine() ?? ""
+                        print("Cover link:")
+                        sec.clink = readLine() ?? ""
+                        setSection(sec)
+                    } else if CommandLine.arguments[2] == "remove" {
+                        let sec = getSection(heading: CommandLine.arguments[3])
+                        if sec.heading != CommandLine.arguments[3] {
+                            commandLineError(msg: "No such section:\n" +
+                                             CommandLine.arguments[3])
+                        }
+                        removeSection(heading: CommandLine.arguments[3])
+                    } else if CommandLine.arguments[2] == "edit" {
+                        var sec = getSection(heading: CommandLine.arguments[3])
+                        if sec.heading != CommandLine.arguments[3] {
+                            commandLineError(msg: "No such section:\n" +
+                                             CommandLine.arguments[3])
+                        }
+                        print("Caption[\(sec.caption)]:")
+                        sec.caption = readLine() ?? ""
+                        print("Cover[\(sec.cover)]:")
+                        sec.cover = readLine() ?? ""
+                        print("Heading link[\(sec.hlink)]:")
+                        sec.hlink = readLine() ?? ""
+                        print("Cover link[\(sec.clink)]:")
+                        sec.clink = readLine() ?? ""
+                        setSection(sec)
+                    } else {
+                        commandLineError(msg: "Unsupported command:\n" +
+                                         CommandLine.arguments[2])
                     }
-                } else if CommandLine.arguments[2] == "add" {
-                    var sec = getSection(heading: CommandLine.arguments[3])
-                    if sec.heading == CommandLine.arguments[3] {
-                        commandLineError(msg: "Already existed:\n" +
-                                              CommandLine.arguments[3])
+                } else if CommandLine.arguments.count > 2 {
+                    if CommandLine.arguments[2] == "list" {
+                        for i in list_section() {
+                            print(i.heading)
+                        }
+                    } else {
+                        commandLineError(msg: "Missing argument near:\n" +
+                                         CommandLine.arguments.last!)
                     }
-                    sec.heading = CommandLine.arguments[3]
-                    print("Caption:")
-                    sec.caption = readLine() ?? ""
-                    print("Cover:")
-                    sec.cover = readLine() ?? ""
-                    print("Heading link:")
-                    sec.hlink = readLine() ?? ""
-                    print("Cover link:")
-                    sec.clink = readLine() ?? ""
-                    setSection(sec)
-                } else if CommandLine.arguments[2] == "remove" {
-                    let sec = getSection(heading: CommandLine.arguments[3])
-                    if sec.heading != CommandLine.arguments[3] {
-                        commandLineError(msg: "No such section:\n" +
-                                              CommandLine.arguments[3])
-                    }
-                    removeSection(heading: CommandLine.arguments[3])
-                } else if CommandLine.arguments[2] == "edit" {
-                    var sec = getSection(heading: CommandLine.arguments[3])
-                    if sec.heading != CommandLine.arguments[3] {
-                        commandLineError(msg: "No such section:\n" +
-                                              CommandLine.arguments[3])
-                    }
-                    print("Caption[\(sec.caption)]:")
-                    sec.caption = readLine() ?? ""
-                    print("Cover[\(sec.cover)]:")
-                    sec.cover = readLine() ?? ""
-                    print("Heading link[\(sec.hlink)]:")
-                    sec.hlink = readLine() ?? ""
-                    print("Cover link[\(sec.clink)]:")
-                    sec.clink = readLine() ?? ""
-                    setSection(sec)
                 } else {
-                    commandLineError(msg: "Unsupported command:\n" +
-                                          CommandLine.arguments[2])
+                    commandLineError(msg: "Missing argument near:\n" +
+                                     CommandLine.arguments.last!)
                 }
             } else if CommandLine.arguments[1] == "generate" {
-                
+                HTML.write_to_file()
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
             } else {
                 commandLineError(msg: "Unsupported command:\n" +
-                                      CommandLine.arguments[1])
+                                 CommandLine.arguments[1])
             }
         } else {
             print(WELCOME_MSG)
