@@ -1735,6 +1735,7 @@ struct HTML {
         let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add(author)
         let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US")
         df.dateStyle = .long
         i.add("Last updated \(df.string(from: Date())) by ")
         i.add(a)
@@ -1766,13 +1767,13 @@ struct HTML {
     }
     
     private static func render_index_body() -> DOMTreeNode {
-        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
         let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
         let typora_export_content = DOMTreeNode(name: "div",
                                                 attr: ["class" :
                                                        "typora-export-content"])
         let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
-        write.add(render_title(title_text: author))
+        write.add(render_title(title_text: sitename))
         write.add(render_head_box())
         write.add(render_stack_preview_container())
         write.add(render_foot_box())
@@ -1787,9 +1788,9 @@ struct HTML {
     }
     
     public static func render_index() -> String {
-        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
+        let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
         let html = DOMTreeNode(name: "html", attr: [:])
-        html.add(render_head(titleText: author))
+        html.add(render_head(titleText: sitename))
         html.add(render_index_body())
         var string = ""
         DOMTreeNode.inorder_tree_traversal(html, &string)
