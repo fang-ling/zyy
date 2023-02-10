@@ -40,6 +40,7 @@ Subcommands:
     /* Database table name */
     private static let DB_SETTING_TABLE_NAME = "Setting"
     private static let DB_SECTION_TABLE_NAME = "Section"
+    private static let DB_PAGE_TABLE_NAME = "Page"
     /* Database table column name */
     private static let DB_SETTING_TABLE_COL_FIELD   = "field"
     private static let DB_SETTING_TABLE_COL_VALUE   = "value"
@@ -48,6 +49,9 @@ Subcommands:
     private static let DB_SECTION_TABLE_COL_COVER   = "cover"
     private static let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
     private static let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
+    private static let DB_PAGE_TABLE_COL_TITLE = "title"
+    private static let DB_PAGE_TABLE_COL_CONTENT = "content"
+    private static let DB_PAGE_TABLE_COL_LINK = "link"
     /* Setting table field names */
     static let DB_SETTING_FIELD_SITENAME          = "sitename"
     static let DB_SETTING_FIELD_SITEURL           = "site_url"
@@ -228,6 +232,15 @@ Subcommands:
                       \(DB_SECTION_TABLE_COL_COVER)   TEXT,
                       \(DB_SECTION_TABLE_COL_HLINK)   TEXT,
                       \(DB_SECTION_TABLE_COL_CLINK)   TEXT
+                  );
+                  """
+        sqlite.exec(sql: SQL)
+        /* Page table */
+            SQL = """
+                  CREATE TABLE if not exists \(DB_PAGE_TABLE_NAME)(
+                      \(DB_PAGE_TABLE_COL_TITLE) TEXT PRIMARY KEY NOT NULL,
+                      \(DB_PAGE_TABLE_COL_CONTENT) TEXT,
+                      \(DB_PAGE_TABLE_COL_LINK)   TEXT
                   );
                   """
         sqlite.exec(sql: SQL)
