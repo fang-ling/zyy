@@ -13,6 +13,7 @@ Usage: zyy <command> [<switches>...]
   init:                 Initialize website database in current directory
   configure:            Set up the website
   generate:             Generate static files
+  update:               Update database file
   version:              Print version information and exit
 
 Subcommands:
@@ -203,6 +204,8 @@ Subcommands:
                 }
             } else if CommandLine.arguments[1] == "generate" {
                 HTML.write_to_file()
+            } else if CommandLine.arguments[1] == "update" {
+                createDatabase()
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
             } else {
