@@ -18,15 +18,22 @@ Usage: zyy <command> [<switches>...]
 Subcommands:
 
   section:              Create, delete and work on sections
-
-    Usage: zyy section <subcommand> <name>
+    Usage: zyy section <subcommand> [<name>]
 
     <subcommand>
-
       add:              Add a section named <name>
       edit:             Modify the section named <name>
       remove:           Remove the section named <name>
       list:             List all sections
+
+  page:                 Create, delete and work on pages
+    Usage: zyy page <subcommand> [<name>]
+
+    <subcommand>
+      add:              Add a page named <name>
+      edit:             Modify the page named <name>
+      remove:           Remove the page named <name>
+      list:             List all pages
 """
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
