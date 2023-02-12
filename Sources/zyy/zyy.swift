@@ -360,6 +360,30 @@ Subcommands:
         return value
     }
     
+    private static func get_page(by title : String) -> Page {
+        var title = title.to_base64()
+        let SQL = """
+                  SELECT * FROM \(DB_PAGE_TABLE_NAME)
+                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title)';
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        let result = sqlite.exec(sql: SQL)
+        var value = Page()
+        if let row = result.first {
+            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
+                if let v = val { value.title = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
+                if let v = val { value.content = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_LINK] {
+                if let v = val { value.link = v }
+            }
+        }
+        sqlite.SQLite3_close()
+        return value
+    }
+    
     /* Remove a section */
     private static func removeSection(heading : String) {
         let SQL = """
