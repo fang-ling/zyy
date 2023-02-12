@@ -32,3 +32,22 @@ struct Section {
         clink = ""
     }
 }
+
+/* Page data */
+struct Page {
+    var title : String
+    var content : String
+    var link : String
+    
+    init(title: String, content: String, link: String) {
+        self.title = title
+        self.content = content
+        self.link = link
+    }
+    
+    init() {
+        title = ""
+        content = ""
+        link = ""
+    }
+}
