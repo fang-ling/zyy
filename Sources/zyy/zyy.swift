@@ -360,30 +360,6 @@ Subcommands:
         return value
     }
     
-    private static func get_page(by title : String) -> Page {
-        var title = title.to_base64()
-        let SQL = """
-                  SELECT * FROM \(DB_PAGE_TABLE_NAME)
-                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title)';
-                  """
-        let sqlite = SQLite(at: DB_FILENAME)
-        let result = sqlite.exec(sql: SQL)
-        var value = Page()
-        if let row = result.first {
-            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
-                if let v = val { value.title = v.from_base64()! }
-            }
-            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
-                if let v = val { value.content = v.from_base64()! }
-            }
-            if let val = row[DB_PAGE_TABLE_COL_LINK] {
-                if let v = val { value.link = v }
-            }
-        }
-        sqlite.SQLite3_close()
-        return value
-    }
-    
     /* Remove a section */
     private static func removeSection(heading : String) {
         let SQL = """
@@ -420,6 +396,93 @@ Subcommands:
             }
             if let val = i[DB_SECTION_TABLE_COL_CLINK] {
                 if let v = val { value.clink = v }
+            }
+            ret.append(value)
+        }
+        sqlite.SQLite3_close()
+        return ret
+    }
+    
+    /* Search for page with specific title */
+    private static func get_page(by title : String) -> Page {
+        let title = title.to_base64()
+        let SQL = """
+                  SELECT * FROM \(DB_PAGE_TABLE_NAME)
+                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title)';
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        let result = sqlite.exec(sql: SQL)
+        var value = Page()
+        if let row = result.first {
+            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
+                if let v = val { value.title = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
+                if let v = val { value.content = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_LINK] {
+                if let v = val { value.link = v }
+            }
+        }
+        sqlite.SQLite3_close()
+        return value
+    }
+    
+    /* Modify or insert a new page */
+    private static func set_page(_ p : Page) {
+        var SQL = """
+                  INSERT OR IGNORE INTO \(DB_PAGE_TABLE_NAME)
+                  (\(DB_PAGE_TABLE_COL_TITLE),
+                   \(DB_PAGE_TABLE_COL_CONTENT),
+                   \(DB_PAGE_TABLE_COL_LINK))
+                  VALUES(
+                      '\(p.title.to_base64())',
+                      '\(p.content.to_base64())',
+                      '\(p.link.to_base64())'
+                  );
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        sqlite.exec(sql: SQL)
+            SQL = """
+                  UPDATE \(DB_PAGE_TABLE_NAME)
+                  SET \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())',
+                      \(DB_PAGE_TABLE_COL_CONTENT) = '\(p.content.to_base64())',
+                      \(DB_PAGE_TABLE_COL_LINK) = '\(p.link.to_base64())'
+                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())';
+                  """
+        sqlite.exec(sql: SQL)
+        sqlite.SQLite3_close()
+    }
+    
+    /* Remove a page */
+    private static func remove_page(title : String) {
+        let SQL = """
+                  DELETE FROM \(DB_PAGE_TABLE_NAME)
+                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title.to_base64())';
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        sqlite.exec(sql: SQL)
+        sqlite.SQLite3_close()
+    }
+    
+    /* List all pages */
+    private static func list_page() -> [Page] {
+        let SQL = """
+                  SELECT * FROM \(DB_PAGE_TABLE_NAME);
+                  """
+        let sqlite = SQLite(at: DB_FILENAME)
+        let result = sqlite.exec(sql: SQL)
+        var ret = [Page]()
+        for row in result {
+            var value = Page()
+            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
+                if let v = val { value.title = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
+                if let v = val { value.content = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_LINK] {
+                if let v = val { value.link = v }
             }
             ret.append(value)
         }
