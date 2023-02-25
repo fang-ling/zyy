@@ -13,7 +13,7 @@ extension zyy {
                 generalError(msg: "Database file: \(DB_FILENAME) existed.")
             }
             /* Create db */
-            createDatabase()
+            create_database()
             print("Creating \(DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
@@ -96,7 +96,7 @@ extension zyy {
         )
         
         func run() {
-            createDatabase()
+            HTML.write_to_file()
         }
     }
     
@@ -106,7 +106,99 @@ extension zyy {
         )
         
         func run() {
-            HTML.write_to_file()
+            create_database()
+        }
+    }
+}
+
+extension zyy {
+    struct SectionCommand : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "section",
+            abstract: "Create, delete and work on sections.",
+            subcommands: [Add.self, Edit.self, Remove.self, List.self]
+        )
+    }
+}
+
+extension zyy.SectionCommand {
+    struct Add : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Add a section with specific name."
+        )
+        
+        @Argument(help: "The name of the new section.")
+        var name : String
+        
+        func run() {
+            var sec = zyy.get_section(heading: name)
+            if sec.heading == name {
+                commandLineError(msg: "Already existed:\n" + name)
+            }
+            sec.heading = name
+            print("Caption:")
+            sec.caption = readLine() ?? ""
+            print("Cover:")
+            sec.cover = readLine() ?? ""
+            print("Heading link:")
+            sec.hlink = readLine() ?? ""
+            print("Cover link:")
+            sec.clink = readLine() ?? ""
+            zyy.set_section(sec)
+        }
+    }
+    
+    struct Edit : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Modify the specific section."
+        )
+        
+        @Argument(help: "The name of the section.")
+        var name : String
+        
+        func run() {
+            var sec = zyy.get_section(heading: name)
+            if sec.heading != name {
+                commandLineError(msg: "No such section:\n" + name)
+            }
+            print("Caption[\(sec.caption)]:")
+            sec.caption = readLine() ?? ""
+            print("Cover[\(sec.cover)]:")
+            sec.cover = readLine() ?? ""
+            print("Heading link[\(sec.hlink)]:")
+            sec.hlink = readLine() ?? ""
+            print("Cover link[\(sec.clink)]:")
+            sec.clink = readLine() ?? ""
+            zyy.set_section(sec)
+        }
+    }
+    
+    struct Remove : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Remove the section."
+        )
+        
+        @Argument(help: "The name of the section.")
+        var name : String
+        
+        func run() {
+            let sec = zyy.get_section(heading: name)
+            if sec.heading != name {
+                commandLineError(msg: "No such section:\n" + name)
+            }
+            zyy.remove_section(heading: name)
+        }
+    }
+    
+    struct List : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "List all sections."
+        )
+        
+        func run() {
+            for i in zyy.list_section() {
+                print(i.heading)
+            }
         }
     }
 }
@@ -116,43 +208,13 @@ struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for building personal websites.",
         version: VERSION,
-        subcommands: [Init.self, Configure.self, Generate.self, Update.self]
+        subcommands: [Init.self, Configure.self, Generate.self, Update.self,
+                      SectionCommand.self]
     )
     
     /* Command Line related String constants */
     public static let VERSION = "0.0.1-alpha"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
-    private static let WELCOME_MSG =
-"""
-Usage: zyy <command> [<switches>...]
-
-<Commands>
-  init:                 Initialize website database in current directory
-  configure:            Set up the website
-  generate:             Generate static files
-  update:               Update database file
-  version:              Print version information and exit
-
-Subcommands:
-
-  section:              Create, delete and work on sections
-    Usage: zyy section <subcommand> [<name>]
-
-    <subcommand>
-      add:              Add a section named <name>
-      edit:             Modify the section named <name>
-      remove:           Remove the section named <name>
-      list:             List all sections
-
-  page:                 Create, delete and work on pages
-    Usage: zyy page <subcommand> [<name>]
-
-    <subcommand>
-      add:              Add a page named <name>
-      edit:             Modify the page named <name>
-      remove:           Remove the page named <name>
-      list:             List all pages
-"""
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
     /* Database table name */
@@ -188,86 +250,7 @@ Subcommands:
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
     
-    /*public static func main() {
-        if CommandLine.arguments.count > 1 {
-            if CommandLine.arguments[1] == "init" {
-                
-            } else if CommandLine.arguments[1] == "configure" {
-                
-            } else if CommandLine.arguments[1] == "section" {
-                if CommandLine.arguments.count > 3 {
-                    if CommandLine.arguments[2] == "add" {
-                        var sec = getSection(heading: CommandLine.arguments[3])
-                        if sec.heading == CommandLine.arguments[3] {
-                            commandLineError(msg: "Already existed:\n" +
-                                             CommandLine.arguments[3])
-                        }
-                        sec.heading = CommandLine.arguments[3]
-                        print("Caption:")
-                        sec.caption = readLine() ?? ""
-                        print("Cover:")
-                        sec.cover = readLine() ?? ""
-                        print("Heading link:")
-                        sec.hlink = readLine() ?? ""
-                        print("Cover link:")
-                        sec.clink = readLine() ?? ""
-                        setSection(sec)
-                    } else if CommandLine.arguments[2] == "remove" {
-                        let sec = getSection(heading: CommandLine.arguments[3])
-                        if sec.heading != CommandLine.arguments[3] {
-                            commandLineError(msg: "No such section:\n" +
-                                             CommandLine.arguments[3])
-                        }
-                        removeSection(heading: CommandLine.arguments[3])
-                    } else if CommandLine.arguments[2] == "edit" {
-                        var sec = getSection(heading: CommandLine.arguments[3])
-                        if sec.heading != CommandLine.arguments[3] {
-                            commandLineError(msg: "No such section:\n" +
-                                             CommandLine.arguments[3])
-                        }
-                        print("Caption[\(sec.caption)]:")
-                        sec.caption = readLine() ?? ""
-                        print("Cover[\(sec.cover)]:")
-                        sec.cover = readLine() ?? ""
-                        print("Heading link[\(sec.hlink)]:")
-                        sec.hlink = readLine() ?? ""
-                        print("Cover link[\(sec.clink)]:")
-                        sec.clink = readLine() ?? ""
-                        setSection(sec)
-                    } else {
-                        commandLineError(msg: "Unsupported command:\n" +
-                                         CommandLine.arguments[2])
-                    }
-                } else if CommandLine.arguments.count > 2 {
-                    if CommandLine.arguments[2] == "list" {
-                        for i in list_section() {
-                            print(i.heading)
-                        }
-                    } else {
-                        commandLineError(msg: "Missing argument near:\n" +
-                                         CommandLine.arguments.last!)
-                    }
-                } else {
-                    commandLineError(msg: "Missing argument near:\n" +
-                                     CommandLine.arguments.last!)
-                }
-            } else if CommandLine.arguments[1] == "generate" {
-                
-            } else if CommandLine.arguments[1] == "update" {
-                
-            } else if CommandLine.arguments[1] == "version" {
-                print(VERSION)
-            } else {
-                commandLineError(msg: "Unsupported command:\n" +
-                                 CommandLine.arguments[1])
-            }
-        } else {
-            print(WELCOME_MSG)
-        }
-         
-    }*/
-    
-    private static func createDatabase() {
+    private static func create_database() {
         /* Setting table */
         var SQL = """
                   CREATE TABLE if not exists \(DB_SETTING_TABLE_NAME)(
@@ -349,7 +332,7 @@ Subcommands:
     
     /* Add a new section in table, and will replace the old one if exists. */
     /* Use the `INSERT OR IGNORE` followed by an `UPDATE`. */
-    private static func setSection(_ s : Section) {
+    private static func set_section(_ s : Section) {
         var SQL = """
                   INSERT OR IGNORE INTO \(DB_SECTION_TABLE_NAME)
                   (\(DB_SECTION_TABLE_COL_HEADING),
@@ -379,7 +362,7 @@ Subcommands:
     
     /* Get a section value from given section `heading`.
      */
-    private static func getSection(heading : String) -> Section {
+    private static func get_section(heading : String) -> Section {
         let SQL = """
                   SELECT * FROM \(DB_SECTION_TABLE_NAME)
                   WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
@@ -411,7 +394,7 @@ Subcommands:
     }
     
     /* Remove a section */
-    private static func removeSection(heading : String) {
+    private static func remove_section(heading : String) {
         let SQL = """
                   DELETE FROM \(DB_SECTION_TABLE_NAME)
                   WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
