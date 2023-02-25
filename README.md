@@ -9,5 +9,5 @@ The way we create the website: [fangling.uk](https://fangling.uk).
 This repo relies on the following third-party projects:
 
   - [sqlite/sqlite](https://github.com/sqlite/sqlite)
-  - [commonmark/cmark](https://github.com/commonmark/cmark)
+  - [github/cmark-gfm](https://github.com/github/cmark-gfm)
   - [swift-argument-parser](https://github.com/apple/swift-argument-parser)
