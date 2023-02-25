@@ -1,9 +1,126 @@
 import Foundation
+import ArgumentParser
+
+extension zyy {
+    struct Init : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Initialize website database in current directory."
+        )
+        
+        func run() {
+            /* Prevent user from calling `init` twice */
+            if FileManager.default.fileExists(atPath: DB_FILENAME) {
+                generalError(msg: "Database file: \(DB_FILENAME) existed.")
+            }
+            /* Create db */
+            createDatabase()
+            print("Creating \(DB_FILENAME)")
+            print("You may want to invoke `zyy configure` command to " +
+                  "finish setting up your website.")
+        }
+    }
+    
+    struct Configure : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Set up the website."
+        )
+        
+        func run() {
+            /* Interactive settings */
+            /* Check if database exists */
+            if !FileManager.default.fileExists(atPath: DB_FILENAME) {
+                generalError(msg: "Database file: \(DB_FILENAME): " +
+                             "No such file or directory")
+            }
+            print("Hint: Press enter directly to leave it as-is")
+            /* Website name*/
+            var site_name = get_setting(field: DB_SETTING_FIELD_SITENAME)
+            print("What's the name of your site[\(site_name)]: ")
+            site_name = readLine() ?? site_name /* May be unnecessary */
+            if site_name != "" { /* User input something */
+                setSetting(field: DB_SETTING_FIELD_SITENAME,
+                           value: site_name)
+            }
+            /* Site url */
+            var site_url = get_setting(field: DB_SETTING_FIELD_SITEURL)
+            print("What's the URL of your site[\(site_url)]: ")
+            site_url = readLine() ?? site_url /* May be unnecessary */
+            if site_url != "" {
+                setSetting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
+            }
+            /* Head box custom fields */
+            for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
+                var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+                print("What's the \(getOrdinalNumbers(i+1)) custom field " +
+                      "in head box of the index page[\(c)]: ")
+                c = readLine() ?? c
+                if c != "" {
+                    setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
+                               value: c)
+                }
+                c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+                print("Does it have a link[\(c)]: ")
+                c = readLine() ?? c
+                if c != "" {
+                    setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
+                               value: c)
+                }
+                print("Need more?[y / n (Default is no)]")
+                if let ans = readLine() {
+                    if ans.count == 0 || ans.starts(with: "n") {
+                        break
+                    }
+                }
+            }
+            /* Author */
+            var author = get_setting(field: DB_SETTING_FIELD_AUTHOR)
+            print("What's your name[\(author)]: ")
+            author = readLine() ?? author /* May be unnecessary */
+            if author != "" {
+                setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
+            }
+            /* Start year */
+            var st_year = get_setting(field: DB_SETTING_FIELD_START_YEAR)
+            print("Start year of the website[\(st_year)]: ")
+            st_year = readLine() ?? st_year
+            if st_year != "" {
+                setSetting(field: DB_SETTING_FIELD_START_YEAR,
+                           value: st_year)
+            }
+        }
+    }
+    
+    struct Generate : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Generate static files."
+        )
+        
+        func run() {
+            createDatabase()
+        }
+    }
+    
+    struct Update : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Update database file."
+        )
+        
+        func run() {
+            HTML.write_to_file()
+        }
+    }
+}
 
 @main
-public struct zyy {
+struct zyy : ParsableCommand {
+    static var configuration = CommandConfiguration(
+        abstract: "A utility for building personal websites.",
+        version: VERSION,
+        subcommands: [Init.self, Configure.self, Generate.self, Update.self]
+    )
+    
     /* Command Line related String constants */
-    public static let VERSION = "0.0.1-pre_alpha"
+    public static let VERSION = "0.0.1-alpha"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     private static let WELCOME_MSG =
 """
@@ -71,80 +188,12 @@ Subcommands:
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
     
-    public static func main() {
+    /*public static func main() {
         if CommandLine.arguments.count > 1 {
             if CommandLine.arguments[1] == "init" {
-                /* Prevent user from calling `init` twice */
-                if FileManager.default.fileExists(atPath: DB_FILENAME) {
-                    generalError(msg: "Database file: \(DB_FILENAME) existed")
-                }
-                /* Create db */
-                createDatabase()
-                print("Creating \(DB_FILENAME)")
-                print("You may want to invoke `zyy configure` command to " +
-                      "finish setting up your website")
+                
             } else if CommandLine.arguments[1] == "configure" {
-                /* Interactive settings */
-                /* Check if database exists */
-                if !FileManager.default.fileExists(atPath: DB_FILENAME) {
-                    generalError(msg: "Database file: \(DB_FILENAME): " +
-                                 "No such file or directory")
-                }
-                print("Hint: Press enter directly to leave it as-is")
-                /* Website name*/
-                var site_name = get_setting(field: DB_SETTING_FIELD_SITENAME)
-                print("What's the name of your site[\(site_name)]: ")
-                site_name = readLine() ?? site_name /* May be unnecessary */
-                if site_name != "" { /* User input something */
-                    setSetting(field: DB_SETTING_FIELD_SITENAME,
-                               value: site_name)
-                }
-                /* Site url */
-                var site_url = get_setting(field: DB_SETTING_FIELD_SITEURL)
-                print("What's the URL of your site[\(site_url)]: ")
-                site_url = readLine() ?? site_url /* May be unnecessary */
-                if site_url != "" {
-                    setSetting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
-                }
-                /* Head box custom fields */
-                for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
-                    var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
-                    print("What's the \(getOrdinalNumbers(i+1)) custom field " +
-                          "in head box of the index page[\(c)]: ")
-                    c = readLine() ?? c
-                    if c != "" {
-                        setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
-                                   value: c)
-                    }
-                    c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
-                    print("Does it have a link[\(c)]: ")
-                    c = readLine() ?? c
-                    if c != "" {
-                        setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
-                                   value: c)
-                    }
-                    print("Need more?[y / n (Default is no)]")
-                    if let ans = readLine() {
-                        if ans.count == 0 || ans.starts(with: "n") {
-                            break
-                        }
-                    }
-                }
-                /* Author */
-                var author = get_setting(field: DB_SETTING_FIELD_AUTHOR)
-                print("What's your name[\(author)]: ")
-                author = readLine() ?? author /* May be unnecessary */
-                if author != "" {
-                    setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
-                }
-                /* Start year */
-                var st_year = get_setting(field: DB_SETTING_FIELD_START_YEAR)
-                print("Start year of the website[\(st_year)]: ")
-                st_year = readLine() ?? st_year
-                if st_year != "" {
-                    setSetting(field: DB_SETTING_FIELD_START_YEAR,
-                               value: st_year)
-                }
+                
             } else if CommandLine.arguments[1] == "section" {
                 if CommandLine.arguments.count > 3 {
                     if CommandLine.arguments[2] == "add" {
@@ -203,9 +252,9 @@ Subcommands:
                                      CommandLine.arguments.last!)
                 }
             } else if CommandLine.arguments[1] == "generate" {
-                HTML.write_to_file()
+                
             } else if CommandLine.arguments[1] == "update" {
-                createDatabase()
+                
             } else if CommandLine.arguments[1] == "version" {
                 print(VERSION)
             } else {
@@ -215,7 +264,8 @@ Subcommands:
         } else {
             print(WELCOME_MSG)
         }
-    }
+         
+    }*/
     
     private static func createDatabase() {
         /* Setting table */
