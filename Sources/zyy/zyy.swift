@@ -243,8 +243,11 @@ extension zyy.PageCommand {
             page.content = ""
             print("Content (End with '###***%%%'):")
             var delta = ""
-            while (delta != "###***%%%") {
+            while true {
                 delta = readLine()!
+                if delta == "###***%%%" {
+                    break
+                }
                 page.content += delta + "\n"
             }
             print("Website link (relative):")
@@ -271,8 +274,11 @@ extension zyy.PageCommand {
             page.content = ""
             print("Content (End with '###***%%%'):")
             var delta = ""
-            while (delta != "###***%%%") {
+            while true {
                 delta = readLine()!
+                if delta == "###***%%%" {
+                    break
+                }
                 page.content += delta + "\n"
             }
             print("Website link (relative)[\(page.link)]:")
