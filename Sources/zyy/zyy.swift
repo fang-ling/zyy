@@ -551,7 +551,7 @@ struct zyy : ParsableCommand {
                 if let v = val { value.content = v.from_base64()! }
             }
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
-                if let v = val { value.link = v }
+                if let v = val { value.link = v.from_base64()! }
             }
         }
         sqlite.SQLite3_close()
@@ -596,7 +596,7 @@ struct zyy : ParsableCommand {
     }
     
     /* List all pages */
-    private static func list_pages() -> [Page] {
+    static func list_pages() -> [Page] {
         let SQL = """
                   SELECT * FROM \(DB_PAGE_TABLE_NAME);
                   """
@@ -612,7 +612,7 @@ struct zyy : ParsableCommand {
                 if let v = val { value.content = v.from_base64()! }
             }
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
-                if let v = val { value.link = v }
+                if let v = val { value.link = v.from_base64()! }
             }
             ret.append(value)
         }

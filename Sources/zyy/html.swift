@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CMark
 
 let MAIN_STYLE_CSS : String =
 """
@@ -1629,6 +1630,13 @@ struct HTML {
             try HTML.render_index().write(toFile: "index.html",
                                           atomically: true,
                                           encoding: .utf8)
+            // TO-DO: add file hierarch
+            for page in zyy.list_pages() {
+                try HTML.render_page(page: page)
+                .write(toFile: page.link.components(separatedBy: "/").last!,
+                       atomically: true,
+                       encoding: .utf8)
+            }
         } catch {
             print(error.localizedDescription)
         }
@@ -1811,7 +1819,28 @@ struct HTML {
         return "<!DOCTYPE html>\n" + string
     }
     
-//    private static func render_page(page : Page) -> DOMTreeNode {
-//        let html = DOMTreeNode()
-//    }
+    private static func render_page(page : Page) -> String {
+        let html = DOMTreeNode(name: "html", attr: [:])
+        html.add(render_head(titleText: page.title))
+        /* Body */
+        let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
+        let typora_export_content = DOMTreeNode(name: "div",
+                                                attr: ["class" :
+                                                       "typora-export-content"])
+        let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
+        write.add(render_title(title_text: page.title))
+        write.add(render_head_box())
+        write.add(cmark_markdown_to_html_with_ext(page.content,
+                                                  CMARK_OPT_DEFAULT))
+        write.add(render_foot_box())
+        write.add(DOMTreeNode(name: "br", attr: [:]))
+        write.add(render_footer())
+        typora_export_content.add(write)
+        body.add(typora_export_content)
+        
+        html.add(body)
+        var string = ""
+        DOMTreeNode.inorder_tree_traversal(html, &string)
+        return "<!DOCTYPE html>\n" + string
+    }
 }
