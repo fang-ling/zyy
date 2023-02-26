@@ -196,9 +196,105 @@ extension zyy.SectionCommand {
         )
         
         func run() {
-            for i in zyy.list_section() {
+            for i in zyy.list_sections() {
                 print(i.heading)
             }
+        }
+    }
+}
+
+extension zyy {
+    struct PageCommand : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "page",
+            abstract: "Create, delete and work on pages.",
+            subcommands: [Add.self, Edit.self, Remove.self, List.self]
+        )
+    }
+}
+
+extension zyy.PageCommand {
+    struct List : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "List all pages."
+        )
+        
+        func run() {
+            for i in zyy.list_pages() {
+                print(i.title)
+            }
+        }
+    }
+    
+    struct Add : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Add new page"
+        )
+        
+        @Argument(help: "The title of the new page.")
+        var title : String
+        
+        func run() {
+            var page = zyy.get_page(by: title)
+            if page.title == title {
+                commandLineError(msg: "Already existed:\n" + title)
+            }
+            page.title = title
+            page.content = ""
+            print("Content (End with '###***%%%'):")
+            var delta = ""
+            while (delta != "###***%%%") {
+                delta = readLine()!
+                page.content += delta + "\n"
+            }
+            print("Website link (relative):")
+            page.link = readLine() ?? ""
+            zyy.set_page(page)
+        }
+    }
+    
+    struct Edit : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Modify the page."
+        )
+        
+        @Argument(help: "The title of the page.")
+        var title : String
+        
+        func run() {
+            var page = zyy.get_page(by: title)
+            if page.title != title {
+                commandLineError(msg: "No such section:\n" + title)
+            }
+            print("Title[\(page.title)]:")
+            page.title = readLine() ?? ""
+            page.content = ""
+            print("Content (End with '###***%%%'):")
+            var delta = ""
+            while (delta != "###***%%%") {
+                delta = readLine()!
+                page.content += delta + "\n"
+            }
+            print("Website link (relative)[\(page.link)]:")
+            page.link = readLine() ?? ""
+            zyy.set_page(page)
+        }
+    }
+    
+    struct Remove : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Remove the page."
+        )
+        
+        @Argument(help: "The title of the page.")
+        var title : String
+        
+        func run() {
+            let page = zyy.get_page(by: title)
+            if page.title != title {
+                commandLineError(msg: "No such section:\n" + title)
+            }
+            zyy.remove_page(title: title)
         }
     }
 }
@@ -209,7 +305,8 @@ struct zyy : ParsableCommand {
         abstract: "A utility for building personal websites.",
         version: VERSION,
         subcommands: [Init.self, Configure.self, Generate.self, Update.self,
-                      SectionCommand.self]
+                      SectionCommand.self,
+                      PageCommand.self]
     )
     
     /* Command Line related String constants */
@@ -405,7 +502,7 @@ struct zyy : ParsableCommand {
     }
     
     /* List sections */
-    static func list_section() -> [Section] {
+    static func list_sections() -> [Section] {
         let SQL = """
                   SELECT * FROM \(DB_SECTION_TABLE_NAME);
                   """
@@ -499,7 +596,7 @@ struct zyy : ParsableCommand {
     }
     
     /* List all pages */
-    private static func list_page() -> [Page] {
+    private static func list_pages() -> [Page] {
         let SQL = """
                   SELECT * FROM \(DB_PAGE_TABLE_NAME);
                   """

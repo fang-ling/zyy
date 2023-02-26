@@ -1729,7 +1729,7 @@ struct HTML {
     private static func render_stack_preview_container() -> DOMTreeNode {
         let div = DOMTreeNode(name: "div",
                               attr: ["style" : STACK_PREVIEW_CONTAINER_STYLE])
-        for section in zyy.list_section() {
+        for section in zyy.list_sections() {
             div.add(render_stack_preview(by: section))
         }
         return div
@@ -1810,4 +1810,8 @@ struct HTML {
         DOMTreeNode.inorder_tree_traversal(html, &string)
         return "<!DOCTYPE html>\n" + string
     }
+    
+//    private static func render_page(page : Page) -> DOMTreeNode {
+//        let html = DOMTreeNode()
+//    }
 }
