@@ -27,7 +27,7 @@ func cmark_markdown_to_html_with_ext(_ text : String,
         cmark_parser_attach_syntax_extension(parser, ext)
     }
     /* Parse */
-    cmark_parser_feed(parser, text, text.count)
+    cmark_parser_feed(parser, text, text.utf8.count)
     let doc = cmark_parser_finish(parser)
     /* Render */
     let result = cmark_render_html(doc, options, nil)
