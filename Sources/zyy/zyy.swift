@@ -269,20 +269,29 @@ extension zyy.PageCommand {
             if page.title != title {
                 commandLineError(msg: "No such section:\n" + title)
             }
+            print("Hint: Press enter directly to leave it as-is")
             print("Title[\(page.title)]:")
-            page.title = readLine() ?? ""
-            page.content = ""
-            print("Content (End with '###***%%%'):")
-            var delta = ""
-            while true {
-                delta = readLine()!
-                if delta == "###***%%%" {
-                    break
-                }
-                page.content += delta + "\n"
+            let title = readLine() ?? ""
+            if title != "" {
+                page.title = title
+            }
+            do {
+                try page.content.write(toFile: ".PAGE",
+                                       atomically: true,
+                                       encoding: .utf8)
+                //TO-DO: support different editors
+                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
+                page.content = try String(contentsOfFile: ".PAGE",
+                                          encoding: .utf8)
+                try PosixProcess("/bin/rm", ".PAGE").spawn()
+            } catch {
+                commandLineError(msg: error.localizedDescription)
             }
             print("Website link (relative)[\(page.link)]:")
-            page.link = readLine() ?? ""
+            let link = readLine() ?? ""
+            if link != "" {
+                page.link = link
+            }
             zyy.set_page(page)
         }
     }
@@ -298,7 +307,7 @@ extension zyy.PageCommand {
         func run() {
             let page = zyy.get_page(by: title)
             if page.title != title {
-                commandLineError(msg: "No such section:\n" + title)
+                commandLineError(msg: "No such page:\n" + title)
             }
             zyy.remove_page(title: title)
         }
@@ -316,7 +325,7 @@ struct zyy : ParsableCommand {
     )
     
     /* Command Line related String constants */
-    public static let VERSION = "0.0.1-alpha"
+    public static let VERSION = "0.0.1"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
