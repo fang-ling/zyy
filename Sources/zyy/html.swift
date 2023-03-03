@@ -24,7 +24,7 @@ html {
     --active-file-bg-color: #dadada;
     --active-file-bg-color: rgba(32, 43, 51, 0.63);
     --active-file-text-color: white;
-    --bg-color: #f3f2ee;
+    --bg-color: #FFFBF5;
     --text-color: #1f0909;
     --control-text-color: #444;
     --rawblock-edit-panel-bd: #e5e5e5;
@@ -228,8 +228,8 @@ p {
 
 a {
     cursor: pointer;
-    text-decoration: none;
-    color: #065588
+    text-decoration: none
+    /*color: #065588*/
 }
 
 sup.md-footnote {
@@ -990,15 +990,47 @@ mjx-container {
 
 @include-when-export url(https://fonts.loli.net/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext);
 
-A:link,
-A:visited {
+A:link, A:visited {
     text-decoration: none;
-    color: #6495ed
+    color: #674188
 }
 
 A:hover {
-    background-color: #6495ed;
-    color: #c5d1d3;
+    background-color: #674188;
+    color: #C3ACD0;
+    text-decoration: none
+}
+
+A:link, A:visited {
+    text-decoration: none;
+    color: #674188
+}
+
+A:hover {
+    background-color: #674188;
+    color: #C3ACD0;
+    text-decoration: none
+}
+
+.purplebox A:link, .purplebox A:visited {
+    text-decoration: none;
+    color: yellow
+}
+
+.purplebox A:hover {
+    background-color: yellow;
+    color: #674188;
+    text-decoration: none
+}
+
+.purplebox A:link, .purplebox A:visited {
+    text-decoration: none;
+    color: yellow
+}
+
+.purplebox A:hover {
+    background-color: yellow;
+    color: #674188;
     text-decoration: none
 }
 
@@ -1008,7 +1040,7 @@ A:hover {
     padding: 4px;
     clear: both;
     text-align: center;
-    background-color: #d3dee0;
+    background-color: #C3ACD0;
     vertical-align: top
 }
 
@@ -1023,7 +1055,7 @@ A:hover {
 
 .image A IMG,
 .image A TABLE {
-    border: 4px solid #c5d1d3;
+    border: 4px solid #674188;
     position: relative;
     left: -4px;
     top: -4px
@@ -1031,7 +1063,7 @@ A:hover {
 
 .image A:hover IMG,
 .image A:hover TABLE {
-    border-color: #d3dee0;
+    border-color: #C3ACD0;
     opacity: .5
 }
 
@@ -1063,7 +1095,7 @@ html {
 
 body,
 html {
-    background-color: #f3f2ee;
+    background-color: #FFFBF5;
     font-family: "PT Serif", 'Times New Roman', Times, serif;
     color: #1f0909;
     line-height: 1.5em
@@ -1275,7 +1307,7 @@ tr:nth-child(2n) {
     vertical-align: middle;
     text-align: center;
     color: #ddd;
-    background-color: #f3f2ee
+    background-color: #FFFBF5
 }
 
 .md-task-list-item>input:checked:before,
@@ -1328,11 +1360,11 @@ tr:nth-child(2n) {
 }
 
 #write div.md-toc-tooltip {
-    background-color: #f3f2ee
+    background-color: #FFFBF5
 }
 
 #typora-sidebar {
-    background-color: #f3f2ee;
+    background-color: #FFFBF5;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .375);
     box-shadow: 0 6px 12px rgba(0, 0, 0, .375)
 }
@@ -1370,7 +1402,7 @@ tr:nth-child(2n) {
 }
 
 .modal-content {
-    background-color: #f3f2ee
+    background-color: #FFFBF5
 }
 
 .auto-suggest-container ul li {
@@ -1381,7 +1413,7 @@ tr:nth-child(2n) {
 #top-titlebar *,
 .megamenu-content,
 .megamenu-menu {
-    background: #f3f2ee;
+    background: #FFFBF5;
     color: #1f0909
 }
 
@@ -1600,8 +1632,8 @@ struct HTML {
                                           "font-variant:small-caps;" +
                                           "padding-bottom:0em;" +
                                           "text-shadow: 2px 2px 2px #aaa;"
-    private static let BOX_STYLE = "background: #c5d1d3;" +
-                                   "color: #000;" +
+    private static let BOX_STYLE = "background: #674188;" +
+                                   "color: #F7EFE5;" +
                                    "padding: 1ex 1em;" +
                                    "font-weight:bold;"
     private static let HEAD_BOX_STYLE = "text-align: center;" + BOX_STYLE
@@ -1618,7 +1650,7 @@ struct HTML {
                                         "padding: 4px 8px;" +
                                         //"-webkit-border-radius: 3px;" +
                                         "border-radius: 3px;" +
-                                        "background: #c5d1d3;"
+                                        "background: #674188;"
     
     public static func write_to_file() {
         do {
@@ -1686,7 +1718,8 @@ struct HTML {
      */
     private static func render_head_box() -> DOMTreeNode {
         let fields = zyy.getAllHeadBoxCustomFields()
-        let div = DOMTreeNode(name: "div", attr: ["style" : HEAD_BOX_STYLE])
+        let div = DOMTreeNode(name: "div", attr: ["class" : "purplebox",
+                                                  "style" : HEAD_BOX_STYLE])
         for i in fields[0].indices {
             if (fields[1][i] == "") { /* Plain text node */
                 div.add(fields[0][i])
@@ -1746,7 +1779,8 @@ struct HTML {
     private static func render_foot_box() -> DOMTreeNode {
         let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
         let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
-        let div = DOMTreeNode(name: "div", attr: ["style" : FOOT_BOX_STYLE])
+        let div = DOMTreeNode(name: "div", attr: ["class" : "purplebox",
+                                                  "style" : FOOT_BOX_STYLE])
         let i = DOMTreeNode(name: "i", attr: [:])
         let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add(author)
