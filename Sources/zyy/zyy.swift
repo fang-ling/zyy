@@ -91,9 +91,9 @@ extension zyy {
         }
     }
     
-    struct Generate : ParsableCommand {
+    struct Build : ParsableCommand {
         static var configuration = CommandConfiguration(
-            abstract: "Generate static files."
+            abstract: "Build static files."
         )
         
         func run() {
@@ -325,7 +325,7 @@ struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for building personal websites.",
         version: VERSION,
-        subcommands: [Init.self, Configure.self, Generate.self, Update.self,
+        subcommands: [Init.self, Configure.self, Build.self, Update.self,
                       SectionCommand.self,
                       PageCommand.self]
     )
