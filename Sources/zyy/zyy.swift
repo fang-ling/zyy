@@ -14,6 +14,7 @@ extension zyy {
             }
             /* Create db */
             create_database()
+            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
             print("Creating \(DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
@@ -38,7 +39,7 @@ extension zyy {
             print("What's the name of your site[\(site_name)]: ")
             site_name = readLine() ?? site_name /* May be unnecessary */
             if site_name != "" { /* User input something */
-                setSetting(field: DB_SETTING_FIELD_SITENAME,
+                set_setting(field: DB_SETTING_FIELD_SITENAME,
                            value: site_name)
             }
             /* Site url */
@@ -46,7 +47,7 @@ extension zyy {
             print("What's the URL of your site[\(site_url)]: ")
             site_url = readLine() ?? site_url /* May be unnecessary */
             if site_url != "" {
-                setSetting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
+                set_setting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
             }
             /* Head box custom fields */
             for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
@@ -55,14 +56,14 @@ extension zyy {
                       "in head box of the index page[\(c)]: ")
                 c = readLine() ?? c
                 if c != "" {
-                    setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
+                    set_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
                                value: c)
                 }
                 c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
                 print("Does it have a link[\(c)]: ")
                 c = readLine() ?? c
                 if c != "" {
-                    setSetting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
+                    set_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
                                value: c)
                 }
                 print("Need more?[y / n (Default is no)]")
@@ -77,14 +78,14 @@ extension zyy {
             print("What's your name[\(author)]: ")
             author = readLine() ?? author /* May be unnecessary */
             if author != "" {
-                setSetting(field: DB_SETTING_FIELD_AUTHOR, value: author)
+                set_setting(field: DB_SETTING_FIELD_AUTHOR, value: author)
             }
             /* Start year */
             var st_year = get_setting(field: DB_SETTING_FIELD_START_YEAR)
             print("Start year of the website[\(st_year)]: ")
             st_year = readLine() ?? st_year
             if st_year != "" {
-                setSetting(field: DB_SETTING_FIELD_START_YEAR,
+                set_setting(field: DB_SETTING_FIELD_START_YEAR,
                            value: st_year)
             }
         }
@@ -96,17 +97,22 @@ extension zyy {
         )
         
         func run() {
+            let count = Int(get_setting(field: DB_SETTING_FIELD_BUILD_COUNT),
+                            radix: 16)!
+            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT,
+                        value: String(count + 1, radix: 16))
             HTML.write_to_file()
         }
     }
     
     struct Update : ParsableCommand {
         static var configuration = CommandConfiguration(
-            abstract: "Update database file."
+            abstract: "Update database file. (debug use only)"
         )
         
         func run() {
             create_database()
+            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
         }
     }
 }
@@ -358,6 +364,7 @@ struct zyy : ParsableCommand {
                                                              "cf7u", "cf8u"]
     static let DB_SETTING_FIELD_AUTHOR            = "author"
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
+    static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
@@ -396,7 +403,7 @@ struct zyy : ParsableCommand {
     }
     
     /* Add a new setting in table, and will replace the old one if exists. */
-    private static func setSetting(field : String, value : String) {
+    private static func set_setting(field : String, value : String) {
         /* See: https://stackoverflow.com
          *      /questions/3634984/insert-if-not-exists-else-update
          * Use the `INSERT OR IGNORE` followed by an `UPDATE`.
