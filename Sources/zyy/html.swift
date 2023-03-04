@@ -1810,12 +1810,17 @@ struct HTML {
                                               "style" : FOOTER_A_STYLE])
         a.add("by \(author)")
         div.add(a)
-        div.add(" ")
         let a2 = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO,
                                                "style" : "margin-left: 4px;" +
                                                          FOOTER_A_STYLE])
         a2.add("zyy v\(zyy.VERSION)")
         div.add(a2)
+        let span = DOMTreeNode(name: "span",
+                               attr: ["style" : "margin-left: 4px;" +
+                                                FOOTER_A_STYLE])
+        let count = zyy.get_setting(field:zyy.DB_SETTING_FIELD_BUILD_COUNT)
+        span.add("Build: \(count)")
+        div.add(span)
         let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])
         p.add("© \(st_year)-\(cr_year) \(author)")
         div.add(p)
