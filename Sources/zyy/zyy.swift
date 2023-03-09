@@ -15,6 +15,8 @@ extension zyy {
             /* Create db */
             create_database()
             set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
+            set_setting(field: zyy.DB_SETTING_FIELD_INDEX_IS_UPDATE,
+                        value: "true")
             print("Creating \(DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
@@ -101,6 +103,13 @@ extension zyy {
                             radix: 16)!
             set_setting(field: DB_SETTING_FIELD_BUILD_COUNT,
                         value: String(count + 1, radix: 16))
+            if get_setting(field: DB_SETTING_FIELD_INDEX_IS_UPDATE) ==
+               "true" { /* :( */
+                set_setting(field: DB_SETTING_FIELD_INDEX_IS_UPDATE,
+                            value: "false")
+                set_setting(field: DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
+            }
             HTML.write_to_file()
         }
     }
@@ -113,6 +122,7 @@ extension zyy {
         func run() {
             create_database()
             set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
+            set_setting(field: DB_SETTING_FIELD_INDEX_IS_UPDATE, value: "true")
         }
     }
 }
@@ -137,6 +147,8 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_IS_UPDATE,
+                            value: "true")
             var sec = zyy.get_section(heading: name)
             if sec.heading == name {
                 commandLineError(msg: "Already existed:\n" + name)
@@ -163,6 +175,8 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_IS_UPDATE,
+                            value: "true")
             var sec = zyy.get_section(heading: name)
             if sec.heading != name {
                 commandLineError(msg: "No such section:\n" + name)
@@ -188,6 +202,8 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_IS_UPDATE,
+                            value: "true")
             let sec = zyy.get_section(heading: name)
             if sec.heading != name {
                 commandLineError(msg: "No such section:\n" + name)
@@ -365,6 +381,8 @@ struct zyy : ParsableCommand {
     static let DB_SETTING_FIELD_AUTHOR            = "author"
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
+    static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
+    static let DB_SETTING_FIELD_INDEX_IS_UPDATE   = "index_is_upd"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8

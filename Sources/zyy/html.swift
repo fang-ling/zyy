@@ -1658,10 +1658,12 @@ struct HTML {
             try MAIN_STYLE_CSS.write(toFile: MAIN_STYLE_CSS_FILE_NAME,
                                      atomically: true,
                                      encoding: .utf8)
+            let index_t =
+                zyy.get_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME)
             /* index.html */
-            try HTML.render_index().write(toFile: "index.html",
-                                          atomically: true,
-                                          encoding: .utf8)
+            try HTML.render_index(date: index_t).write(toFile: "index.html",
+                                                       atomically: true,
+                                                       encoding: .utf8)
             // TO-DO: add file hierarch
             for page in zyy.list_pages() {
                 try HTML.render_page(page: page)
@@ -1776,7 +1778,7 @@ struct HTML {
         return div
     }
     
-    private static func render_foot_box() -> DOMTreeNode {
+    private static func render_foot_box(date: String) -> DOMTreeNode {
         let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
         let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
         let div = DOMTreeNode(name: "div", attr: ["class" : "purplebox",
@@ -1784,10 +1786,7 @@ struct HTML {
         let i = DOMTreeNode(name: "i", attr: [:])
         let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add(author)
-        let df = DateFormatter()
-        df.locale = Locale(identifier: "en_US")
-        df.dateStyle = .long
-        i.add("Last updated \(df.string(from: Date())) by ")
+        i.add("Last updated \(date) by ")
         i.add(a)
         i.add(".")
         div.add(i)
@@ -1827,7 +1826,7 @@ struct HTML {
         return div
     }
     
-    private static func render_index_body() -> DOMTreeNode {
+    private static func render_index_body(date: String) -> DOMTreeNode {
         let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
         let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
         let typora_export_content = DOMTreeNode(name: "div",
@@ -1837,7 +1836,7 @@ struct HTML {
         write.add(render_title(title_text: sitename))
         write.add(render_head_box())
         write.add(render_stack_preview_container())
-        write.add(render_foot_box())
+        write.add(render_foot_box(date: date))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())
         let js = DOMTreeNode(name: "script", attr: ["type" : "text/javascript"])
@@ -1848,11 +1847,11 @@ struct HTML {
         return body
     }
     
-    public static func render_index() -> String {
+    public static func render_index(date: String) -> String {
         let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
         let html = DOMTreeNode(name: "html", attr: [:])
         html.add(render_head(titleText: sitename))
-        html.add(render_index_body())
+        html.add(render_index_body(date: date))
         var string = ""
         DOMTreeNode.inorder_tree_traversal(html, &string)
         return "<!DOCTYPE html>\n" + string
@@ -1871,7 +1870,7 @@ struct HTML {
         write.add(render_head_box())
         write.add(cmark_markdown_to_html_with_ext(page.content,
                                                   CMARK_OPT_DEFAULT))
-        write.add(render_foot_box())
+        write.add(render_foot_box(date: "ceshi"))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())
         typora_export_content.add(write)
