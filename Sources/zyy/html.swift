@@ -1870,7 +1870,7 @@ struct HTML {
         write.add(render_head_box())
         write.add(cmark_markdown_to_html_with_ext(page.content,
                                                   CMARK_OPT_DEFAULT))
-        write.add(render_foot_box(date: "ceshi"))
+        write.add(render_foot_box(date: page.date))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())
         typora_export_content.add(write)

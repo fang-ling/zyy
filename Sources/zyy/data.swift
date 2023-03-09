@@ -15,15 +15,6 @@ struct Section {
     var hlink : String
     var clink : String
     
-    init(heading: String, caption: String, cover: String,
-         hlink: String, clink: String) {
-        self.heading = heading
-        self.caption = caption
-        self.cover = cover
-        self.hlink = hlink
-        self.clink = clink
-    }
-    
     init() {
         heading = ""
         caption = ""
@@ -38,16 +29,12 @@ struct Page {
     var title : String
     var content : String
     var link : String
-    
-    init(title: String, content: String, link: String) {
-        self.title = title
-        self.content = content
-        self.link = link
-    }
+    var date : String
     
     init() {
         title = ""
         content = ""
         link = ""
+        date = ""
     }
 }

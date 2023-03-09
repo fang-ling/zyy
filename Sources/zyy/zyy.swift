@@ -141,12 +141,12 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
-                            value: get_current_date_string())
             var sec = zyy.get_section(heading: name)
             if sec.heading == name {
                 commandLineError(msg: "Already existed:\n" + name)
             }
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
             sec.heading = name
             print("Caption:")
             sec.caption = readLine() ?? ""
@@ -169,12 +169,12 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
-                            value: get_current_date_string())
             var sec = zyy.get_section(heading: name)
             if sec.heading != name {
                 commandLineError(msg: "No such section:\n" + name)
             }
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
             print("Caption[\(sec.caption)]:")
             sec.caption = readLine() ?? ""
             print("Cover[\(sec.cover)]:")
@@ -196,12 +196,12 @@ extension zyy.SectionCommand {
         var name : String
         
         func run() {
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
-                            value: get_current_date_string())
             let sec = zyy.get_section(heading: name)
             if sec.heading != name {
                 commandLineError(msg: "No such section:\n" + name)
             }
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
             zyy.remove_section(heading: name)
         }
     }
@@ -255,6 +255,7 @@ extension zyy.PageCommand {
             if page.title == title {
                 commandLineError(msg: "Already existed:\n" + title)
             }
+            page.date = get_current_date_string()
             page.title = title
             page.content = ""
             print("Content (End with '###***%%%'):")
@@ -285,11 +286,12 @@ extension zyy.PageCommand {
             if page.title != title {
                 commandLineError(msg: "No such section:\n" + title)
             }
+            page.date = get_current_date_string()
             print("Hint: Press enter directly to leave it as-is")
             print("Title[\(page.title)]:")
-            let title = readLine() ?? ""
-            if title != "" {
-                page.title = title
+            let _title = readLine() ?? ""
+            if _title != "" {
+                page.title = _title
             }
             do {
                 try page.content.write(toFile: ".PAGE",
@@ -308,6 +310,7 @@ extension zyy.PageCommand {
             if link != "" {
                 page.link = link
             }
+            zyy.remove_page(title: title) /* remove old title (if changed) */
             zyy.set_page(page)
         }
     }
@@ -360,6 +363,7 @@ struct zyy : ParsableCommand {
     private static let DB_PAGE_TABLE_COL_TITLE = "title"
     private static let DB_PAGE_TABLE_COL_CONTENT = "content"
     private static let DB_PAGE_TABLE_COL_LINK = "link"
+    private static let DB_PAGE_TABLE_COL_DATE = "date"
     /* Setting table field names */
     static let DB_SETTING_FIELD_SITENAME          = "sitename"
     static let DB_SETTING_FIELD_SITEURL           = "site_url"
@@ -376,7 +380,6 @@ struct zyy : ParsableCommand {
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
     static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
-    //static let DB_SETTING_FIELD_INDEX_IS_UPDATE   = "index_is_upd"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
@@ -407,7 +410,8 @@ struct zyy : ParsableCommand {
                   CREATE TABLE if not exists \(DB_PAGE_TABLE_NAME)(
                       \(DB_PAGE_TABLE_COL_TITLE) TEXT PRIMARY KEY NOT NULL,
                       \(DB_PAGE_TABLE_COL_CONTENT) TEXT,
-                      \(DB_PAGE_TABLE_COL_LINK)   TEXT
+                      \(DB_PAGE_TABLE_COL_LINK)   TEXT,
+                      \(DB_PAGE_TABLE_COL_DATE)   TEXT
                   );
                   """
         sqlite.exec(sql: SQL)
@@ -587,6 +591,9 @@ struct zyy : ParsableCommand {
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
                 if let v = val { value.link = v.from_base64()! }
             }
+            if let val = row[DB_PAGE_TABLE_COL_DATE] {
+                if let v = val { value.date = v }
+            }
         }
         sqlite.SQLite3_close()
         return value
@@ -598,11 +605,13 @@ struct zyy : ParsableCommand {
                   INSERT OR IGNORE INTO \(DB_PAGE_TABLE_NAME)
                   (\(DB_PAGE_TABLE_COL_TITLE),
                    \(DB_PAGE_TABLE_COL_CONTENT),
-                   \(DB_PAGE_TABLE_COL_LINK))
+                   \(DB_PAGE_TABLE_COL_LINK),
+                   \(DB_PAGE_TABLE_COL_DATE))
                   VALUES(
                       '\(p.title.to_base64())',
                       '\(p.content.to_base64())',
-                      '\(p.link.to_base64())'
+                      '\(p.link.to_base64())',
+                      '\(p.date)'
                   );
                   """
         let sqlite = SQLite(at: DB_FILENAME)
@@ -611,7 +620,8 @@ struct zyy : ParsableCommand {
                   UPDATE \(DB_PAGE_TABLE_NAME)
                   SET \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())',
                       \(DB_PAGE_TABLE_COL_CONTENT) = '\(p.content.to_base64())',
-                      \(DB_PAGE_TABLE_COL_LINK) = '\(p.link.to_base64())'
+                      \(DB_PAGE_TABLE_COL_LINK) = '\(p.link.to_base64())',
+                      \(DB_PAGE_TABLE_COL_DATE) = '\(p.date)'
                   WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())';
                   """
         sqlite.exec(sql: SQL)
@@ -647,6 +657,9 @@ struct zyy : ParsableCommand {
             }
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
                 if let v = val { value.link = v.from_base64()! }
+            }
+            if let val = row[DB_PAGE_TABLE_COL_DATE] {
+                if let v = val { value.date = v }
             }
             ret.append(value)
         }
