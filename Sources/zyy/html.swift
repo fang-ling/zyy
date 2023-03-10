@@ -1034,6 +1034,10 @@ A:hover {
     text-decoration: none
 }
 
+.stackpreview-container {
+    text-align: center;
+}
+
 .stackpreview {
     display: inline-block;
     margin: 3ex 1em;
@@ -1041,11 +1045,13 @@ A:hover {
     clear: both;
     text-align: center;
     background-color: #C3ACD0;
-    vertical-align: top
+    vertical-align: top;
+    width: 300px;
 }
 
 .stackpreview P {
-    margin-top: 0
+    margin-top: 0;
+    white-space: normal;
 }
 
 .stackpreview DIV+P,
@@ -1586,6 +1592,43 @@ input {
         padding: 0
     }
 }
+
+.title-text {
+    border-bottom: none;
+    font-variant: small-caps;
+    padding-bottom: 0em;
+    text-shadow: 2px 2px 2px #aaa;
+}
+
+.head-box {
+    text-align: center;
+    background: #674188;
+    color: #F7EFE5;
+    padding: 1ex 1em;
+    font-weight:bold;
+}
+
+.foot-box {
+    text-align: right;
+    background: #674188;
+    color: #F7EFE5;
+    padding: 1ex 1em;
+    font-weight:bold;
+}
+
+.footer {
+    text-align: center;
+}
+
+.footer a, .footer span {
+    margin-left: 4px;
+    color: #fbfbfb;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: #674188;
+}
 """
 
 let STACK_PREVIEW_JS =
@@ -1624,30 +1667,10 @@ let STACK_PREVIEW_JS =
 struct HTML {
     private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +                                   "Gentium+Book+Basic:400,700italic,700,400italic:latin"
     private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
-    
-    private static let TITLE_TEXT_STYLE = "border-bottom:none;" +
-                                          "font-variant:small-caps;" +
-                                          "padding-bottom:0em;" +
-                                          "text-shadow: 2px 2px 2px #aaa;"
-    private static let BOX_STYLE = "background: #674188;" +
-                                   "color: #F7EFE5;" +
-                                   "padding: 1ex 1em;" +
-                                   "font-weight:bold;"
-    private static let HEAD_BOX_STYLE = "text-align: center;" + BOX_STYLE
-    private static let FOOT_BOX_STYLE = "text-align: right;" + BOX_STYLE
     /* The height of stack preview div is determined by javascript. */
-    private static let STACK_PREVIEW_STYLE = "width: 300px;"
-    private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
-    private static let STACK_PREVIEW_CONTAINER_STYLE = "text-align:center";
-    private static let FOOTER_CLASS = "footer foot-font"
-    private static let FOOTER_STYLE = "text-align: center;"
-    private static let FOOTER_A_STYLE = "color: #fbfbfb;" +
-                                        "text-decoration: none;" +
-                                        "font-size: 13px;" +
-                                        "padding: 4px 8px;" +
-                                        //"-webkit-border-radius: 3px;" +
-                                        "border-radius: 3px;" +
-                                        "background: #674188;"
+    //private static let STACK_PREVIEW_STYLE = "width: 300px;"
+    //private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
+    //private static let STACK_PREVIEW_CONTAINER_STYLE = "text-align:center";
     
     public static func write_to_file() {
         do {
@@ -1703,7 +1726,7 @@ struct HTML {
     private static func render_title(title_text : String) -> DOMTreeNode {
         let strong = DOMTreeNode(name: "strong", attr: [:])
         strong.add(title_text)
-        let h1 = DOMTreeNode(name: "h1", attr: ["style" : TITLE_TEXT_STYLE])
+        let h1 = DOMTreeNode(name: "h1", attr: ["class" : "title-text"])
         h1.add(strong)
         let center = DOMTreeNode(name: "center", attr: [:])
         center.add(h1)
@@ -1717,8 +1740,8 @@ struct HTML {
      */
     private static func render_head_box() -> DOMTreeNode {
         let fields = zyy.getAllHeadBoxCustomFields()
-        let div = DOMTreeNode(name: "div", attr: ["class" : "purplebox",
-                                                  "style" : HEAD_BOX_STYLE])
+        let div = DOMTreeNode(name: "div",
+                              attr: ["class" : "purplebox head-box"])
         for i in fields[0].indices {
             if (fields[1][i] == "") { /* Plain text node */
                 div.add(fields[0][i])
@@ -1737,12 +1760,10 @@ struct HTML {
     private static
     func render_stack_preview(by section : Section) -> DOMTreeNode {
         let stack_preview = DOMTreeNode(name: "div",
-                                        attr: ["class" : "stackpreview",
-                                               "style" : STACK_PREVIEW_STYLE])
+                                        attr: ["class" : "stackpreview"])
         /* Image */
         let img_p = DOMTreeNode(name: "p",
-                                attr: ["class" : "image",
-                                       "style" : STACK_PREVIEW_P_STYLE])
+                                attr: ["class" : "image"])
         let img_p_a = DOMTreeNode(name: "a", attr: ["href" : section.hlink])
         img_p_a.add(DOMTreeNode(name: "img", attr: ["width" : "300",
                                                     "height" : "300",
@@ -1750,15 +1771,13 @@ struct HTML {
         img_p.add(img_p_a)
         /* Heading */
         let heading_p = DOMTreeNode(name: "p",
-                                    attr: ["class" : "heading",
-                                           "style" : STACK_PREVIEW_P_STYLE])
+                                    attr: ["class" : "heading"])
         let heading_p_a = DOMTreeNode(name: "a", attr: ["href" : section.hlink])
         heading_p_a.add(section.heading)
         heading_p.add(heading_p_a)
         /* Caption */
         let caption_p = DOMTreeNode(name: "p",
-                                    attr: ["class" : "caption",
-                                           "style" : STACK_PREVIEW_P_STYLE])
+                                    attr: ["class" : "caption"])
         caption_p.add(section.caption)
         stack_preview.add(img_p)
         stack_preview.add(heading_p)
@@ -1768,7 +1787,7 @@ struct HTML {
     
     private static func render_stack_preview_container() -> DOMTreeNode {
         let div = DOMTreeNode(name: "div",
-                              attr: ["style" : STACK_PREVIEW_CONTAINER_STYLE])
+                              attr: ["class" : "stackpreview-container"])
         for section in zyy.list_sections() {
             div.add(render_stack_preview(by: section))
         }
@@ -1778,8 +1797,8 @@ struct HTML {
     private static func render_foot_box(date: String) -> DOMTreeNode {
         let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
         let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
-        let div = DOMTreeNode(name: "div", attr: ["class" : "purplebox",
-                                                  "style" : FOOT_BOX_STYLE])
+        let div = DOMTreeNode(name: "div",
+                              attr: ["class" : "purplebox foot-box"])
         let i = DOMTreeNode(name: "i", attr: [:])
         let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add(author)
@@ -1799,21 +1818,16 @@ struct HTML {
                             .dateComponents([.year], from: Date()).year {
             cr_year = year
         }
-        let div = DOMTreeNode(name: "div", attr: ["class" : FOOTER_CLASS,
-                                                  "style" : FOOTER_STYLE])
-        div.add("Made with ❤️ ")
-        let a = DOMTreeNode(name: "a", attr: ["href" : site_url,
-                                              "style" : FOOTER_A_STYLE])
+        let div = DOMTreeNode(name: "div", attr: ["class" : "footer"])
+        div.add("Made with ❤️")
+        let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add("by \(author)")
         div.add(a)
-        let a2 = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO,
-                                               "style" : "margin-left: 4px;" +
-                                                         FOOTER_A_STYLE])
+        let a2 = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO])
         a2.add("zyy v\(zyy.VERSION)")
         div.add(a2)
         let span = DOMTreeNode(name: "span",
-                               attr: ["style" : "margin-left: 4px;" +
-                                                FOOTER_A_STYLE])
+                               attr: [:])
         let count = zyy.get_setting(field:zyy.DB_SETTING_FIELD_BUILD_COUNT)
         span.add("Build: \(count)")
         div.add(span)
