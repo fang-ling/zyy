@@ -1096,7 +1096,7 @@ html {
 body,
 html {
     background-color: #FFFBF5;
-    font-family: "PT Serif", 'Times New Roman', Times, serif;
+    font-family: 'Gentium Book Basic', 'Times New Roman', Times, serif;
     color: #1f0909;
     line-height: 1.5em
 }
@@ -1430,7 +1430,7 @@ tr:nth-child(2n) {
 .megamenu-content,
 footer,
 header {
-    font-family: "PT Serif", 'Times New Roman', Times, serif;
+    font-family: 'Gentium Book Basic', 'Times New Roman', Times, serif;
     color: #1f0909
 }
 
@@ -1622,10 +1622,7 @@ let STACK_PREVIEW_JS =
  */
 
 struct HTML {
-    private static let FONT_LINK =
-        "https://fonts.loli.net/css" +
-        "?family=PT+Serif:400,400italic,700,700italic" +
-        "&subset=latin,cyrillic-ext,cyrillic,latin-ext"
+    private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +                                   "Gentium+Book+Basic:400,700italic,700,400italic:latin"
     private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
     
     private static let TITLE_TEXT_STYLE = "border-bottom:none;" +
