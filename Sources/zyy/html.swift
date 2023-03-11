@@ -1652,6 +1652,20 @@ let STACK_PREVIEW_JS =
   }
 """
 
+let MATHJAX_JS =
+"""
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$']],
+    displayMath: [['$$', '$$']]
+  }
+};
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+"""
+
 /* Main index html:
  * <!doctype html>
  * <html>
@@ -1868,6 +1882,7 @@ struct HTML {
     }
     
     private static func render_page(page : Page) -> String {
+        var page = page
         let html = DOMTreeNode(name: "html", attr: [:])
         html.add(render_head(titleText: page.title))
         /* Body */
@@ -1878,14 +1893,39 @@ struct HTML {
         let write = DOMTreeNode(name: "div", attr: ["id" : "write"])
         write.add(render_title(title_text: page.title))
         write.add(render_head_box())
-        write.add(cmark_markdown_to_html_with_ext(page.content,
-                                                  CMARK_OPT_DEFAULT))
+        
+        /* Replace $...$ and $$...$$ with a unique string */
+        /* Should not use $ for other purpose. */
+        let latex_math = #/(\${1,2})(?:(?!\1)[\s\S])*\1/#
+        var formula_to_uuid : [String : String] = [:]
+        var uuid_to_formula : [String : String] = [:]
+        var uuid = ""
+        /* Match all formulas */
+        for m in page.content.matches(of: latex_math) {
+            uuid = UUID().uuidString
+            formula_to_uuid[String(m.output.0)] = uuid
+            uuid_to_formula[uuid] = String(m.output.0)
+        }
+        /* Replace formulas with corresponding uuid */
+        for i in formula_to_uuid {
+            page.content = page.content.replacingOccurrences(of: i.key,
+                                                             with: i.value)
+        }
+        
+        page.content = cmark_markdown_to_html_with_ext(page.content,
+                                                       CMARK_OPT_UNSAFE)
+        /* Restore formulas after change to html */
+        for i in uuid_to_formula {
+            page.content = page.content.replacingOccurrences(of: i.key,
+                                                             with: i.value)
+        }
+        write.add(page.content)
         write.add(render_foot_box(date: page.date))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())
         typora_export_content.add(write)
         body.add(typora_export_content)
-        
+        body.add(MATHJAX_JS)
         html.add(body)
         var string = ""
         DOMTreeNode.inorder_tree_traversal(html, &string)

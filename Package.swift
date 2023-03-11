@@ -1,11 +1,10 @@
-// swift-tools-version: 5.6
-// The swift-tools-version declares the minimum version of Swift required to
-// build this package.
+// swift-tools-version: 5.7
 
 import PackageDescription
 
 let package = Package(
     name: "zyy",
+    platforms: [.macOS(.v13)],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-argument-parser.git",
