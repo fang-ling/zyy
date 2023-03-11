@@ -76,7 +76,7 @@ a:hover {
     position: relative;
     white-space: normal;
     overflow-x: visible;
-    padding-top: 36px
+    /*padding-top: 36px*/
 }
 
 #write.first-line-indent p {
@@ -1079,7 +1079,7 @@ A:hover {
 
 .heading {
     font-size: x-large;
-    font-weight: 700
+    font-weight: bold;
 }
 
 .caption {
@@ -1271,10 +1271,10 @@ hr {
 }
 
 h1 {
-    line-height: 1.3em;
-    font-weight: 400;
+    /*line-height: 1.3em;*/
+    /*font-weight: 400;*/
     margin-bottom: .5em;
-    border-color: #c5c5c5
+    /*border-color: #c5c5c5*/
 }
 
 blockquote {
@@ -1598,22 +1598,23 @@ input {
     font-variant: small-caps;
     padding-bottom: 0em;
     text-shadow: 2px 2px 2px #aaa;
+    font-size: 250%;
+}
+
+.purplebox {
+    background: #674188;
+    color: #F7EFE5;
+    padding: 1ex 1em;
+    font-weight: bold;
+    font-size: large;
 }
 
 .head-box {
     text-align: center;
-    background: #674188;
-    color: #F7EFE5;
-    padding: 1ex 1em;
-    font-weight:bold;
 }
 
 .foot-box {
     text-align: right;
-    background: #674188;
-    color: #F7EFE5;
-    padding: 1ex 1em;
-    font-weight:bold;
 }
 
 .footer {
@@ -1665,12 +1666,10 @@ let STACK_PREVIEW_JS =
  */
 
 struct HTML {
-    private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +                                   "Gentium+Book+Basic:400,700italic,700,400italic:latin"
+    private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +
+                       "Gentium+Book+Basic:400,700italic,700,400italic:latin"
     private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
     /* The height of stack preview div is determined by javascript. */
-    //private static let STACK_PREVIEW_STYLE = "width: 300px;"
-    //private static let STACK_PREVIEW_P_STYLE = "white-space: normal;"
-    //private static let STACK_PREVIEW_CONTAINER_STYLE = "text-align:center";
     
     public static func write_to_file() {
         do {
