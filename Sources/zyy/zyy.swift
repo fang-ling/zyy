@@ -91,25 +91,23 @@ extension zyy {
                 set_setting(field: DB_SETTING_FIELD_START_YEAR,
                             value: st_year)
             }
-            let custom_html =
-                get_setting(field: DB_SETTING_FIELD_CUSTOM_HTML).from_base64()
-            print("Custom HTML on home page (End with '###***%%%'):")
-            print("\"\"\"")
-            print(custom_html ?? "EMPTY")
-            print("\"\"\"")
-            var delta = ""
-            var result = ""
-            while true {
-                delta = readLine()!
-                if delta == "###***%%%" {
-                    break
-                }
-                result += delta + "\n"
+            var custom_html =
+                get_setting(field: DB_SETTING_FIELD_CUSTOM_HTML).from_base64()!
+            print("Custom HTML on home page:")
+            do {
+                try custom_html.write(toFile: ".PAGE",
+                                      atomically: true,
+                                      encoding: .utf8)
+                //TO-DO: support different editors
+                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
+                custom_html = try String(contentsOfFile: ".PAGE",
+                                         encoding: .utf8)
+                try PosixProcess("/bin/rm", ".PAGE").spawn()
+            } catch {
+                commandLineError(msg: error.localizedDescription)
             }
-            if result != "" {
-                set_setting(field: DB_SETTING_FIELD_CUSTOM_HTML,
-                            value: result.to_base64())
-            }
+            set_setting(field: DB_SETTING_FIELD_CUSTOM_HTML,
+                        value: custom_html.to_base64())
         }
     }
     
@@ -193,16 +191,29 @@ extension zyy.SectionCommand {
             if sec.heading != name {
                 commandLineError(msg: "No such section:\n" + name)
             }
+            print("Hint: Press enter directly to leave it as-is")
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             print("Caption[\(sec.caption)]:")
-            sec.caption = readLine() ?? ""
+            let caption = readLine() ?? ""
+            if caption != "" {
+                sec.caption = caption
+            }
             print("Cover[\(sec.cover)]:")
-            sec.cover = readLine() ?? ""
+            let cover = readLine() ?? ""
+            if cover != "" {
+                sec.cover = cover
+            }
             print("Heading link[\(sec.hlink)]:")
-            sec.hlink = readLine() ?? ""
+            let hlink = readLine() ?? ""
+            if hlink != "" {
+                sec.hlink = hlink
+            }
             print("Cover link[\(sec.clink)]:")
-            sec.clink = readLine() ?? ""
+            let clink = readLine() ?? ""
+            if clink != "" {
+                sec.clink = clink
+            }
             zyy.set_section(sec)
         }
     }
@@ -278,14 +289,18 @@ extension zyy.PageCommand {
             page.date = get_current_date_string()
             page.title = title
             page.content = ""
-            print("Content (End with '###***%%%'):")
-            var delta = ""
-            while true {
-                delta = readLine()!
-                if delta == "###***%%%" {
-                    break
-                }
-                page.content += delta + "\n"
+            print("Content:")
+            do {
+                try page.content.write(toFile: ".PAGE",
+                                       atomically: true,
+                                       encoding: .utf8)
+                //TO-DO: support different editors
+                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
+                page.content = try String(contentsOfFile: ".PAGE",
+                                          encoding: .utf8)
+                try PosixProcess("/bin/rm", ".PAGE").spawn()
+            } catch {
+                commandLineError(msg: error.localizedDescription)
             }
             print("Website link (relative):")
             page.link = readLine() ?? ""
@@ -497,7 +512,7 @@ struct zyy : ParsableCommand {
                    \(DB_SECTION_TABLE_COL_HLINK),
                    \(DB_SECTION_TABLE_COL_CLINK))
                   VALUES(
-                      '\(s.heading)', '\(s.caption)',
+                      '\(s.heading)', '\(s.caption.to_base64())',
                       '\(s.cover)', '\(s.hlink)', '\(s.clink)'
                   );
                   """
@@ -506,7 +521,7 @@ struct zyy : ParsableCommand {
             SQL = """
                   UPDATE \(DB_SECTION_TABLE_NAME)
                   SET \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)',
-                      \(DB_SECTION_TABLE_COL_CAPTION) = '\(s.caption)',
+                      \(DB_SECTION_TABLE_COL_CAPTION) = '\(s.caption.to_base64())',
                       \(DB_SECTION_TABLE_COL_COVER) = '\(s.cover)',
                       \(DB_SECTION_TABLE_COL_HLINK) = '\(s.hlink)',
                       \(DB_SECTION_TABLE_COL_CLINK) = '\(s.clink)'
@@ -533,7 +548,7 @@ struct zyy : ParsableCommand {
                 if let v = val { value.heading = v }
             }
             if let val = row[DB_SECTION_TABLE_COL_CAPTION] {
-                if let v = val { value.caption = v }
+                if let v = val { value.caption = v.from_base64()! }
             }
             if let val = row[DB_SECTION_TABLE_COL_COVER] {
                 if let v = val { value.cover = v }
@@ -575,7 +590,7 @@ struct zyy : ParsableCommand {
                 if let v = val { value.heading = v }
             }
             if let val = i[DB_SECTION_TABLE_COL_CAPTION] {
-                if let v = val { value.caption = v }
+                if let v = val { value.caption = v.from_base64()! }
             }
             if let val = i[DB_SECTION_TABLE_COL_COVER] {
                 if let v = val { value.cover = v }
