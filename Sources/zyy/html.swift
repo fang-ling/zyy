@@ -1056,7 +1056,7 @@ A:hover {
 
 .stackpreview DIV+P,
 .stackpreview P+P {
-    margin-bottom: .5em
+    margin-bottom: 0.5em
 }
 
 .image A IMG,
@@ -1601,7 +1601,7 @@ input {
     font-size: 250%;
 }
 
-.purplebox {
+.purplebox, .section {
     background: #674188;
     color: #F7EFE5;
     padding: 1ex 1em;
@@ -1609,11 +1609,18 @@ input {
     font-size: large;
 }
 
+.section {
+    text-transform: uppercase;
+    padding: 0.5ex 0.5em;
+    font-size: 1.5em;
+}
+
 .head-box {
     text-align: center;
 }
 
 .foot-box {
+    margin-top: 0.5em;
     text-align: right;
 }
 
@@ -1630,6 +1637,11 @@ input {
     border-radius: 3px;
     background: #674188;
 }
+
+#reset-all {
+    background-color: unset;
+}
+
 """
 
 let STACK_PREVIEW_JS =
@@ -1860,6 +1872,8 @@ struct HTML {
         write.add(render_title(title_text: sitename))
         write.add(render_head_box())
         write.add(render_stack_preview_container())
+        write.add(zyy.get_setting(field:
+                               zyy.DB_SETTING_FIELD_CUSTOM_HTML).from_base64()!)
         write.add(render_foot_box(date: date))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())

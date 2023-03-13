@@ -28,6 +28,7 @@ extension zyy {
             abstract: "Set up the website."
         )
         
+        /* This looks terrible :( */
         func run() {
             /* Interactive settings */
             /* Check if database exists */
@@ -88,7 +89,26 @@ extension zyy {
             st_year = readLine() ?? st_year
             if st_year != "" {
                 set_setting(field: DB_SETTING_FIELD_START_YEAR,
-                           value: st_year)
+                            value: st_year)
+            }
+            let custom_html =
+                get_setting(field: DB_SETTING_FIELD_CUSTOM_HTML).from_base64()
+            print("Custom HTML on home page (End with '###***%%%'):")
+            print("\"\"\"")
+            print(custom_html ?? "EMPTY")
+            print("\"\"\"")
+            var delta = ""
+            var result = ""
+            while true {
+                delta = readLine()!
+                if delta == "###***%%%" {
+                    break
+                }
+                result += delta + "\n"
+            }
+            if result != "" {
+                set_setting(field: DB_SETTING_FIELD_CUSTOM_HTML,
+                            value: result.to_base64())
             }
         }
     }
@@ -344,7 +364,7 @@ struct zyy : ParsableCommand {
     )
     
     /* Command Line related String constants */
-    public static let VERSION = "0.0.3"
+    public static let VERSION = "0.0.3-alpha"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
@@ -380,6 +400,7 @@ struct zyy : ParsableCommand {
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
     static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
+    static let DB_SETTING_FIELD_CUSTOM_HTML       = "custom_html"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
