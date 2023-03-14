@@ -76,7 +76,7 @@ a:hover {
     position: relative;
     white-space: normal;
     overflow-x: visible;
-    /*padding-top: 36px*/
+    max-width: 70em;
 }
 
 #write.first-line-indent p {
