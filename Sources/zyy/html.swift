@@ -1801,9 +1801,10 @@ struct HTML {
         heading_p_a.add(section.heading)
         heading_p.add(heading_p_a)
         /* Caption */
-        let caption_p = DOMTreeNode(name: "p",
+        let caption_p = DOMTreeNode(name: "div",
                                     attr: ["class" : "caption"])
-        caption_p.add(section.caption)
+        caption_p.add(cmark_markdown_to_html_with_ext(section.caption,
+                                                      CMARK_OPT_UNSAFE))
         stack_preview.add(img_p)
         stack_preview.add(heading_p)
         stack_preview.add(caption_p)
