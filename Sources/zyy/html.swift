@@ -1917,10 +1917,18 @@ struct HTML {
         var uuid_to_formula : [String : String] = [:]
         var uuid = ""
         /* Match all formulas */
+        var formula = ""
         for m in page.content.matches(of: latex_math) {
             uuid = UUID().uuidString
-            formula_to_uuid[String(m.output.0)] = uuid
-            uuid_to_formula[uuid] = String(m.output.0)
+            formula = String(m.output.0)
+            /* Replace < with &lt; and > with &gt; It's required and MathJax
+             * render this correctly.
+             */
+            formula = formula.replacingOccurrences(of: "<", with: "&lt;")
+            formula = formula.replacingOccurrences(of: ">", with: "&gt;")
+            
+            formula_to_uuid[formula] = uuid
+            uuid_to_formula[uuid] = formula
         }
         /* Replace formulas with corresponding uuid */
         for i in formula_to_uuid {
