@@ -1872,8 +1872,9 @@ struct HTML {
         write.add(render_title(title_text: sitename))
         write.add(render_head_box())
         write.add(render_stack_preview_container())
-        write.add(zyy.get_setting(field:
-                               zyy.DB_SETTING_FIELD_CUSTOM_HTML).from_base64()!)
+        let c_md = zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_MARKDOWN)
+                    .from_base64()!
+        write.add(cmark_markdown_to_html_with_ext(c_md, CMARK_OPT_UNSAFE))
         write.add(render_foot_box(date: date))
         write.add(DOMTreeNode(name: "br", attr: [:]))
         write.add(render_footer())

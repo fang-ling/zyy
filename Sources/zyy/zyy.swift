@@ -92,8 +92,8 @@ extension zyy {
                             value: st_year)
             }
             var custom_html =
-                get_setting(field: DB_SETTING_FIELD_CUSTOM_HTML).from_base64()!
-            print("Custom HTML on home page:")
+                get_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN).from_base64()!
+            print("Custom MARKDOWN on home page:")
             do {
                 try custom_html.write(toFile: ".PAGE",
                                       atomically: true,
@@ -106,7 +106,7 @@ extension zyy {
             } catch {
                 commandLineError(msg: error.localizedDescription)
             }
-            set_setting(field: DB_SETTING_FIELD_CUSTOM_HTML,
+            set_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN,
                         value: custom_html.to_base64())
         }
     }
@@ -379,7 +379,7 @@ struct zyy : ParsableCommand {
     )
     
     /* Command Line related String constants */
-    public static let VERSION = "0.0.3-alpha"
+    public static let VERSION = "0.0.3-beta"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
@@ -415,7 +415,7 @@ struct zyy : ParsableCommand {
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
     static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
     static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
-    static let DB_SETTING_FIELD_CUSTOM_HTML       = "custom_html"
+    static let DB_SETTING_FIELD_CUSTOM_MARKDOWN   = "custom_html"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8
