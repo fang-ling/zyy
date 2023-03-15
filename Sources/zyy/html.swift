@@ -19,7 +19,8 @@ html {
     --text-color: #333333;
     --select-text-bg-color: #B5D6FC;
     --select-text-font-color: auto;
-    --monospace: "Lucida Console", Consolas, "Courier", monospace;
+    --monospace: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    --color-neutral-muted: rgba(175, 184, 193, 0.2);
     --title-bar-height: 20px;
     --active-file-bg-color: #dadada;
     --active-file-bg-color: rgba(32, 43, 51, 0.63);
@@ -203,7 +204,7 @@ h6 {
     font-weight: 700
 }
 
-.md-math-block,
+/*.md-math-block,
 .md-rawblock,
 h1,
 h2,
@@ -214,7 +215,7 @@ h6,
 p {
     margin-top: 1rem;
     margin-bottom: 1rem
-}
+}*/
 
 .hidden {
     display: none
@@ -669,7 +670,10 @@ code,
 pre,
 samp,
 tt {
-    font-family: var(--monospace)
+    font-family: var(--monospace);
+    padding: .2em .4em;
+    background-color: var(--color-neutral-muted);
+    border-radius: 6px;
 }
 
 kbd {
@@ -689,12 +693,6 @@ kbd {
     color: #a27f03;
     opacity: .6;
     font-family: var(--monospace)
-}
-
-code {
-    text-align: left;
-    padding-left: 2px;
-    padding-right: 2px
 }
 
 a.md-print-anchor {
@@ -1158,7 +1156,7 @@ h6 {
     font-size: 1em
 }
 
-.md-fences,
+/*.md-fences,
 blockquote,
 h1,
 h2,
@@ -1168,7 +1166,7 @@ h5,
 h6,
 p {
     margin-bottom: 1.5em
-}
+}*/
 
 blockquote {
     font-style: italic;
@@ -1211,10 +1209,10 @@ td {
     padding: .25em .25em .25em .4em
 }
 
-.md-fences,
+/*.md-fences,
 code {
     background-color: #dadada
-}
+}*/
 
 .md-fences {
     margin-left: 2em;
@@ -1226,8 +1224,8 @@ code {
 code,
 pre,
 tt {
-    font-size: .875em;
-    line-height: 1.714285em
+    font-size: 85%;
+    /*line-height: 1.714285em*/
 }
 
 h3+ol,
