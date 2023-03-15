@@ -36,6 +36,8 @@ extension zyy {
                 generalError(msg: "Database file: \(DB_FILENAME): " +
                              "No such file or directory")
             }
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
             print("Hint: Press enter directly to leave it as-is")
             /* Website name*/
             var site_name = get_setting(field: DB_SETTING_FIELD_SITENAME)
