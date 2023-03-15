@@ -146,12 +146,52 @@ extension zyy {
         static var configuration = CommandConfiguration(
             commandName: "section",
             abstract: "Create, delete and work on sections.",
-            subcommands: [Add.self, Edit.self, Remove.self, List.self]
+            subcommands: [Add.self, Edit.self,
+                          Remove.self, Swap.self, List.self]
         )
     }
 }
 
 extension zyy.SectionCommand {
+    struct Swap : ParsableCommand {
+        static var configuration = CommandConfiguration(
+            abstract: "Exchange two sections."
+        )
+        
+        @Argument(help: "The name of the first section to swap.")
+        var name1 : String
+        @Argument(help: "The name of the second section to swap.")
+        var name2 : String
+        
+        func run() {
+            /* Check existence */
+            let sec1 = zyy.get_section(heading: name1)
+            if sec1.heading != name1 {
+                commandLineError(msg: "No such section:\n" + name1)
+            }
+            let sec2 = zyy.get_section(heading: name2)
+            if sec2.heading != name2 {
+                commandLineError(msg: "No such section:\n" + name2)
+            }
+            /* Update index modified date */
+            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+                            value: get_current_date_string())
+            /* There should be a SQL way to do this. */
+            var sections = zyy.list_sections()
+            for i in sections { /* Remove all old sections */
+                zyy.remove_section(heading: i.heading)
+            }
+            
+            let i = sections.firstIndex(where: {$0.heading == sec1.heading})!
+            let j = sections.firstIndex(where: {$0.heading == sec2.heading})!
+            sections.swapAt(i, j)
+            
+            for i in sections {
+                zyy.set_section(i)
+            }
+        }
+    }
+    
     struct Add : ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "Add a section with specific name."
