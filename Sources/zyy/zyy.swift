@@ -97,19 +97,37 @@ extension zyy {
                 get_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN).from_base64()!
             print("Custom MARKDOWN on home page:")
             do {
-                try custom_html.write(toFile: ".PAGE",
+                try custom_html.write(toFile: TEMP_FILENAME,
                                       atomically: true,
                                       encoding: .utf8)
                 //TO-DO: support different editors
-                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
-                custom_html = try String(contentsOfFile: ".PAGE",
+                try PosixProcess("/usr/local/bin/emacs", TEMP_FILENAME).spawn()
+                custom_html = try String(contentsOfFile: TEMP_FILENAME,
                                          encoding: .utf8)
-                try PosixProcess("/bin/rm", ".PAGE").spawn()
+                try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
             } catch {
                 commandLineError(msg: error.localizedDescription)
             }
             set_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN,
                         value: custom_html.to_base64())
+            
+            var custom_head =
+                get_setting(field: DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!
+            print("Custom HTML in <head>...</head>:")
+            do {
+                try custom_head.write(toFile: TEMP_FILENAME,
+                                      atomically: true,
+                                      encoding: .utf8)
+                //TO-DO: support different editors
+                try PosixProcess("/usr/local/bin/emacs", TEMP_FILENAME).spawn()
+                custom_head = try String(contentsOfFile: TEMP_FILENAME,
+                                         encoding: .utf8)
+                try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
+            } catch {
+                commandLineError(msg: error.localizedDescription)
+            }
+            set_setting(field: DB_SETTING_FIELD_CUSTOM_HEAD,
+                        value: custom_head.to_base64())
         }
     }
     
@@ -333,14 +351,15 @@ extension zyy.PageCommand {
             page.content = ""
             print("Content:")
             do {
-                try page.content.write(toFile: ".PAGE",
+                try page.content.write(toFile: zyy.TEMP_FILENAME,
                                        atomically: true,
                                        encoding: .utf8)
                 //TO-DO: support different editors
-                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
-                page.content = try String(contentsOfFile: ".PAGE",
+                try PosixProcess("/usr/local/bin/emacs",
+                                 zyy.TEMP_FILENAME).spawn()
+                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
                                           encoding: .utf8)
-                try PosixProcess("/bin/rm", ".PAGE").spawn()
+                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
             } catch {
                 commandLineError(msg: error.localizedDescription)
             }
@@ -371,14 +390,15 @@ extension zyy.PageCommand {
                 page.title = _title
             }
             do {
-                try page.content.write(toFile: ".PAGE",
+                try page.content.write(toFile: zyy.TEMP_FILENAME,
                                        atomically: true,
                                        encoding: .utf8)
                 //TO-DO: support different editors
-                try PosixProcess("/usr/local/bin/emacs", ".PAGE").spawn()
-                page.content = try String(contentsOfFile: ".PAGE",
+                try PosixProcess("/usr/local/bin/emacs",
+                                 zyy.TEMP_FILENAME).spawn()
+                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
                                           encoding: .utf8)
-                try PosixProcess("/bin/rm", ".PAGE").spawn()
+                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
             } catch {
                 commandLineError(msg: error.localizedDescription)
             }
@@ -421,7 +441,7 @@ struct zyy : ParsableCommand {
     )
     
     /* Command Line related String constants */
-    public static let VERSION = "0.0.3-beta.2"
+    public static let VERSION = "0.0.3-beta.3"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"
@@ -458,6 +478,9 @@ struct zyy : ParsableCommand {
     static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
     static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
     static let DB_SETTING_FIELD_CUSTOM_MARKDOWN   = "custom_html"
+    static let DB_SETTING_FIELD_CUSTOM_HEAD       = "custom_head"
+    /* Miscs */
+    static let TEMP_FILENAME = ".zyy_temp"
     
     /* Maximum custom fields in head box */
     private static let SITE_MAX_CUSTOM_FIELDS = 8

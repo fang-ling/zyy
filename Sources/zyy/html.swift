@@ -1736,6 +1736,7 @@ struct HTML {
         let title = DOMTreeNode(name: "title", attr: [:])
         title.add(titleText)
         head.add(title)
+        head.add(zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!)
         return head
     }
     
@@ -1887,7 +1888,7 @@ struct HTML {
     
     public static func render_index(date: String) -> String {
         let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
-        let html = DOMTreeNode(name: "html", attr: [:])
+        let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
         html.add(render_head(titleText: sitename))
         html.add(render_index_body(date: date))
         var string = ""
@@ -1897,7 +1898,7 @@ struct HTML {
     
     private static func render_page(page : Page) -> String {
         var page = page
-        let html = DOMTreeNode(name: "html", attr: [:])
+        let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
         html.add(render_head(titleText: page.title))
         /* Body */
         let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
