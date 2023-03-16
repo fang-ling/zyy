@@ -1912,37 +1912,47 @@ struct HTML {
         /* Should not use $ for other purpose. */
         let latex_math = #/(\${1,2})(?:(?!\1)[\s\S])*\1/#
         var formula_to_uuid : [String : String] = [:]
-        var uuid_to_formula : [String : String] = [:]
-        var uuid = ""
+        var uuid_to_origin_formula : [String : String] = [:]
         /* Match all formulas */
+        var uuid = ""
         var formula = ""
+        var origin_formula = ""
         var has_math = false
         for m in page.content.matches(of: latex_math) {
             has_math = true
             
             uuid = UUID().uuidString
             formula = String(m.output.0)
+            origin_formula = formula
             /* Replace < with &lt; and > with &gt; It's required and MathJax
              * render this correctly.
              */
             formula = formula.replacingOccurrences(of: "<", with: "&lt;")
             formula = formula.replacingOccurrences(of: ">", with: "&gt;")
+            if origin_formula != formula {
+                uuid_to_origin_formula[uuid] = origin_formula
+            }
             
             formula_to_uuid[formula] = uuid
-            uuid_to_formula[uuid] = formula
         }
         /* Replace formulas with corresponding uuid */
+        var o_formula : String? = ""
         for i in formula_to_uuid {
-            page.content = page.content.replacingOccurrences(of: i.key,
-                                                             with: i.value)
+            o_formula = uuid_to_origin_formula[i.value]
+            if o_formula == nil { /* not change */
+                page.content = page.content.replacingOccurrences(of: i.key,
+                                                                 with: i.value)
+            } else {
+                page.content = page.content.replacingOccurrences(of: o_formula!,
+                                                                 with: i.value)
+            }
         }
-        
         page.content = cmark_markdown_to_html_with_ext(page.content,
                                                        CMARK_OPT_UNSAFE)
         /* Restore formulas after change to html */
-        for i in uuid_to_formula {
-            page.content = page.content.replacingOccurrences(of: i.key,
-                                                             with: i.value)
+        for i in formula_to_uuid {
+            page.content = page.content.replacingOccurrences(of: i.value,
+                                                             with: i.key)
         }
         write.add(page.content)
         write.add(render_foot_box(date: page.date))
