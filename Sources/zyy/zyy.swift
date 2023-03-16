@@ -10,7 +10,7 @@ extension zyy {
         func run() {
             /* Prevent user from calling `init` twice */
             if FileManager.default.fileExists(atPath: DB_FILENAME) {
-                generalError(msg: "Database file: \(DB_FILENAME) existed.")
+                error("Database file: \(DB_FILENAME) existed.")
             }
             /* Create db */
             create_database()
@@ -33,8 +33,8 @@ extension zyy {
             /* Interactive settings */
             /* Check if database exists */
             if !FileManager.default.fileExists(atPath: DB_FILENAME) {
-                generalError(msg: "Database file: \(DB_FILENAME): " +
-                             "No such file or directory")
+                error("Database file: \(DB_FILENAME): " +
+                      "No such file or directory")
             }
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
@@ -106,7 +106,7 @@ extension zyy {
                                          encoding: .utf8)
                 try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
             } catch {
-                commandLineError(msg: error.localizedDescription)
+                command_line_error(error.localizedDescription)
             }
             set_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN,
                         value: custom_html.to_base64())
@@ -124,7 +124,7 @@ extension zyy {
                                          encoding: .utf8)
                 try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
             } catch {
-                commandLineError(msg: error.localizedDescription)
+                command_line_error(error.localizedDescription)
             }
             set_setting(field: DB_SETTING_FIELD_CUSTOM_HEAD,
                         value: custom_head.to_base64())
@@ -185,11 +185,11 @@ extension zyy.SectionCommand {
             /* Check existence */
             let sec1 = zyy.get_section(heading: name1)
             if sec1.heading != name1 {
-                commandLineError(msg: "No such section:\n" + name1)
+                command_line_error("No such section:\n" + name1)
             }
             let sec2 = zyy.get_section(heading: name2)
             if sec2.heading != name2 {
-                commandLineError(msg: "No such section:\n" + name2)
+                command_line_error("No such section:\n" + name2)
             }
             /* Update index modified date */
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
@@ -221,7 +221,7 @@ extension zyy.SectionCommand {
         func run() {
             var sec = zyy.get_section(heading: name)
             if sec.heading == name {
-                commandLineError(msg: "Already existed:\n" + name)
+                command_line_error("Already existed:\n" + name)
             }
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
@@ -249,7 +249,7 @@ extension zyy.SectionCommand {
         func run() {
             var sec = zyy.get_section(heading: name)
             if sec.heading != name {
-                commandLineError(msg: "No such section:\n" + name)
+                command_line_error("No such section:\n" + name)
             }
             print("Hint: Press enter directly to leave it as-is")
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
@@ -289,7 +289,7 @@ extension zyy.SectionCommand {
         func run() {
             let sec = zyy.get_section(heading: name)
             if sec.heading != name {
-                commandLineError(msg: "No such section:\n" + name)
+                command_line_error("No such section:\n" + name)
             }
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
@@ -344,7 +344,7 @@ extension zyy.PageCommand {
         func run() {
             var page = zyy.get_page(by: title)
             if page.title == title {
-                commandLineError(msg: "Already existed:\n" + title)
+                command_line_error("Already existed:\n" + title)
             }
             page.date = get_current_date_string()
             page.title = title
@@ -361,7 +361,7 @@ extension zyy.PageCommand {
                                           encoding: .utf8)
                 try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
             } catch {
-                commandLineError(msg: error.localizedDescription)
+                command_line_error(error.localizedDescription)
             }
             print("Website link (relative):")
             page.link = readLine() ?? ""
@@ -380,7 +380,7 @@ extension zyy.PageCommand {
         func run() {
             var page = zyy.get_page(by: title)
             if page.title != title {
-                commandLineError(msg: "No such section:\n" + title)
+                command_line_error("No such section:\n" + title)
             }
             page.date = get_current_date_string()
             print("Hint: Press enter directly to leave it as-is")
@@ -400,7 +400,7 @@ extension zyy.PageCommand {
                                           encoding: .utf8)
                 try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
             } catch {
-                commandLineError(msg: error.localizedDescription)
+                command_line_error(error.localizedDescription)
             }
             print("Website link (relative)[\(page.link)]:")
             let link = readLine() ?? ""
@@ -423,7 +423,7 @@ extension zyy.PageCommand {
         func run() {
             let page = zyy.get_page(by: title)
             if page.title != title {
-                commandLineError(msg: "No such page:\n" + title)
+                command_line_error("No such page:\n" + title)
             }
             zyy.remove_page(title: title)
         }
@@ -441,7 +441,7 @@ struct zyy : ParsableCommand {
     )
     
     /* Command Line related String constants */
-    public static let VERSION = "0.0.3-beta.3"
+    public static let VERSION = "0.0.3-beta.4"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
     /* Databse filename(not user changeable) */
     private static let DB_FILENAME = "zyy.db"

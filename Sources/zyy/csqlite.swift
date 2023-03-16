@@ -18,8 +18,8 @@ struct SQLite {
     init(at path : String) {
         db = nil
         if sqlite3_open(path, &db) != SQLITE_OK {
-            databaseError(msg: "Can't open database: " +
-                               "\(String(cString: sqlite3_errmsg(db)!))")
+            database_error("Can't open database: " +
+                           "\(String(cString: sqlite3_errmsg(db)!))")
         }
     }
     
@@ -29,7 +29,7 @@ struct SQLite {
     private func prepare(sql : String) -> SQLite3StmtPointer? {
         var stmt : SQLite3StmtPointer? = nil
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            databaseError(msg: "sqlite3_prepare_v2 failed:\n    \(sql)")
+            database_error("sqlite3_prepare_v2 failed:\n\(sql)")
             return nil
         }
         return stmt

@@ -11,21 +11,15 @@
 import Foundation
 
 /* Command Line releated error */
-func commandLineError(msg : String) {
-    print("Command Line Error:")
-    print(msg)
-    exit(-1)
+func command_line_error(_ msg : String) {
+    fatalError("Command Line Error:\n" + msg)
 }
 
 /* Database releated error */
-func databaseError(msg: String) {
-    print("Database Error:")
-    print(msg)
-    exit(-1)
+func database_error(_ msg: String) {
+    fatalError("Database Error:\n" + msg)
 }
 
-func generalError(msg : String) {
-    print("Error:")
-    print(msg)
-    exit(-1)
+func error(_ msg : String) {
+    fatalError("Error:\n" + msg)
 }
