@@ -30,12 +30,13 @@ html {
     --control-text-color: #444;
     --rawblock-edit-panel-bd: #e5e5e5;
     --select-text-bg-color: rgba(32, 43, 51, 0.63);
-    --select-text-font-color: white
+    --select-text-font-color: white;
+    --text-font: 'Gentium Book Basic', system-ui, serif;
 }
 
-.mac-os-11 {
+/*.mac-os-11 {
     --title-bar-height: 28px
-}
+}*/
 
 body {
     margin: 0;
@@ -1092,15 +1093,15 @@ pre {
 html {
     background-color: var(--bg-color);
     color: var(--text-color);
-    -webkit-font-smoothing: antialiased;
+    /*-webkit-font-smoothing: antialiased;*/
     font-size: 16px;
-    -webkit-font-smoothing: antialiased
+    /*-webkit-font-smoothing: antialiased*/
 }
 
 body,
 html {
     background-color: #FFFBF5;
-    font-family: 'Gentium Book Basic', 'Times New Roman', Times, serif;
+    font-family: var(--text-font);
     color: #1f0909;
     line-height: 1.5em
 }
@@ -1128,18 +1129,18 @@ q:before {
     content: none
 }
 
-h1 {
+/*h1 {
     font-size: 1.875em;
     margin-top: 2em;
     border-bottom: 1px solid;
     padding-bottom: .8125em
-}
+}*/
 
 h2,
 h3 {
     font-size: 1.3125em;
     line-height: 1.15;
-    margin-top: 2.285714em
+    /*margin-top: 2.285714em*/
 }
 
 h3 {
@@ -1269,10 +1270,7 @@ hr {
 }
 
 h1 {
-    /*line-height: 1.3em;*/
-    /*font-weight: 400;*/
     margin-bottom: .5em;
-    /*border-color: #c5c5c5*/
 }
 
 blockquote {
@@ -1597,6 +1595,7 @@ input {
     padding-bottom: 0em;
     text-shadow: 2px 2px 2px #aaa;
     font-size: 250%;
+    text-align: center;
 }
 
 .purplebox, .section {
@@ -1743,11 +1742,9 @@ struct HTML {
     }
     
     /*
-     *  <center>
-     *      <h1>
-     *          <strong>...</strong>
-     *      </h1>
-     *  </center>
+     *  <h1>
+     *      <strong>...</strong>
+     *  </h1>
      */
     private static func render_title(title_text : String) -> DOMTreeNode {
         let strong = DOMTreeNode(name: "strong", attr: [:])
