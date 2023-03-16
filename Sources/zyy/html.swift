@@ -1736,7 +1736,9 @@ struct HTML {
         let title = DOMTreeNode(name: "title", attr: [:])
         title.add(titleText)
         head.add(title)
-        head.add(zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!)
+        let custom_head =
+        zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!
+        head.add(custom_head)
         return head
     }
     
@@ -1917,7 +1919,10 @@ struct HTML {
         var uuid = ""
         /* Match all formulas */
         var formula = ""
+        var has_math = false
         for m in page.content.matches(of: latex_math) {
+            has_math = true
+            
             uuid = UUID().uuidString
             formula = String(m.output.0)
             /* Replace < with &lt; and > with &gt; It's required and MathJax
@@ -1948,7 +1953,9 @@ struct HTML {
         write.add(render_footer())
         typora_export_content.add(write)
         body.add(typora_export_content)
-        body.add(MATHJAX_JS)
+        if has_math {
+            body.add(MATHJAX_JS)
+        }
         html.add(body)
         var string = ""
         DOMTreeNode.inorder_tree_traversal(html, &string)
