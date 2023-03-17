@@ -1898,7 +1898,6 @@ struct HTML {
     private static func render_page(page : Page) -> String {
         var page = page
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
-        html.add(render_head(titleText: page.title))
         /* Body */
         let body = DOMTreeNode(name: "body", attr: ["class" : "typora-export"])
         let typora_export_content = DOMTreeNode(name: "div",
@@ -1960,9 +1959,12 @@ struct HTML {
         write.add(render_footer())
         typora_export_content.add(write)
         body.add(typora_export_content)
+        
+        let head = render_head(titleText: page.title)
         if has_math {
-            body.add(MATHJAX_JS)
+            head.add(MATHJAX_JS)
         }
+        html.add(head)
         html.add(body)
         var string = ""
         DOMTreeNode.inorder_tree_traversal(html, &string)
