@@ -1179,7 +1179,7 @@ blockquote {
 ol,
 ul {
     list-style: none;
-    margin: 0 0 1.5em 1.5em
+    /*margin: 0 0 1.5em 1.5em*/
 }
 
 .md-after,
