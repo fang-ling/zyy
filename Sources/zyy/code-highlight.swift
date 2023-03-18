@@ -2086,10 +2086,7 @@ struct Code {
         let gist_file = DOMTreeNode(name: "div", attr: ["class" : "gist-file",
                                                         "translate" : "no"])
         let gist_data = DOMTreeNode(name: "div", attr: ["class" : "gist-data"])
-        let gist_f_container
-            = DOMTreeNode(name: "div",
-                          attr: ["class" : "js-gist-file-update-container " +
-                                           "js-task-list-container file-box"])
+        let gist_file_box = DOMTreeNode(name: "div", attr: [:])
         let file = DOMTreeNode(name: "div", attr: ["class" : "file my-2"])
         let box_body = DOMTreeNode(name: "div",
                                    attr: ["itemprop" : "text",
@@ -2134,12 +2131,12 @@ struct Code {
         blob.add(table)
         box_body.add(blob)
         file.add(box_body)
-        gist_f_container.add(file)
-        gist_data.add(gist_f_container)
+        gist_file_box.add(file)
+        gist_data.add(gist_file_box)
         gist_file.add(gist_data)
         
         let gist_meta = DOMTreeNode(name: "div", attr: ["class" : "gist-meta"])
-        gist_meta.add("Rendered with ♥ by ")
+        gist_meta.add("Rendered with ♡ by ")
         let a = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO])
         a.add("zyy")
         gist_meta.add(a)
