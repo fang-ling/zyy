@@ -79,4 +79,28 @@ class DOMTreeNode {
             string += "</\(node.name)>" + "\n"
         }
     }
+    
+    public static func inorder_tree_traversal_code(_ node : DOMTreeNode,
+                                                   _ string : inout String) {
+        if (node.text != "") { /* Pure text node have zero child. */
+            string += node.text
+            return
+        }
+        string += "<\(node.name)"
+        for i in node.attr {
+            string += " \(i.key)='\(i.value)'"
+        }
+        //if node.name == "td" {
+            string += ">"
+        //} else {
+            //string += ">" + "\n"
+        //}
+        for i in node.child {
+            inorder_tree_traversal_code(i, &string)
+        }
+        if (!node.isVoidElement) {
+            //print("</\(node.name)>")
+            string += "</\(node.name)>"/* + "\n"*/
+        }
+    }
 }

@@ -1691,13 +1691,18 @@ MathJax = {
 struct HTML {
     private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +
                        "Gentium+Book+Basic:400,700italic,700,400italic:latin"
-    private static let MAIN_STYLE_CSS_FILE_NAME = "style.css"
+    private static let MAIN_STYLE_CSS_FILENAME = "style.css"
+    private static let CHL_CSS_FILENAME = "gist-embed.css"
     /* The height of stack preview div is determined by javascript. */
     
     public static func write_to_file() {
         do {
+            /* gist-embed.css */
+            try CHL_CSS.write(toFile: CHL_CSS_FILENAME,
+                              atomically: true,
+                              encoding: .utf8)
             /* style.css */
-            try MAIN_STYLE_CSS.write(toFile: MAIN_STYLE_CSS_FILE_NAME,
+            try MAIN_STYLE_CSS.write(toFile: MAIN_STYLE_CSS_FILENAME,
                                      atomically: true,
                                      encoding: .utf8)
             let index_t =
@@ -1729,7 +1734,7 @@ struct HTML {
                                                   "rel" : "stylesheet",
                                                   "type" : "text/css"]))
         head.add(DOMTreeNode(name: "link",
-                             attr: ["href" : MAIN_STYLE_CSS_FILE_NAME,
+                             attr: ["href" : MAIN_STYLE_CSS_FILENAME,
                                     "rel" : "stylesheet",
                                     "type" : "text/css"]))
         let title = DOMTreeNode(name: "title", attr: [:])
@@ -1946,6 +1951,36 @@ struct HTML {
                                                                  with: i.value)
             }
         }
+        
+        /* Replace code block */
+        var has_code = false
+        let code_block = #/<code(?:\s[^>]*)?>[\s\S]*?<\/code>|`{3}([\S\s]*?)`{3}|~~([\S\s]*?)~~__([\s\S]*?)__/#
+        for m in page.content.matches(of: code_block) {
+            has_code = true
+            
+            var lines = m.output.0.components(separatedBy: .newlines)
+            // - TODO: Assuming code block is
+            //   ```language
+            //   ............
+            //   ```
+            //
+            var lang = lines.removeFirst()
+            lang.removeFirst(3)
+            lines.removeLast()
+            var code = ""
+            for i in lines {
+                code += i + "\n"
+            }
+            
+            var replace = ""
+            DOMTreeNode.inorder_tree_traversal_code(Code.toHTML(code: code,
+                                                                language: lang),
+                                                    &replace)
+            replace = replace.replacingOccurrences(of: "<>", with: "")
+            page.content = page.content.replacingOccurrences(of: m.output.0,
+                                                             with: replace)
+        }
+        
         page.content = cmark_markdown_to_html_with_ext(page.content,
                                                        CMARK_OPT_UNSAFE)
         /* Restore formulas after change to html */
@@ -1963,6 +1998,12 @@ struct HTML {
         let head = render_head(titleText: page.title)
         if has_math {
             head.add(MATHJAX_JS)
+        }
+        if has_code {
+            head.add(DOMTreeNode(name: "link",
+                                 attr: ["href" : CHL_CSS_FILENAME,
+                                        "rel" : "stylesheet",
+                                        "type" : "text/css"]))
         }
         html.add(head)
         html.add(body)
