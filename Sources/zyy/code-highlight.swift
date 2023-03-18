@@ -2139,7 +2139,7 @@ struct Code {
         gist_file.add(gist_data)
         
         let gist_meta = DOMTreeNode(name: "div", attr: ["class" : "gist-meta"])
-        gist_meta.add("Rendered with ❤ by ")
+        gist_meta.add("Rendered with ♥ by ")
         let a = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO])
         a.add("zyy")
         gist_meta.add(a)

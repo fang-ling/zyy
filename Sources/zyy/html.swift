@@ -117,7 +117,9 @@ body.typora-export {
 @media screen and (max-width:500px) {
     body.typora-export {
         padding-left: 0;
-        padding-right: 0
+        padding-right: 0;
+        /* fix gist font size bug on iPhone OS */
+        -webkit-text-size-adjust: 100%;
     }
 
     #write {
@@ -1848,7 +1850,7 @@ struct HTML {
             cr_year = year
         }
         let div = DOMTreeNode(name: "div", attr: ["class" : "footer"])
-        div.add("Made with ❤️")
+        div.add("Made with ♥")
         let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
         a.add("by \(author)")
         div.add(a)
