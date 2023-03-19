@@ -2119,7 +2119,9 @@ struct Code {
                                                     "blob-code-inner " +
                                                     "js-file-line"])
             // - TODO: lexcial analysic here
-            col2.add(line)
+            var wrap_line = line.replacingOccurrences(of: "<", with: "&lt;")
+            wrap_line = wrap_line.replacingOccurrences(of: ">", with: "&gt;")
+            col2.add(wrap_line)
             
             tr.add(col1)
             tr.add(col2)
