@@ -15,23 +15,11 @@ let MAIN_STYLE_CSS : String =
 }*/
 
 :root {
-    --bg-color: #ffffff;
-    --text-color: #333333;
-    --select-text-bg-color: #B5D6FC;
-    --select-text-font-color: auto;
     --monospace: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    /* <code> tag color */
     --color-neutral-muted: rgba(175, 184, 193, 0.2);
-    --title-bar-height: 20px;
-    --active-file-bg-color: #dadada;
-    --active-file-bg-color: rgba(32, 43, 51, 0.63);
-    --active-file-text-color: white;
     --bg-color: #FFFBF5;
     --text-color: #1f0909;
-    --control-text-color: #444;
-    --rawblock-edit-panel-bd: #e5e5e5;
-    --select-text-bg-color: rgba(32, 43, 51, 0.63);
-    --select-text-font-color: white;
-
     --text-font: 'Gentium Book Basic', system-ui, serif;
     /* table child 2n bg color */
     --color-canvas-subtle: #e8e7e7;
@@ -39,6 +27,14 @@ let MAIN_STYLE_CSS : String =
     /* table border color */
     --color-border-default: #d0d7de; /* dark: #30363d */
     --color-border-muted: hsla(210,18%,87%,1); /* dark: #21262d */
+    /* purple box color */
+    --purple-box-color: #674188;
+    /* purple box font color */
+    --purple-box-font-color: #F7EFE5;
+    /* purple box light purple */
+    --purple-box-light-color: #C3ACD0;
+    /* purple box link color */
+    --purple-box-link-color: yellow;
 }
 
 html {
@@ -81,45 +77,45 @@ code {
 
 A:link, A:visited {
     text-decoration: none;
-    color: #674188
+    color: var(--purple-box-color)
 }
 
 A:hover {
-    background-color: #674188;
-    color: #C3ACD0;
+    background-color: var(--purple-box-color);
+    color: var(--purple-box-light-color);
     text-decoration: none
 }
 
 A:link, A:visited {
     text-decoration: none;
-    color: #674188
+    color: var(--purple-box-color)
 }
 
 A:hover {
-    background-color: #674188;
-    color: #C3ACD0;
+    background-color: var(--purple-box-color);
+    color: var(--purple-box-light-color);
     text-decoration: none
 }
 
 .purplebox A:link, .purplebox A:visited {
     text-decoration: none;
-    color: yellow
+    color: var(--purple-box-link-color);
 }
 
 .purplebox A:hover {
-    background-color: yellow;
-    color: #674188;
+    background-color: var(--purple-box-link-color);
+    color: var(--purple-box-color);
     text-decoration: none
 }
 
 .purplebox A:link, .purplebox A:visited {
     text-decoration: none;
-    color: yellow
+    color: var(--purple-box-link-color);
 }
 
 .purplebox A:hover {
-    background-color: yellow;
-    color: #674188;
+    background-color: var(--purple-box-link-color);
+    color: var(--purple-box-color);
     text-decoration: none
 }
 
@@ -133,7 +129,7 @@ A:hover {
     padding: 4px;
     clear: both;
     text-align: center;
-    background-color: #C3ACD0;
+    background-color: var(--purple-box-light-color);
     vertical-align: top;
     width: 300px;
 }
@@ -150,7 +146,7 @@ A:hover {
 
 .image A IMG,
 .image A TABLE {
-    border: 4px solid #674188;
+    border: 4px solid var(--purple-box-color);
     position: relative;
     left: -4px;
     top: -4px
@@ -158,7 +154,7 @@ A:hover {
 
 .image A:hover IMG,
 .image A:hover TABLE {
-    border-color: #C3ACD0;
+    border-color: var(--purple-box-light-color);
     opacity: .5
 }
 
@@ -176,8 +172,8 @@ A:hover {
 }
 
 .purplebox, .section {
-    background: #674188;
-    color: #F7EFE5;
+    background: var(--purple-box-color);
+    color: var(--purple-box-font-color);
     padding: 1ex 1em;
     font-weight: bold;
     font-size: large;
@@ -204,12 +200,12 @@ A:hover {
 
 .footer a, .footer span {
     margin-left: 4px;
-    color: #fbfbfb;
+    color: var(--purple-box-font-color);
     text-decoration: none;
     font-size: 13px;
     padding: 4px 8px;
     border-radius: 3px;
-    background: #674188;
+    background: var(--purple-box-color);
 }
 
 #reset-all {
