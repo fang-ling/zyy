@@ -49,6 +49,11 @@ body {
     line-height: 1.5em;
 }
 
+blockquote {
+    padding: 0 1em;
+    border-left: .25em solid var(--purple-box-color);
+}
+
 img {
     vertical-align: middle;
 }
@@ -247,6 +252,14 @@ tr:nth-child(2n) {
     background: var(--color-canvas-subtle);
 }
 
+/* MathJax long formulas */
+mjx-container {
+  display: inline-grid;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
 /* iPhone OS */
 @media screen and (max-width:500px) {
     body {
@@ -258,60 +271,60 @@ tr:nth-child(2n) {
 }
 
 /* Dark mode (TBC) */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-color: #0d1117;
-        --text-color: #c9d1d9;
-        --purple-box-color: #161b22;
-        --purple-box-light-color: #674188;
-        --purple-box-link-color: #CD7F32;
-    }
-
-    html {
-        font-size: 15px;
-    }
-
-    img {
-        filter: brightness(.8) contrast(1.2);
-    }
-
-    a, a:link, a:visited, a:hover, .purplebox a:link, .purplebox a:hover, .purplebox a:visited {
-        all: unset;
-        text-decoration: none
-    }
-    
-    /*a {
-        color: #58a6ff;
-        text-decoration: none
-    }*/
-
-    .purplebox {
-        border-color: #30363d;
-        border-style: solid;
-        border-radius: 6px 6px 6px 6px;
-        border-width: 1px;
-        color: var(--text-color);
-    }
-
-    /*A:link, .purplebox A:visited {
-        text-decoration: none;
-        color: var(--purple-box-link-color);
-    }
-
-    A:hover {
-        background-color: var(--purple-box-link-color);
-        color: var(--purple-box-color);
-        text-decoration: none
-    }*/
-
-    .section {
-        padding: 0.9ex 0.5em;
-    }
-
-    .title-text {
-        color: var(--purple-box-font-color);
-    }
-}
+//@media (prefers-color-scheme: dark) {
+//    :root {
+//        --bg-color: #0d1117;
+//        --text-color: #c9d1d9;
+//        --purple-box-color: #161b22;
+//        --purple-box-light-color: #674188;
+//        --purple-box-link-color: #CD7F32;
+//    }
+//
+//    html {
+//        font-size: 15px;
+//    }
+//
+//    img {
+//        filter: brightness(.8) contrast(1.2);
+//    }
+//
+//    a, a:link, a:visited, a:hover, .purplebox a:link, .purplebox a:hover, .purplebox a:visited {
+//        all: unset;
+//        text-decoration: none
+//    }
+//
+//    /*a {
+//        color: #58a6ff;
+//        text-decoration: none
+//    }*/
+//
+//    .purplebox {
+//        border-color: #30363d;
+//        border-style: solid;
+//        border-radius: 6px 6px 6px 6px;
+//        border-width: 1px;
+//        color: var(--text-color);
+//    }
+//
+//    /*A:link, .purplebox A:visited {
+//        text-decoration: none;
+//        color: var(--purple-box-link-color);
+//    }
+//
+//    A:hover {
+//        background-color: var(--purple-box-link-color);
+//        color: var(--purple-box-color);
+//        text-decoration: none
+//    }*/
+//
+//    .section {
+//        padding: 0.9ex 0.5em;
+//    }
+//
+//    .title-text {
+//        color: var(--purple-box-font-color);
+//    }
+//}
 """
 
 let STACK_PREVIEW_JS =
