@@ -87,17 +87,6 @@ A:hover {
     text-decoration: none
 }
 
-A:link, A:visited {
-    text-decoration: none;
-    color: var(--purple-box-color)
-}
-
-A:hover {
-    background-color: var(--purple-box-color);
-    color: var(--purple-box-light-color);
-    text-decoration: none
-}
-
 .purplebox A:link, .purplebox A:visited {
     text-decoration: none;
     color: var(--purple-box-link-color);
@@ -201,12 +190,12 @@ A:hover {
 
 .footer a, .footer span {
     margin-left: 4px;
-    color: var(--purple-box-font-color);
+    color: var(--purple-box-font-color) !important;
     text-decoration: none;
     font-size: 13px;
     padding: 4px 8px;
     border-radius: 3px;
-    background: var(--purple-box-color);
+    background: var(--purple-box-color) !important;
 }
 
 #reset-all {
@@ -253,12 +242,12 @@ tr:nth-child(2n) {
 }
 
 /* MathJax long formulas */
-mjx-container {
+/*mjx-container {
   display: inline-grid;
   overflow-x: auto;
   overflow-y: hidden;
   max-width: 100%;
-}
+}*/
 
 /* iPhone OS */
 @media screen and (max-width:500px) {
@@ -271,60 +260,50 @@ mjx-container {
 }
 
 /* Dark mode (TBC) */
-//@media (prefers-color-scheme: dark) {
-//    :root {
-//        --bg-color: #0d1117;
-//        --text-color: #c9d1d9;
-//        --purple-box-color: #161b22;
-//        --purple-box-light-color: #674188;
-//        --purple-box-link-color: #CD7F32;
-//    }
-//
-//    html {
-//        font-size: 15px;
-//    }
-//
-//    img {
-//        filter: brightness(.8) contrast(1.2);
-//    }
-//
-//    a, a:link, a:visited, a:hover, .purplebox a:link, .purplebox a:hover, .purplebox a:visited {
-//        all: unset;
-//        text-decoration: none
-//    }
-//
-//    /*a {
-//        color: #58a6ff;
-//        text-decoration: none
-//    }*/
-//
-//    .purplebox {
-//        border-color: #30363d;
-//        border-style: solid;
-//        border-radius: 6px 6px 6px 6px;
-//        border-width: 1px;
-//        color: var(--text-color);
-//    }
-//
-//    /*A:link, .purplebox A:visited {
-//        text-decoration: none;
-//        color: var(--purple-box-link-color);
-//    }
-//
-//    A:hover {
-//        background-color: var(--purple-box-link-color);
-//        color: var(--purple-box-color);
-//        text-decoration: none
-//    }*/
-//
-//    .section {
-//        padding: 0.9ex 0.5em;
-//    }
-//
-//    .title-text {
-//        color: var(--purple-box-font-color);
-//    }
-//}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #222831;
+        --text-color: #fff4ff;
+        --purple-box-light-color: #63496a;
+        --dark-link-pcolor: #BC6FF1;
+        --dark-link-scolor: #D9ACF5;
+    }
+
+    html {
+        font-size: 15px;
+    }
+
+    img {
+        filter: brightness(.8) contrast(1.2);
+    }
+
+    .page-container {
+        background-color: #393E46;
+        border-radius: 6px 6px;
+        padding: 0.1em 1em 0.1em 1em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+
+    .section {
+        padding: 0.9ex 0.5em;
+    }
+
+    .title-text {
+        color: var(--purple-box-font-color);
+    }
+
+    A:link, A:visited {
+        text-decoration: none;
+        color: var(--dark-link-pcolor)
+    }
+
+    A:hover {
+        background-color: var(--dark-link-pcolor);
+        color: var(--dark-link-scolor);
+        text-decoration: none
+    }
+}
 """
 
 let STACK_PREVIEW_JS =
@@ -662,7 +641,11 @@ struct HTML {
             page.content = page.content.replacingOccurrences(of: i.value,
                                                              with: i.key)
         }
-        body.add(page.content)
+        //body.add(page.content)
+        let page_container = DOMTreeNode(name: "div",
+                                         attr: ["class" : "page-container"])
+        page_container.add(page.content)
+        body.add(page_container)
         body.add(render_foot_box(date: page.date))
         body.add(DOMTreeNode(name: "br", attr: [:]))
         body.add(render_footer())
