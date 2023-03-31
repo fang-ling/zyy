@@ -307,11 +307,11 @@ let CHL_CSS =
     --color-segmented-control-button-selected-border: #8c959f;
     --color-tree-view-item-chevron-hover-bg: rgba(208, 215, 222, 0.32);
     --color-tree-view-item-directory-fill: #54aeff;
-    --color-fg-default: #24292f;
+    //--color-fg-default: #24292f;
     --color-fg-muted: #57606a;
     --color-fg-subtle: #6e7781;
     --color-fg-on-emphasis: #ffffff;
-    --color-canvas-default: #ffffff;
+    //--color-canvas-default: #ffffff;
     --color-canvas-overlay: #ffffff;
     --color-canvas-inset: #f6f8fa;
     --color-canvas-subtle: #f6f8fa;
@@ -2012,15 +2012,15 @@ let CHL_CSS =
     overflow: auto;
     word-wrap: normal;
     background-color: var(--color-canvas-default);
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--gist-border-pcolor);
     border-radius:6px 6px 0 0
 }
 
 .gist .gist-file {
     margin-bottom: 1em;
     font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-    border: 1px solid #ddd;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid var(--gist-border-pcolor);
+    border-bottom: 1px solid var(--gist-border-scolor);
     border-radius:6px
 }
 

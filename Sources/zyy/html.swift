@@ -31,6 +31,12 @@ let MAIN_STYLE_CSS : String =
     --purple-box-light-color: #C3ACD0;
     /* purple box link color */
     --purple-box-link-color: yellow;
+
+    /* gist */
+    --color-canvas-default: #ffffff;
+    --color-fg-default: #24292f;
+    --gist-border-pcolor: #ddd;
+    --gist-border-scolor: #ccc;
 }
 
 html {
@@ -259,7 +265,7 @@ tr:nth-child(2n) {
     }
 }
 
-/* Dark mode (TBC) */
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-color: #222831;
@@ -267,6 +273,22 @@ tr:nth-child(2n) {
         --purple-box-light-color: #63496a;
         --dark-link-pcolor: #BC6FF1;
         --dark-link-scolor: #D9ACF5;
+        --dark-page-bg: #393E46;
+
+        /* gist */
+        --color-canvas-default: var(--dark-page-bg);
+        --color-fg-default: #e4e8ec;
+        --gist-border-pcolor: #727477;
+        --gist-border-scolor: #727477;
+    }
+
+    .gist .gist-meta {
+        background-color: var(--color-canvas-default) !important;
+        color: var(--color-fg-default) !important;
+    }
+
+    .gist .gist-meta a {
+        color: var(--dark-link-pcolor) !important;
     }
 
     html {
@@ -278,7 +300,7 @@ tr:nth-child(2n) {
     }
 
     .page-container {
-        background-color: #393E46;
+        background-color: var(--dark-page-bg);
         border-radius: 6px 6px;
         padding: 0.1em 1em 0.1em 1em;
         margin-top: 1em;
