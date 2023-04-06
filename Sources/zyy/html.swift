@@ -282,6 +282,10 @@ tr:nth-child(2n) {
         --gist-border-scolor: #727477;
     }
 
+    body {
+        max-width: 55em;
+    }
+
     .gist .gist-meta {
         background-color: var(--color-canvas-default) !important;
         color: var(--color-fg-default) !important;
