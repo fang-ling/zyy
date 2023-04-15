@@ -113,6 +113,11 @@ struct SwiftLexicalStruct {
         }
     }
 
+    static let implicit_paramter_name = Regex {
+        #/\$/#
+        decimal_digits
+    }
+    
     static let property_wrapper_projection = Regex {
         #/\$/#
         identifier_characters
@@ -137,15 +142,144 @@ struct SwiftLexicalStruct {
                 #/`/#
             }
             /* implicit-parameter-name */
-            /// TODO
+            implicit_paramter_name
             /* property-wrapper-projection */
             property_wrapper_projection
         }
     }
+    
+    //------------------------------------------------------------------------//
+    //                   Grammar of an integer literal                        //
+    //------------------------------------------------------------------------//
+    static let binary_digit = Regex {
+        /* Digit 0 or 1 */
+        #/[0-1]/#
+    }
+    
+    static let binary_literal_character = Regex {
+        /* binary-digit | _ */
+        ChoiceOf {
+            binary_digit
+            #/_/#
+        }
+    }
+    
+    static let binary_literal_characters = Regex {
+        /* binary-literal-character binary-literal-characters? */
+        OneOrMore {
+            binary_literal_character
+        }
+    }
+    
+    static let binary_literal = Regex {
+        /* 0b binary-digit binary-literal-characters? */
+        #/0b/#
+        binary_digit
+        ZeroOrMore {
+            binary_literal_characters
+        }
+    }
+    
+    static var octal_digit = Regex {
+        /* Digit 0 through 7 */
+        #/[0-7]/#
+    }
+    
+    static var octal_literal_character = Regex {
+        /* octal-digit | _ */
+        ChoiceOf {
+            octal_digit
+            #/_/#
+        }
+    }
+    
+    static var octal_literal_characters = Regex {
+        /* octal-literal-character octal-literal-characters? */
+        OneOrMore {
+            octal_literal_character
+        }
+    }
+    
+    static var octal_literal = Regex {
+        /* 0o octal-digit octal-literal-characters? */
+        #/0o/#
+        octal_digit
+        ZeroOrMore {
+            octal_literal_characters
+        }
+    }
+    
+    static var decimal_digit = Regex {
+        /* Digit 0 through 9 */
+        #/[0-9]/#
+    }
+    
+    static var decimal_digits = Regex {
+        /* decimal-digit decimal-digits? */
+        OneOrMore {
+            decimal_digit
+        }
+    }
+    
+    static var decimal_literal_character = Regex {
+        /* decimal-digit | _ */
+        ChoiceOf {
+            decimal_digit
+            #/_/#
+        }
+    }
+    
+    static var decimal_literal_characters = Regex {
+        /* decimal-literal-character decimal-literal-characters? */
+        OneOrMore {
+            decimal_literal_character
+        }
+    }
+    
+    static var decimal_literal = Regex {
+        /* decimal-digit decimal-literal-characters? */
+        decimal_digit
+        ZeroOrMore {
+            decimal_literal_characters
+        }
+    }
+    
+    static var hexadecimal_digit = Regex {
+        /* Digit 0 through 9, a through f, or A through F */
+        #/[0-9a-fA-F]/#
+    }
+    
+    static var hexadecimal_literal_character = Regex {
+        /* hexadecimal-digit | _ */
+        ChoiceOf {
+            hexadecimal_digit
+            #/_/#
+        }
+    }
+    
+    static var hexadecimal_literal_characters = Regex {
+        /* hexadecimal-literal-character hexadecimal-literal-characters? */
+        OneOrMore {
+            hexadecimal_literal_character
+        }
+    }
+    
+    static var hexadecimal_literal = Regex {
+        /* 0x hexadecimal-digit hexadecimal-literal-characters? */
+        #/0x/#
+        hexadecimal_digit
+        ZeroOrMore {
+            hexadecimal_literal_characters
+        }
+    }
+    
+    static var integer_literal = Regex {
+        /* decimal must have lowest priority: (0x, 0b and 0o) */
+        ChoiceOf {
+            binary_literal
+            octal_literal
+            hexadecimal_literal
+            decimal_literal
+        }
+    }
 }
-
-
-
-//----------------------------------------------------------------------------//
-//                   Grammar of an integer literal                            //
-//----------------------------------------------------------------------------//
