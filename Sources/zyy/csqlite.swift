@@ -36,8 +36,8 @@ struct SQLite {
     }
     
     @discardableResult
-    func exec(sql : String) -> [Dictionary<String, String?>] {
-        var result = [Dictionary<String, String>]()
+    func exec(sql : String) -> [[String : String]] {
+        var result = [[String : String]]()
         guard let queryStmt = prepare(sql: sql) else {
             return result
         }
@@ -45,7 +45,7 @@ struct SQLite {
             sqlite3_finalize(queryStmt)
         }
         while sqlite3_step(queryStmt) == SQLITE_ROW {
-            var dict = Dictionary<String, String>()
+            var dict = [String : String]()
             for i in 0 ..< sqlite3_column_count(queryStmt) {
                 let col = String(cString: sqlite3_column_name(queryStmt, i))
                 if let val = sqlite3_column_text(queryStmt, i) {

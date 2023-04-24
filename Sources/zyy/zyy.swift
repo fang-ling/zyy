@@ -555,11 +555,8 @@ struct zyy : ParsableCommand {
         var value = ""
         /* Already find result in SQL, so result.count should be either 0 or 1*/
         if let row = result.first {
-            /* Will result a String?? (nasty) */
             if let val = row[DB_SETTING_TABLE_COL_VALUE] {
-                if let v = val {
-                    value = v
-                }
+                value = val
             }
         }
         sqlite.SQLite3_close()
@@ -608,21 +605,20 @@ struct zyy : ParsableCommand {
         var value = Section()
         /* Already find result in SQL, so result.count should be either 0 or 1*/
         if let row = result.first {
-            /* Will result a String?? (nasty) */
             if let val = row[DB_SECTION_TABLE_COL_HEADING] {
-                if let v = val { value.heading = v }
+                value.heading = val
             }
             if let val = row[DB_SECTION_TABLE_COL_CAPTION] {
-                if let v = val { value.caption = v.from_base64()! }
+                value.caption = val.from_base64()!
             }
             if let val = row[DB_SECTION_TABLE_COL_COVER] {
-                if let v = val { value.cover = v }
+                value.cover = val
             }
             if let val = row[DB_SECTION_TABLE_COL_HLINK] {
-                if let v = val { value.hlink = v }
+                value.hlink = val
             }
             if let val = row[DB_SECTION_TABLE_COL_CLINK] {
-                if let v = val { value.clink = v }
+                value.clink = val
             }
         }
         sqlite.SQLite3_close()
@@ -650,21 +646,20 @@ struct zyy : ParsableCommand {
         var ret = [Section]()
         for i in result {
             var value = Section()
-            /* Will result a String?? (nasty) */
             if let val = i[DB_SECTION_TABLE_COL_HEADING] {
-                if let v = val { value.heading = v }
+                value.heading = val
             }
             if let val = i[DB_SECTION_TABLE_COL_CAPTION] {
-                if let v = val { value.caption = v.from_base64()! }
+                value.caption = val.from_base64()!
             }
             if let val = i[DB_SECTION_TABLE_COL_COVER] {
-                if let v = val { value.cover = v }
+                value.cover = val
             }
             if let val = i[DB_SECTION_TABLE_COL_HLINK] {
-                if let v = val { value.hlink = v }
+                value.hlink = val
             }
             if let val = i[DB_SECTION_TABLE_COL_CLINK] {
-                if let v = val { value.clink = v }
+                value.clink = val
             }
             ret.append(value)
         }
@@ -684,16 +679,16 @@ struct zyy : ParsableCommand {
         var value = Page()
         if let row = result.first {
             if let val = row[DB_PAGE_TABLE_COL_TITLE] {
-                if let v = val { value.title = v.from_base64()! }
+                value.title = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
-                if let v = val { value.content = v.from_base64()! }
+                value.content = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
-                if let v = val { value.link = v.from_base64()! }
+                value.link = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_DATE] {
-                if let v = val { value.date = v }
+                value.date = val
             }
         }
         sqlite.SQLite3_close()
@@ -751,16 +746,16 @@ struct zyy : ParsableCommand {
         for row in result {
             var value = Page()
             if let val = row[DB_PAGE_TABLE_COL_TITLE] {
-                if let v = val { value.title = v.from_base64()! }
+                value.title = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
-                if let v = val { value.content = v.from_base64()! }
+                value.content = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_LINK] {
-                if let v = val { value.link = v.from_base64()! }
+                value.link = val.from_base64()!
             }
             if let val = row[DB_PAGE_TABLE_COL_DATE] {
-                if let v = val { value.date = v }
+                value.date = val
             }
             ret.append(value)
         }
