@@ -15,6 +15,11 @@ let SQLITE_KEYWORDS = ["CR" : "CREATE", "TB" : "TABLE", "PK" : "PRIMARY KEY",
 struct Table {
     var name : String
     var columns : [Column]
+    
+    init(name: String) {
+        self.name = name
+        self.columns = [Column]()
+    }
 }
 
 /* SQLite database table column */
@@ -42,6 +47,20 @@ struct Column : Equatable {
 //                                CREATE TABLE                                //
 //----------------------------------------------------------------------------//
 extension Table {
+    /* Add a new column in table */
+    mutating func add_column(name : String,
+                    type : String,
+                    is_primary_key : Bool = false,
+                    is_unique : Bool = false,
+                    is_not_null : Bool = false) {
+        columns.append(Column(name: name,
+                              type: type,
+                              is_primary_key: is_primary_key,
+                              is_unique: is_unique,
+                              is_not_null: is_not_null))
+    }
+    
+    /* Returns table creation SQL */
     func create() -> String {
         var cols = ""
         for column in columns {

@@ -10,16 +10,15 @@ import XCTest
 
 final class SQLGenTests: XCTestCase {
     func test_create() {
-        var columns = [Column]()
-        columns.append(Column(name: "id",
-                              type: "INTEGER",
-                              is_primary_key: true))
-        columns.append(Column(name: "name", type: "TEXT"))
-        columns.append(Column(name: "email",
-                              type: "TEXT",
-                              is_unique: true,
-                              is_not_null: true))
-        let table = Table(name: "users", columns: columns)
+        var table = Table(name: "users")
+        table.add_column(name: "id",
+                         type: "INTEGER",
+                         is_primary_key: true)
+        table.add_column(name: "name", type: "TEXT")
+        table.add_column(name: "email",
+                         type: "TEXT",
+                         is_unique: true,
+                         is_not_null: true)
         
         XCTAssertEqual(table.create(),
                        """
