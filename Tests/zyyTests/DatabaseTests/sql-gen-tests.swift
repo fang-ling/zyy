@@ -21,7 +21,7 @@ final class SQLGenTests: XCTestCase {
                               is_unique: true,
                               is_not_null: true))
         
-        XCTAssertEqual(table.create(columns: columns),
+        XCTAssertEqual(table.create_table_sql(columns: columns),
                        """
                        CREATE TABLE IF NOT EXISTS 'users' (
                            'id' INTEGER PRIMARY KEY,

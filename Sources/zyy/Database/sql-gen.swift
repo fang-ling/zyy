@@ -61,7 +61,7 @@ struct Column : Equatable {
 //----------------------------------------------------------------------------//
 extension Table {
     /* Returns table creation SQL */
-    func create(columns : [Column]) -> String {
+    func create_table_sql(columns : [Column]) -> String {
         var cols = ""
         for column in columns {
             cols += "    '\(column.name)' " + "\(column.type)"

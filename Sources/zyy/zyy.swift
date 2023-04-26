@@ -1,6 +1,28 @@
 import Foundation
 import ArgumentParser
 
+//----------------------------------------------------------------------------//
+//                                Shared Constants                            //
+//----------------------------------------------------------------------------//
+/* Databse filename (not user changeable) */
+let ZYY_DB_FILENAME = "zyy.db"
+/* Database table name */
+let ZYY_SET_TBL = "Setting"
+let ZYY_SEC_TBL = "Section"
+let ZYY_PAGE_TBL = "Page"
+/* Database table column name */
+let ZYY_SET_COL_OPT = "option"
+let ZYY_SET_COL_VAL = "value"
+let DB_SECTION_TABLE_COL_HEADING = "heading"
+let DB_SECTION_TABLE_COL_CAPTION = "caption"
+let DB_SECTION_TABLE_COL_COVER   = "cover"
+let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
+let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
+let DB_PAGE_TABLE_COL_TITLE = "title"
+let DB_PAGE_TABLE_COL_CONTENT = "content"
+let DB_PAGE_TABLE_COL_LINK = "link"
+let DB_PAGE_TABLE_COL_DATE = "date"
+
 extension zyy {
     struct Init : ParsableCommand {
         static var configuration = CommandConfiguration(
@@ -9,15 +31,15 @@ extension zyy {
         
         func run() {
             /* Prevent user from calling `init` twice */
-            if FileManager.default.fileExists(atPath: DB_FILENAME) {
-                error("Database file: \(DB_FILENAME) existed.")
+            if FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
+                error("Database file: \(ZYY_DB_FILENAME) existed.")
             }
             /* Create db */
             create_database()
             set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
             set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
                         value: get_current_date_string())
-            print("Creating \(DB_FILENAME)")
+            print("Creating \(ZYY_DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
         }
@@ -32,8 +54,8 @@ extension zyy {
         func run() {
             /* Interactive settings */
             /* Check if database exists */
-            if !FileManager.default.fileExists(atPath: DB_FILENAME) {
-                error("Database file: \(DB_FILENAME): " +
+            if !FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
+                error("Database file: \(ZYY_DB_FILENAME): " +
                       "No such file or directory")
             }
             zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
@@ -443,24 +465,6 @@ struct zyy : ParsableCommand {
     /* Command Line related String constants */
     public static let VERSION = "0.0.4-beta"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
-    /* Databse filename(not user changeable) */
-    private static let DB_FILENAME = "zyy.db"
-    /* Database table name */
-    private static let DB_SETTING_TABLE_NAME = "Setting"
-    private static let DB_SECTION_TABLE_NAME = "Section"
-    private static let DB_PAGE_TABLE_NAME = "Page"
-    /* Database table column name */
-    private static let DB_SETTING_TABLE_COL_FIELD   = "field"
-    private static let DB_SETTING_TABLE_COL_VALUE   = "value"
-    private static let DB_SECTION_TABLE_COL_HEADING = "heading"
-    private static let DB_SECTION_TABLE_COL_CAPTION = "caption"
-    private static let DB_SECTION_TABLE_COL_COVER   = "cover"
-    private static let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
-    private static let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
-    private static let DB_PAGE_TABLE_COL_TITLE = "title"
-    private static let DB_PAGE_TABLE_COL_CONTENT = "content"
-    private static let DB_PAGE_TABLE_COL_LINK = "link"
-    private static let DB_PAGE_TABLE_COL_DATE = "date"
     /* Setting table field names */
     static let DB_SETTING_FIELD_SITENAME          = "sitename"
     static let DB_SETTING_FIELD_SITEURL           = "site_url"
@@ -488,16 +492,16 @@ struct zyy : ParsableCommand {
     private static func create_database() {
         /* Setting table */
         var SQL = """
-                  CREATE TABLE if not exists \(DB_SETTING_TABLE_NAME)(
-                      \(DB_SETTING_TABLE_COL_FIELD) TEXT PRIMARY KEY NOT NULL,
-                      \(DB_SETTING_TABLE_COL_VALUE) TEXT
+                  CREATE TABLE if not exists \(ZYY_SET_TBL)(
+                      \(ZYY_SET_COL_OPT) TEXT PRIMARY KEY NOT NULL,
+                      \(ZYY_SET_COL_VAL) TEXT
                   );
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
         /* Section table */
             SQL = """
-                  CREATE TABLE if not exists \(DB_SECTION_TABLE_NAME)(
+                  CREATE TABLE if not exists \(ZYY_SEC_TBL)(
                       \(DB_SECTION_TABLE_COL_HEADING) TEXT PRIMARY KEY NOT NULL,
                       \(DB_SECTION_TABLE_COL_CAPTION) TEXT,
                       \(DB_SECTION_TABLE_COL_COVER)   TEXT,
@@ -508,7 +512,7 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
         /* Page table */
             SQL = """
-                  CREATE TABLE if not exists \(DB_PAGE_TABLE_NAME)(
+                  CREATE TABLE if not exists \(ZYY_PAGE_TBL)(
                       \(DB_PAGE_TABLE_COL_TITLE) TEXT PRIMARY KEY NOT NULL,
                       \(DB_PAGE_TABLE_COL_CONTENT) TEXT,
                       \(DB_PAGE_TABLE_COL_LINK)   TEXT,
@@ -526,19 +530,19 @@ struct zyy : ParsableCommand {
          * Use the `INSERT OR IGNORE` followed by an `UPDATE`.
          */
         var SQL = """
-                  INSERT OR IGNORE INTO \(DB_SETTING_TABLE_NAME)
-                  (\(DB_SETTING_TABLE_COL_FIELD), \(DB_SETTING_TABLE_COL_VALUE))
+                  INSERT OR IGNORE INTO \(ZYY_SET_TBL)
+                  (\(ZYY_SET_COL_OPT), \(ZYY_SET_COL_VAL))
                   VALUES(
                       '\(field)', '\(value)'
                   );
                   """
                   
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
             SQL = """
-                  UPDATE \(DB_SETTING_TABLE_NAME)
-                  SET \(DB_SETTING_TABLE_COL_VALUE) = '\(value)'
-                  WHERE \(DB_SETTING_TABLE_COL_FIELD) = '\(field)';
+                  UPDATE \(ZYY_SET_TBL)
+                  SET \(ZYY_SET_COL_OPT) = '\(value)'
+                  WHERE \(ZYY_SET_COL_VAL) = '\(field)';
                   """
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
@@ -547,15 +551,15 @@ struct zyy : ParsableCommand {
     /* Get a setting value from given `field`. */
     static func get_setting(field : String) -> String {
         let SQL = """
-                  SELECT * FROM \(DB_SETTING_TABLE_NAME)
-                  WHERE \(DB_SETTING_TABLE_COL_FIELD) = '\(field)';
+                  SELECT * FROM \(ZYY_SET_TBL)
+                  WHERE \(ZYY_SET_COL_OPT) = '\(field)';
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var value = ""
         /* Already find result in SQL, so result.count should be either 0 or 1*/
         if let row = result.first {
-            if let val = row[DB_SETTING_TABLE_COL_VALUE] {
+            if let val = row[ZYY_SET_COL_OPT] {
                 value = val
             }
         }
@@ -567,7 +571,7 @@ struct zyy : ParsableCommand {
     /* Use the `INSERT OR IGNORE` followed by an `UPDATE`. */
     private static func set_section(_ s : Section) {
         var SQL = """
-                  INSERT OR IGNORE INTO \(DB_SECTION_TABLE_NAME)
+                  INSERT OR IGNORE INTO \(ZYY_SEC_TBL)
                   (\(DB_SECTION_TABLE_COL_HEADING),
                    \(DB_SECTION_TABLE_COL_CAPTION),
                    \(DB_SECTION_TABLE_COL_COVER),
@@ -578,10 +582,10 @@ struct zyy : ParsableCommand {
                       '\(s.cover)', '\(s.hlink)', '\(s.clink)'
                   );
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
             SQL = """
-                  UPDATE \(DB_SECTION_TABLE_NAME)
+                  UPDATE \(ZYY_SEC_TBL)
                   SET \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)',
                       \(DB_SECTION_TABLE_COL_CAPTION) = '\(s.caption.to_base64())',
                       \(DB_SECTION_TABLE_COL_COVER) = '\(s.cover)',
@@ -597,10 +601,10 @@ struct zyy : ParsableCommand {
      */
     private static func get_section(heading : String) -> Section {
         let SQL = """
-                  SELECT * FROM \(DB_SECTION_TABLE_NAME)
+                  SELECT * FROM \(ZYY_SEC_TBL)
                   WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var value = Section()
         /* Already find result in SQL, so result.count should be either 0 or 1*/
@@ -628,10 +632,10 @@ struct zyy : ParsableCommand {
     /* Remove a section */
     private static func remove_section(heading : String) {
         let SQL = """
-                  DELETE FROM \(DB_SECTION_TABLE_NAME)
+                  DELETE FROM \(ZYY_SEC_TBL)
                   WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
@@ -639,9 +643,9 @@ struct zyy : ParsableCommand {
     /* List sections */
     static func list_sections() -> [Section] {
         let SQL = """
-                  SELECT * FROM \(DB_SECTION_TABLE_NAME);
+                  SELECT * FROM \(ZYY_SEC_TBL);
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var ret = [Section]()
         for i in result {
@@ -671,10 +675,10 @@ struct zyy : ParsableCommand {
     private static func get_page(by title : String) -> Page {
         let title = title.to_base64()
         let SQL = """
-                  SELECT * FROM \(DB_PAGE_TABLE_NAME)
+                  SELECT * FROM \(ZYY_PAGE_TBL)
                   WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title)';
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var value = Page()
         if let row = result.first {
@@ -698,7 +702,7 @@ struct zyy : ParsableCommand {
     /* Modify or insert a new page */
     private static func set_page(_ p : Page) {
         var SQL = """
-                  INSERT OR IGNORE INTO \(DB_PAGE_TABLE_NAME)
+                  INSERT OR IGNORE INTO \(ZYY_PAGE_TBL)
                   (\(DB_PAGE_TABLE_COL_TITLE),
                    \(DB_PAGE_TABLE_COL_CONTENT),
                    \(DB_PAGE_TABLE_COL_LINK),
@@ -710,10 +714,10 @@ struct zyy : ParsableCommand {
                       '\(p.date)'
                   );
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
             SQL = """
-                  UPDATE \(DB_PAGE_TABLE_NAME)
+                  UPDATE \(ZYY_PAGE_TBL)
                   SET \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())',
                       \(DB_PAGE_TABLE_COL_CONTENT) = '\(p.content.to_base64())',
                       \(DB_PAGE_TABLE_COL_LINK) = '\(p.link.to_base64())',
@@ -727,10 +731,10 @@ struct zyy : ParsableCommand {
     /* Remove a page */
     private static func remove_page(title : String) {
         let SQL = """
-                  DELETE FROM \(DB_PAGE_TABLE_NAME)
+                  DELETE FROM \(ZYY_PAGE_TBL)
                   WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title.to_base64())';
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
@@ -738,9 +742,9 @@ struct zyy : ParsableCommand {
     /* List all pages */
     static func list_pages() -> [Page] {
         let SQL = """
-                  SELECT * FROM \(DB_PAGE_TABLE_NAME);
+                  SELECT * FROM \(ZYY_PAGE_TBL);
                   """
-        let sqlite = SQLite(at: DB_FILENAME)
+        let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var ret = [Page]()
         for row in result {
