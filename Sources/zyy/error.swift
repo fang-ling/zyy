@@ -1,5 +1,5 @@
 //
-//  error_handling_wrapper.swift
+//  error.swift
 //  
 //
 //  Created by Fang Ling on 2022/11/20.
@@ -9,6 +9,15 @@
  * of the following functions, `zyy` will print some messages and exit. */
 
 import Foundation
+
+enum FatalError {
+    /* Database */
+    case cannot_open_db
+    case failed_to_compile_sql
+    case failed_to_evaluate_sql
+    /* General */
+    case error
+}
 
 /* Command Line releated error */
 func command_line_error(_ msg : String) {
@@ -22,4 +31,17 @@ func database_error(_ msg: String) {
 
 func error(_ msg : String) {
     fatalError("Error:\n" + msg)
+}
+
+func fatal_error(_ error_type : FatalError) {
+    switch error_type {
+    case .cannot_open_db:
+        fatalError()
+    case .failed_to_compile_sql:
+        fatalError()
+    case .failed_to_evaluate_sql:
+        fatalError()
+    default:
+        fatalError("Fatal Error")
+    }
 }
