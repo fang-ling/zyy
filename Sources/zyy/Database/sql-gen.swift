@@ -9,17 +9,30 @@ import Foundation
 
 /* SQLite keywords in use */
 let SQLITE_KEYWORDS = ["CR" : "CREATE", "TB" : "TABLE", "PK" : "PRIMARY KEY",
-                       "N"  : "NOT NULL", "U" : "UNIQUE"]
+                       "N"  : "NOT NULL", "U" : "UNIQUE", "INS" : "INSERT",
+                       "INTO" : "INTO", "IF" : "IF", "NOT" : "NOT",
+                       "EX" : "EXISTS", "VAL" : "VALUES"]
 
 /* SQLite database table */
+/// FAQ from SQLite.org:
+///     A column declared INTEGER PRIMARY KEY will autoincrement.
+///     For example, suppose you have a table like this:
+///
+///         CREATE TABLE t1(
+///             a INTEGER PRIMARY KEY,
+///             b INTEGER
+///         );
+///
+///     With this table, the statement
+///
+///         INSERT INTO t1 VALUES(NULL,123);
+///
+///     is logically equivalent to saying:
+///
+///         INSERT INTO t1 VALUES((SELECT max(a) FROM t1)+1,123);
+///
 struct Table {
     var name : String
-    var columns : [Column]
-    
-    init(name: String) {
-        self.name = name
-        self.columns = [Column]()
-    }
 }
 
 /* SQLite database table column */
@@ -47,21 +60,8 @@ struct Column : Equatable {
 //                                CREATE TABLE                                //
 //----------------------------------------------------------------------------//
 extension Table {
-    /* Add a new column in table */
-    mutating func add_column(name : String,
-                    type : String,
-                    is_primary_key : Bool = false,
-                    is_unique : Bool = false,
-                    is_not_null : Bool = false) {
-        columns.append(Column(name: name,
-                              type: type,
-                              is_primary_key: is_primary_key,
-                              is_unique: is_unique,
-                              is_not_null: is_not_null))
-    }
-    
     /* Returns table creation SQL */
-    func create() -> String {
+    func create(columns : [Column]) -> String {
         var cols = ""
         for column in columns {
             cols += "    '\(column.name)' " + "\(column.type)"
@@ -76,9 +76,43 @@ extension Table {
             }
             cols += (column == columns.last ? "" : ",") + "\n"
         }
-        return """
-               \(SQLITE_KEYWORDS["CR"]!) \(SQLITE_KEYWORDS["TB"]!) '\(name)' (
+        return "\(SQLITE_KEYWORDS["CR"]!) "  +
+               "\(SQLITE_KEYWORDS["TB"]!) " +
+               "\(SQLITE_KEYWORDS["IF"]!) " +
+               "\(SQLITE_KEYWORDS["NOT"]!) " +
+               "\(SQLITE_KEYWORDS["EX"]!) " +
+               """
+               '\(name)' (
                \(cols));
                """
+    }
+}
+
+//----------------------------------------------------------------------------//
+//                                INSERT INTO                                 //
+//----------------------------------------------------------------------------//
+extension Table {
+    func insert_into(columns : [Column], values : [String]) -> String {
+        var cols = ""
+        for column in columns {
+            cols += "'\(column.name)'"
+            if column != columns.last {
+                cols += ", "
+            }
+        }
+        var vals = ""
+        for value in values {
+            vals += "'\(value)'"
+            if value != values.last {
+                vals += ", "
+            }
+        }
+        return "\(SQLITE_KEYWORDS["INS"]!) " +
+               "\(SQLITE_KEYWORDS["INTO"]!) " +
+               "'\(name)' (" +
+               cols +
+               ") \(SQLITE_KEYWORDS["VAL"]!) (" +
+               vals +
+               ");"
     }
 }
