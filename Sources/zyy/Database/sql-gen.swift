@@ -92,18 +92,14 @@ extension Table {
 //                                INSERT INTO                                 //
 //----------------------------------------------------------------------------//
 extension Table {
-    func insert_into(columns : [Column], values : [String]) -> String {
+    func insert_into(row: [(String, String)]) -> String {
         var cols = ""
-        for column in columns {
-            cols += "'\(column.name)'"
-            if column != columns.last {
-                cols += ", "
-            }
-        }
         var vals = ""
-        for value in values {
-            vals += "'\(value)'"
-            if value != values.last {
+        for i in row {
+            cols += "'\(i.0)'"
+            vals += "'\(i.1)'"
+            if i != row.last! {
+                cols += ", "
                 vals += ", "
             }
         }

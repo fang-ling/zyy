@@ -22,6 +22,10 @@ let DB_PAGE_TABLE_COL_TITLE = "title"
 let DB_PAGE_TABLE_COL_CONTENT = "content"
 let DB_PAGE_TABLE_COL_LINK = "link"
 let DB_PAGE_TABLE_COL_DATE = "date"
+/* Settings options */
+let ZYY_SET_OPT_BUILD_COUNT = "build_count"
+let ZYY_SET_OPT_EDITOR = "editor"
+let ZYY_SET_OPT_INDEX_UPDATE_TIME = "index_update_time"
 
 extension zyy {
     struct Init : ParsableCommand {
@@ -36,8 +40,8 @@ extension zyy {
             }
             /* Create db */
             create_database()
-            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
-            set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            set_setting(field: ZYY_SET_OPT_BUILD_COUNT, value: "0")
+            set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                         value: get_current_date_string())
             print("Creating \(ZYY_DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
@@ -58,7 +62,7 @@ extension zyy {
                 error("Database file: \(ZYY_DB_FILENAME): " +
                       "No such file or directory")
             }
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             print("Hint: Press enter directly to leave it as-is")
             /* Website name*/
@@ -159,9 +163,9 @@ extension zyy {
         )
         
         func run() {
-            let count = Int(get_setting(field: DB_SETTING_FIELD_BUILD_COUNT),
+            let count = Int(get_setting(field: ZYY_SET_OPT_BUILD_COUNT),
                             radix: 16)!
-            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT,
+            set_setting(field: ZYY_SET_OPT_BUILD_COUNT,
                         value: String(count + 1, radix: 16))
             HTML.write_to_file()
         }
@@ -173,10 +177,10 @@ extension zyy {
         )
         
         func run() {
-            create_database()
-            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
-            set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
-                        value: get_current_date_string())
+//            create_database()
+//            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
+//            set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+//                        value: get_current_date_string())
         }
     }
 }
@@ -214,7 +218,7 @@ extension zyy.SectionCommand {
                 command_line_error("No such section:\n" + name2)
             }
             /* Update index modified date */
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             /* There should be a SQL way to do this. */
             var sections = zyy.list_sections()
@@ -245,7 +249,7 @@ extension zyy.SectionCommand {
             if sec.heading == name {
                 command_line_error("Already existed:\n" + name)
             }
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             sec.heading = name
             print("Caption:")
@@ -274,7 +278,7 @@ extension zyy.SectionCommand {
                 command_line_error("No such section:\n" + name)
             }
             print("Hint: Press enter directly to leave it as-is")
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             print("Caption[\(sec.caption)]:")
             let caption = readLine() ?? ""
@@ -313,7 +317,7 @@ extension zyy.SectionCommand {
             if sec.heading != name {
                 command_line_error("No such section:\n" + name)
             }
-            zyy.set_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME,
+            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             zyy.remove_section(heading: name)
         }
@@ -479,8 +483,6 @@ struct zyy : ParsableCommand {
                                                              "cf7u", "cf8u"]
     static let DB_SETTING_FIELD_AUTHOR            = "author"
     static let DB_SETTING_FIELD_START_YEAR        = "st_year"
-    static let DB_SETTING_FIELD_BUILD_COUNT       = "build_cnt"
-    static let DB_SETTING_FIELD_INDEX_UPDATE_TIME = "index_upd_t"
     static let DB_SETTING_FIELD_CUSTOM_MARKDOWN   = "custom_html"
     static let DB_SETTING_FIELD_CUSTOM_HEAD       = "custom_head"
     /* Miscs */

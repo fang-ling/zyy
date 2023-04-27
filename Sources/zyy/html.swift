@@ -397,7 +397,7 @@ struct HTML {
                                      atomically: true,
                                      encoding: .utf8)
             let index_t =
-                zyy.get_setting(field: zyy.DB_SETTING_FIELD_INDEX_UPDATE_TIME)
+                zyy.get_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME)
             /* index.html */
             try HTML.render_index(date: index_t).write(toFile: "index.html",
                                                        atomically: true,
@@ -546,7 +546,7 @@ struct HTML {
         div.add(a2)
         let span = DOMTreeNode(name: "span",
                                attr: [:])
-        let count = zyy.get_setting(field:zyy.DB_SETTING_FIELD_BUILD_COUNT)
+        let count = zyy.get_setting(field: ZYY_SET_OPT_BUILD_COUNT)
         span.add("Build: \(count)")
         div.add(span)
         let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])

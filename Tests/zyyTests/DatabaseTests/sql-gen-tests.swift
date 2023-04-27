@@ -32,23 +32,12 @@ final class SQLGenTests: XCTestCase {
     }
     
     func test_insert_into() {
-        var columns = [Column]()
-        columns.append(Column(name: "id",
-                              type: "INTEGER",
-                              is_primary_key: true))
-        columns.append(Column(name: "name", type: "TEXT"))
-        columns.append(Column(name: "email",
-                              type: "TEXT",
-                              is_unique: true,
-                              is_not_null: true))
-        columns.removeFirst()
+        let row = [("name", "Alice"), ("email", "alice@example.com")]
         let table = Table(name: "users")
-        let values = ["Alice", "alice@example.com"]
         
         let SQL = "INSERT INTO 'users' ('name', 'email') VALUES " +
                   "('Alice', 'alice@example.com');"
-        XCTAssertEqual(table.insert_into(columns: columns, values: values),
-                       SQL)
+        XCTAssertEqual(table.insert_into(row: row), SQL)
     }
 }
 
