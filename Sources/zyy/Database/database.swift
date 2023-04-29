@@ -30,6 +30,7 @@ func get_setting_sql() -> String {
 /// build_count = 0
 /// editor = nano # Every mac's built-in cmdline text editor
 /// index_update_time = `current_time` # non-user visible
+/// others: null
 func get_setting_default_rows_sql() -> String {
     let table = Table(name: ZYY_SET_TBL)
     let rows = [[(ZYY_SET_COL_OPT, ZYY_SET_OPT_BUILD_COUNT),

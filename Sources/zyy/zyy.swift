@@ -26,6 +26,23 @@ let DB_PAGE_TABLE_COL_DATE = "date"
 let ZYY_SET_OPT_BUILD_COUNT = "build_count"
 let ZYY_SET_OPT_EDITOR = "editor"
 let ZYY_SET_OPT_INDEX_UPDATE_TIME = "index_update_time"
+/// The title of your website
+let ZYY_SET_OPT_TITLE = "title"
+/// The URL of your website, must starts with `http://` or `https://`
+let ZYY_SET_OPT_URL = "url"
+/// Your name
+let ZYY_SET_OPT_AUTHOR = "author"
+let ZYY_SET_OPT_START_YEAR = "start_year"
+let ZYY_SET_OPT_CUSTOM_HEAD = "custom_head"
+let ZYY_SET_OPT_CUSTOM_MARKDOWN   = "custom_markdown"
+let ZYY_SET_OPT_CUSTOM_FIELDS = ["custom_field_1", "custom_field_2",
+                                 "custom_field_3", "custom_field_4",
+                                 "custom_field_5", "custom_field_6",
+                                 "custom_field_7", "custom_field_8",]
+let ZYY_SET_OPT_CUSTOM_FIELD_URLS = ["custom_field_url_1", "custom_field_url_2",
+                                     "custom_field_url_3", "custom_field_url_4",
+                                     "custom_field_url_5", "custom_field_url_6",
+                                     "custom_field_url_7", "custom_field_url_8"]
 
 extension zyy {
     struct Init : ParsableCommand {
@@ -66,35 +83,35 @@ extension zyy {
                             value: get_current_date_string())
             print("Hint: Press enter directly to leave it as-is")
             /* Website name*/
-            var site_name = get_setting(field: DB_SETTING_FIELD_SITENAME)
+            var site_name = get_setting(field: ZYY_SET_OPT_TITLE)
             print("What's the name of your site[\(site_name)]: ")
             site_name = readLine() ?? site_name /* May be unnecessary */
             if site_name != "" { /* User input something */
-                set_setting(field: DB_SETTING_FIELD_SITENAME,
-                           value: site_name)
+                set_setting(field: ZYY_SET_OPT_TITLE,
+                            value: site_name)
             }
             /* Site url */
-            var site_url = get_setting(field: DB_SETTING_FIELD_SITEURL)
+            var site_url = get_setting(field: ZYY_SET_OPT_URL)
             print("What's the URL of your site[\(site_url)]: ")
             site_url = readLine() ?? site_url /* May be unnecessary */
             if site_url != "" {
-                set_setting(field: DB_SETTING_FIELD_SITEURL, value: site_url)
+                set_setting(field: ZYY_SET_OPT_URL, value: site_url)
             }
             /* Head box custom fields */
-            for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
-                var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+            for i in 0 ..< ZYY_SET_OPT_CUSTOM_FIELDS.count {
+                var c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i])
                 print("What's the \(getOrdinalNumbers(i+1)) custom field " +
                       "in head box of the index page[\(c)]: ")
                 c = readLine() ?? c
                 if c != "" {
-                    set_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i],
+                    set_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i],
                                value: c)
                 }
-                c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+                c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i])
                 print("Does it have a link[\(c)]: ")
                 c = readLine() ?? c
                 if c != "" {
-                    set_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i],
+                    set_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i],
                                value: c)
                 }
                 print("Need more?[y / n (Default is no)]")
@@ -105,22 +122,22 @@ extension zyy {
                 }
             }
             /* Author */
-            var author = get_setting(field: DB_SETTING_FIELD_AUTHOR)
+            var author = get_setting(field: ZYY_SET_OPT_AUTHOR)
             print("What's your name[\(author)]: ")
             author = readLine() ?? author /* May be unnecessary */
             if author != "" {
-                set_setting(field: DB_SETTING_FIELD_AUTHOR, value: author)
+                set_setting(field: ZYY_SET_OPT_AUTHOR, value: author)
             }
             /* Start year */
-            var st_year = get_setting(field: DB_SETTING_FIELD_START_YEAR)
+            var st_year = get_setting(field: ZYY_SET_OPT_START_YEAR)
             print("Start year of the website[\(st_year)]: ")
             st_year = readLine() ?? st_year
             if st_year != "" {
-                set_setting(field: DB_SETTING_FIELD_START_YEAR,
+                set_setting(field: ZYY_SET_OPT_START_YEAR,
                             value: st_year)
             }
             var custom_html =
-                get_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN).from_base64()!
+                get_setting(field: ZYY_SET_OPT_CUSTOM_MARKDOWN).from_base64()!
             print("Custom MARKDOWN on home page:")
             do {
                 try custom_html.write(toFile: TEMP_FILENAME,
@@ -134,11 +151,11 @@ extension zyy {
             } catch {
                 command_line_error(error.localizedDescription)
             }
-            set_setting(field: DB_SETTING_FIELD_CUSTOM_MARKDOWN,
+            set_setting(field: ZYY_SET_OPT_CUSTOM_MARKDOWN,
                         value: custom_html.to_base64())
             
             var custom_head =
-                get_setting(field: DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!
+                get_setting(field: ZYY_SET_OPT_CUSTOM_HEAD).from_base64()!
             print("Custom HTML in <head>...</head>:")
             do {
                 try custom_head.write(toFile: TEMP_FILENAME,
@@ -152,7 +169,7 @@ extension zyy {
             } catch {
                 command_line_error(error.localizedDescription)
             }
-            set_setting(field: DB_SETTING_FIELD_CUSTOM_HEAD,
+            set_setting(field: ZYY_SET_OPT_CUSTOM_HEAD,
                         value: custom_head.to_base64())
         }
     }
@@ -469,27 +486,9 @@ struct zyy : ParsableCommand {
     /* Command Line related String constants */
     public static let VERSION = "0.0.4-beta"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
-    /* Setting table field names */
-    static let DB_SETTING_FIELD_SITENAME          = "sitename"
-    static let DB_SETTING_FIELD_SITEURL           = "site_url"
-    /* Don't forget to change these two when `SITE_MAX_CUSTOM_FIELDS` changed */
-    private static let DB_SETTING_FIELD_CUSTOM_FIELDS     = ["cf1", "cf2",
-                                                             "cf3", "cf4",
-                                                             "cf5", "cf6",
-                                                             "cf7", "cf8"]
-    private static let DB_SETTING_FIELD_CUSTOM_FIELD_URLS = ["cf1u", "cf2u",
-                                                             "cf3u", "cf4u",
-                                                             "cf5u", "cf6u",
-                                                             "cf7u", "cf8u"]
-    static let DB_SETTING_FIELD_AUTHOR            = "author"
-    static let DB_SETTING_FIELD_START_YEAR        = "st_year"
-    static let DB_SETTING_FIELD_CUSTOM_MARKDOWN   = "custom_html"
-    static let DB_SETTING_FIELD_CUSTOM_HEAD       = "custom_head"
+    
     /* Miscs */
     static let TEMP_FILENAME = ".zyy_temp"
-    
-    /* Maximum custom fields in head box */
-    private static let SITE_MAX_CUSTOM_FIELDS = 8
     
     private static func create_database() {
         /* Setting table */
@@ -786,13 +785,13 @@ struct zyy : ParsableCommand {
     public static func getAllHeadBoxCustomFields() -> [[String]] {
         var res = [[String]](repeating: [String](), count: 2)
         /* Head box custom fields */
-        for i in 0 ..< SITE_MAX_CUSTOM_FIELDS {
-            var c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELDS[i])
+        for i in 0 ..< ZYY_SET_OPT_CUSTOM_FIELDS.count {
+            var c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i])
             if c != "" {
                 res[0].append(c)
             }
             
-            c = get_setting(field: DB_SETTING_FIELD_CUSTOM_FIELD_URLS[i])
+            c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i])
             if c != "" {
                 res[1].append(c)
             } else { /* Required for matching fields and urls */

@@ -432,7 +432,7 @@ struct HTML {
         title.add(titleText)
         head.add(title)
         let custom_head =
-        zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_HEAD).from_base64()!
+        zyy.get_setting(field: ZYY_SET_OPT_CUSTOM_HEAD).from_base64()!
         head.add(custom_head)
         return head
     }
@@ -513,8 +513,8 @@ struct HTML {
     }
     
     private static func render_foot_box(date: String) -> DOMTreeNode {
-        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
-        let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
+        let author = zyy.get_setting(field: ZYY_SET_OPT_AUTHOR)
+        let site_url = zyy.get_setting(field: ZYY_SET_OPT_URL)
         let div = DOMTreeNode(name: "div",
                               attr: ["class" : "purplebox foot-box"])
         let i = DOMTreeNode(name: "i", attr: [:])
@@ -528,9 +528,9 @@ struct HTML {
     }
     
     private static func render_footer() -> DOMTreeNode {
-        let site_url = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITEURL)
-        let author = zyy.get_setting(field: zyy.DB_SETTING_FIELD_AUTHOR)
-        let st_year = zyy.get_setting(field: zyy.DB_SETTING_FIELD_START_YEAR)
+        let site_url = zyy.get_setting(field: ZYY_SET_OPT_URL)
+        let author = zyy.get_setting(field: ZYY_SET_OPT_AUTHOR)
+        let st_year = zyy.get_setting(field: ZYY_SET_OPT_START_YEAR)
         var cr_year = 1970
         if let year = Calendar(identifier: .gregorian)
                             .dateComponents([.year], from: Date()).year {
@@ -556,12 +556,12 @@ struct HTML {
     }
     
     private static func render_index_body(date: String) -> DOMTreeNode {
-        let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
+        let sitename = zyy.get_setting(field: ZYY_SET_OPT_TITLE)
         let body = DOMTreeNode(name: "body", attr: [:])
         body.add(render_title(title_text: sitename))
         body.add(render_head_box())
         body.add(render_stack_preview_container())
-        let c_md = zyy.get_setting(field: zyy.DB_SETTING_FIELD_CUSTOM_MARKDOWN)
+        let c_md = zyy.get_setting(field: ZYY_SET_OPT_CUSTOM_MARKDOWN)
                     .from_base64()!
         body.add(cmark_markdown_to_html_with_ext(c_md, CMARK_OPT_UNSAFE))
         body.add(render_foot_box(date: date))
@@ -574,7 +574,7 @@ struct HTML {
     }
     
     public static func render_index(date: String) -> String {
-        let sitename = zyy.get_setting(field: zyy.DB_SETTING_FIELD_SITENAME)
+        let sitename = zyy.get_setting(field: ZYY_SET_OPT_TITLE)
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
         html.add(render_head(titleText: sitename))
         html.add(render_index_body(date: date))
