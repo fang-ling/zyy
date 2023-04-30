@@ -26,19 +26,39 @@ func get_setting_sql() -> String {
     return table.create_table_sql(columns: columns)
 }
 
-/// Default settings:
-/// build_count = 0
-/// editor = nano # Every mac's built-in cmdline text editor
-/// index_update_time = `current_time` # non-user visible
-/// others: null
+/// Default settings
 func get_setting_default_rows_sql() -> String {
     let table = Table(name: ZYY_SET_TBL)
-    let rows = [[(ZYY_SET_COL_OPT, ZYY_SET_OPT_BUILD_COUNT),
+                /// build_count = 0
+    var rows = [[(ZYY_SET_COL_OPT, ZYY_SET_OPT_BUILD_COUNT),
                  (ZYY_SET_COL_VAL, "0")],
+                /// editor = nano # Every mac's built-in cmdline text editor
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_EDITOR),
                  (ZYY_SET_COL_VAL, "nano")],
+                /// index_update_time = `current_time` # non-user visible
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_INDEX_UPDATE_TIME),
-                 (ZYY_SET_COL_VAL, get_current_date_string())]]
+                 (ZYY_SET_COL_VAL, get_current_date_string())],
+                /// title = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_TITLE),
+                 (ZYY_SET_COL_VAL, "")],
+                /// url = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_URL),
+                 (ZYY_SET_COL_VAL, "")],
+                /// author = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_AUTHOR),
+                 (ZYY_SET_COL_VAL, "")],
+                /// start_year = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_START_YEAR),
+                 (ZYY_SET_COL_VAL, "")],
+                /// custom_head = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_HEAD),
+                 (ZYY_SET_COL_VAL, "")],
+                /// custom_markdown = ""
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_MARKDOWN),
+                 (ZYY_SET_COL_VAL, "")]]
+    for i in ZYY_SET_OPT_CUSTOM_FIELDS + ZYY_SET_OPT_CUSTOM_FIELD_URLS {
+        rows.append([(ZYY_SET_COL_OPT, i), (ZYY_SET_COL_VAL, "")])
+    }
     var sql = ""
     for i in rows.indices {
         sql += table.insert_into(row: rows[i])
@@ -49,6 +69,6 @@ func get_setting_default_rows_sql() -> String {
     return sql
 }
 
-//func create_tables() {
-//    
-//}
+func create_tables() {
+    
+}

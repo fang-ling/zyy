@@ -44,10 +44,13 @@ let ZYY_SET_OPT_CUSTOM_FIELD_URLS = ["custom_field_url_1", "custom_field_url_2",
                                      "custom_field_url_5", "custom_field_url_6",
                                      "custom_field_url_7", "custom_field_url_8"]
 
+//----------------------------------------------------------------------------//
+//                               Init Command                                 //
+//----------------------------------------------------------------------------//
 extension zyy {
     struct Init : ParsableCommand {
         static var configuration = CommandConfiguration(
-            abstract: "Initialize website database in current directory."
+            abstract: "Create an empty zyy website"
         )
         
         func run() {
@@ -65,7 +68,9 @@ extension zyy {
                   "finish setting up your website.")
         }
     }
-    
+}
+
+extension zyy {
     struct Configure : ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "Set up the website."

@@ -24,12 +24,27 @@ final class DatabaseTests : XCTestCase {
                           sql: get_setting_sql() +
                                get_setting_default_rows_sql() +
                                "SELECT * FROM \(ZYY_SET_TBL);")
-        let tbl = [[ZYY_SET_COL_OPT : ZYY_SET_OPT_BUILD_COUNT,
+        var tbl = [[ZYY_SET_COL_OPT : ZYY_SET_OPT_BUILD_COUNT,
                     ZYY_SET_COL_VAL : "0"],
                    [ZYY_SET_COL_OPT : ZYY_SET_OPT_EDITOR,
                     ZYY_SET_COL_VAL : "nano"],
                    [ZYY_SET_COL_OPT : ZYY_SET_OPT_INDEX_UPDATE_TIME,
-                    ZYY_SET_COL_VAL : get_current_date_string()]]
+                    ZYY_SET_COL_VAL : get_current_date_string()],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_TITLE,
+                    ZYY_SET_COL_VAL : ""],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_URL,
+                    ZYY_SET_COL_VAL : ""],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_AUTHOR,
+                    ZYY_SET_COL_VAL : ""],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_START_YEAR,
+                    ZYY_SET_COL_VAL : ""],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_CUSTOM_HEAD,
+                    ZYY_SET_COL_VAL : ""],
+                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_CUSTOM_MARKDOWN,
+                    ZYY_SET_COL_VAL : ""]]
+        for i in ZYY_SET_OPT_CUSTOM_FIELDS + ZYY_SET_OPT_CUSTOM_FIELD_URLS {
+            tbl.append([ZYY_SET_COL_OPT : i, ZYY_SET_COL_VAL : ""])
+        }
         XCTAssertEqual(result, tbl)
     }
 }
