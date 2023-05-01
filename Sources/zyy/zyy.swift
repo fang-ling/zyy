@@ -11,17 +11,20 @@ let ZYY_SET_TBL = "Setting"
 let ZYY_SEC_TBL = "Section"
 let ZYY_PAGE_TBL = "Page"
 /* Database table column name */
+/// Setting table
 let ZYY_SET_COL_OPT = "option"
 let ZYY_SET_COL_VAL = "value"
+/// Page table
+let ZYY_PAGE_COL_ID = "id"
+let ZYY_PAGE_COL_TITLE = "title"
+let ZYY_PAGE_COL_LINK = "link"
+let ZYY_PAGE_COL_DATE = "date"
+let ZYY_PAGE_COL_CONTENT = "content"
 let DB_SECTION_TABLE_COL_HEADING = "heading"
 let DB_SECTION_TABLE_COL_CAPTION = "caption"
 let DB_SECTION_TABLE_COL_COVER   = "cover"
 let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
 let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
-let DB_PAGE_TABLE_COL_TITLE = "title"
-let DB_PAGE_TABLE_COL_CONTENT = "content"
-let DB_PAGE_TABLE_COL_LINK = "link"
-let DB_PAGE_TABLE_COL_DATE = "date"
 /* Settings options */
 let ZYY_SET_OPT_BUILD_COUNT = "build_count"
 let ZYY_SET_OPT_EDITOR = "editor"
@@ -519,10 +522,10 @@ struct zyy : ParsableCommand {
         /* Page table */
             SQL = """
                   CREATE TABLE if not exists \(ZYY_PAGE_TBL)(
-                      \(DB_PAGE_TABLE_COL_TITLE) TEXT PRIMARY KEY NOT NULL,
-                      \(DB_PAGE_TABLE_COL_CONTENT) TEXT,
-                      \(DB_PAGE_TABLE_COL_LINK)   TEXT,
-                      \(DB_PAGE_TABLE_COL_DATE)   TEXT
+                      \(ZYY_PAGE_COL_TITLE) TEXT PRIMARY KEY NOT NULL,
+                      \(ZYY_PAGE_COL_CONTENT) TEXT,
+                      \(ZYY_PAGE_COL_LINK)   TEXT,
+                      \(ZYY_PAGE_COL_DATE)   TEXT
                   );
                   """
         sqlite.exec(sql: SQL)
@@ -682,22 +685,22 @@ struct zyy : ParsableCommand {
         let title = title.to_base64()
         let SQL = """
                   SELECT * FROM \(ZYY_PAGE_TBL)
-                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title)';
+                  WHERE \(ZYY_PAGE_COL_TITLE) = '\(title)';
                   """
         let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var value = Page()
         if let row = result.first {
-            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
+            if let val = row[ZYY_PAGE_COL_TITLE] {
                 value.title = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
+            if let val = row[ZYY_PAGE_COL_CONTENT] {
                 value.content = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_LINK] {
+            if let val = row[ZYY_PAGE_COL_LINK] {
                 value.link = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_DATE] {
+            if let val = row[ZYY_PAGE_COL_DATE] {
                 value.date = val
             }
         }
@@ -709,10 +712,10 @@ struct zyy : ParsableCommand {
     private static func set_page(_ p : Page) {
         var SQL = """
                   INSERT OR IGNORE INTO \(ZYY_PAGE_TBL)
-                  (\(DB_PAGE_TABLE_COL_TITLE),
-                   \(DB_PAGE_TABLE_COL_CONTENT),
-                   \(DB_PAGE_TABLE_COL_LINK),
-                   \(DB_PAGE_TABLE_COL_DATE))
+                  (\(ZYY_PAGE_COL_TITLE),
+                   \(ZYY_PAGE_COL_CONTENT),
+                   \(ZYY_PAGE_COL_LINK),
+                   \(ZYY_PAGE_COL_DATE))
                   VALUES(
                       '\(p.title.to_base64())',
                       '\(p.content.to_base64())',
@@ -724,11 +727,11 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
             SQL = """
                   UPDATE \(ZYY_PAGE_TBL)
-                  SET \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())',
-                      \(DB_PAGE_TABLE_COL_CONTENT) = '\(p.content.to_base64())',
-                      \(DB_PAGE_TABLE_COL_LINK) = '\(p.link.to_base64())',
-                      \(DB_PAGE_TABLE_COL_DATE) = '\(p.date)'
-                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(p.title.to_base64())';
+                  SET \(ZYY_PAGE_COL_TITLE) = '\(p.title.to_base64())',
+                      \(ZYY_PAGE_COL_CONTENT) = '\(p.content.to_base64())',
+                      \(ZYY_PAGE_COL_LINK) = '\(p.link.to_base64())',
+                      \(ZYY_PAGE_COL_DATE) = '\(p.date)'
+                  WHERE \(ZYY_PAGE_COL_TITLE) = '\(p.title.to_base64())';
                   """
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
@@ -738,7 +741,7 @@ struct zyy : ParsableCommand {
     private static func remove_page(title : String) {
         let SQL = """
                   DELETE FROM \(ZYY_PAGE_TBL)
-                  WHERE \(DB_PAGE_TABLE_COL_TITLE) = '\(title.to_base64())';
+                  WHERE \(ZYY_PAGE_COL_TITLE) = '\(title.to_base64())';
                   """
         let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
@@ -755,16 +758,16 @@ struct zyy : ParsableCommand {
         var ret = [Page]()
         for row in result {
             var value = Page()
-            if let val = row[DB_PAGE_TABLE_COL_TITLE] {
+            if let val = row[ZYY_PAGE_COL_TITLE] {
                 value.title = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_CONTENT] {
+            if let val = row[ZYY_PAGE_COL_CONTENT] {
                 value.content = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_LINK] {
+            if let val = row[ZYY_PAGE_COL_LINK] {
                 value.link = val.from_base64()!
             }
-            if let val = row[DB_PAGE_TABLE_COL_DATE] {
+            if let val = row[ZYY_PAGE_COL_DATE] {
                 value.date = val
             }
             ret.append(value)

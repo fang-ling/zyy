@@ -47,5 +47,18 @@ final class DatabaseTests : XCTestCase {
         }
         XCTAssertEqual(result, tbl)
     }
+    
+    func test_get_page_sql() {
+        XCTAssertEqual(get_page_sql(),
+                       """
+                       CREATE TABLE IF NOT EXISTS 'Page' (
+                           'id' INTEGER PRIMARY KEY,
+                           'title' TEXT,
+                           'link' TEXT,
+                           'date' TEXT,
+                           'content' TEXT
+                       );
+                       """)
+    }
 }
 

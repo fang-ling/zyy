@@ -69,6 +69,24 @@ func get_setting_default_rows_sql() -> String {
     return sql
 }
 
+/// Page table:
+/// | id | title | link | date | content |
+func get_page_sql() -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    let columns = [Column(name: ZYY_PAGE_COL_ID,
+                          type: "INTEGER",
+                          is_primary_key: true),
+                   Column(name: ZYY_PAGE_COL_TITLE, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_LINK, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_DATE, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_CONTENT, type: "TEXT")]
+    return table.create_table_sql(columns: columns)
+}
+
 func create_tables() {
-    
+    exec(at: ZYY_DB_FILENAME,
+         sql: get_setting_sql() + /// Create Setting table
+              get_setting_default_rows_sql() + /// Insert default settings
+              get_page_sql() /// Create page table
+    )
 }
