@@ -10,19 +10,19 @@ import XCTest
 
 final class DatabaseTests : XCTestCase {
     func test_get_setting_sql() {
-        XCTAssertEqual(get_setting_sql(),
+        XCTAssertEqual(get_setting_creation_sql(),
                        """
-                       CREATE TABLE IF NOT EXISTS 'Setting' (
-                           'option' TEXT PRIMARY KEY,
-                           'value' TEXT
+                       CREATE TABLE IF NOT EXISTS "Setting" (
+                           "option" TEXT PRIMARY KEY,
+                           "value" TEXT
                        );
                        """)
     }
     
     func test_get_setting_default_rows_sql() {
         let result = exec(at: ":memory:",
-                          sql: get_setting_sql() +
-                               get_setting_default_rows_sql() +
+                          sql: get_setting_creation_sql() +
+                               get_setting_insert_default_rows_sql() +
                                "SELECT * FROM \(ZYY_SET_TBL);")
         var tbl = [[ZYY_SET_COL_OPT : ZYY_SET_OPT_BUILD_COUNT,
                     ZYY_SET_COL_VAL : "0"],
@@ -49,14 +49,14 @@ final class DatabaseTests : XCTestCase {
     }
     
     func test_get_page_sql() {
-        XCTAssertEqual(get_page_sql(),
+        XCTAssertEqual(get_page_creation_sql(),
                        """
-                       CREATE TABLE IF NOT EXISTS 'Page' (
-                           'id' INTEGER PRIMARY KEY,
-                           'title' TEXT,
-                           'link' TEXT,
-                           'date' TEXT,
-                           'content' TEXT
+                       CREATE TABLE IF NOT EXISTS "Page" (
+                           "id" INTEGER PRIMARY KEY,
+                           "title" TEXT,
+                           "link" TEXT,
+                           "date" TEXT,
+                           "content" TEXT
                        );
                        """)
     }

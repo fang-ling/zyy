@@ -23,10 +23,10 @@ final class SQLGenTests: XCTestCase {
         
         XCTAssertEqual(table.create_table_sql(columns: columns),
                        """
-                       CREATE TABLE IF NOT EXISTS 'users' (
-                           'id' INTEGER PRIMARY KEY,
-                           'name' TEXT,
-                           'email' TEXT NOT NULL UNIQUE
+                       CREATE TABLE IF NOT EXISTS "users" (
+                           "id" INTEGER PRIMARY KEY,
+                           "name" TEXT,
+                           "email" TEXT NOT NULL UNIQUE
                        );
                        """)
     }
@@ -35,9 +35,19 @@ final class SQLGenTests: XCTestCase {
         let row = [("name", "Alice"), ("email", "alice@example.com")]
         let table = Table(name: "users")
         
-        let SQL = "INSERT INTO 'users' ('name', 'email') VALUES " +
+        let SQL = #"INSERT INTO "users" ("name", "email") VALUES "# +
                   "('Alice', 'alice@example.com');"
         XCTAssertEqual(table.insert_into(row: row), SQL)
+    }
+    
+    func test_select() {
+        let table = Table(name: "users")
+        
+        let SQL = #"SELECT "name", "email" FROM "# +
+                  #""users" WHERE ("name" = 'Alice')"#
+        XCTAssertEqual(SQL,
+                       table.select(columns: ["name", "email"],
+                                    where: ("name", "Alice")))
     }
 }
 

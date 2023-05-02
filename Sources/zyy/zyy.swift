@@ -59,13 +59,14 @@ extension zyy {
         func run() {
             /* Prevent user from calling `init` twice */
             if FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
-                error("Database file: \(ZYY_DB_FILENAME) existed.")
+                fatal_error(.file_already_exists)
             }
             /* Create db */
-            create_database()
-            set_setting(field: ZYY_SET_OPT_BUILD_COUNT, value: "0")
-            set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-                        value: get_current_date_string())
+            create_tables()
+//            create_database()
+//            set_setting(field: ZYY_SET_OPT_BUILD_COUNT, value: "0")
+//            set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+//                        value: get_current_date_string())
             print("Creating \(ZYY_DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
@@ -73,8 +74,11 @@ extension zyy {
     }
 }
 
+//----------------------------------------------------------------------------//
+//                               Config Command                               //
+//----------------------------------------------------------------------------//
 extension zyy {
-    struct Configure : ParsableCommand {
+    struct Config : ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "Set up the website."
         )
@@ -486,7 +490,7 @@ struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for building personal websites.",
         version: VERSION,
-        subcommands: [Init.self, Configure.self, Build.self, Update.self,
+        subcommands: [Init.self, Config.self, Build.self, Update.self,
                       SectionCommand.self,
                       PageCommand.self]
     )

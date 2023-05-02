@@ -11,7 +11,12 @@ import Foundation
 let SQLITE_KEYWORDS = ["CR" : "CREATE", "TB" : "TABLE", "PK" : "PRIMARY KEY",
                        "N"  : "NOT NULL", "U" : "UNIQUE", "INS" : "INSERT",
                        "INTO" : "INTO", "IF" : "IF", "NOT" : "NOT",
-                       "EX" : "EXISTS", "VAL" : "VALUES"]
+                       "EX" : "EXISTS", "VAL" : "VALUES", "SEL" : "SELECT",
+                       "FR" : "FROM", "WHERE" : "WHERE"]
+
+/// From SQLite.org:
+/// The SQL standard requires double-quotes around identifiers and single-quotes
+/// around string literals.
 
 /* SQLite database table */
 /// FAQ from SQLite.org:
@@ -64,7 +69,7 @@ extension Table {
     func create_table_sql(columns : [Column]) -> String {
         var cols = ""
         for column in columns {
-            cols += "    '\(column.name)' " + "\(column.type)"
+            cols += "    \"\(column.name)\" " + "\(column.type)"
             if column.is_primary_key {
                 cols += " " + SQLITE_KEYWORDS["PK"]!
             }
@@ -82,7 +87,7 @@ extension Table {
                "\(SQLITE_KEYWORDS["NOT"]!) " +
                "\(SQLITE_KEYWORDS["EX"]!) " +
                """
-               '\(name)' (
+               "\(name)" (
                \(cols));
                """
     }
@@ -96,7 +101,7 @@ extension Table {
         var cols = ""
         var vals = ""
         for i in row {
-            cols += "'\(i.0)'"
+            cols += "\"\(i.0)\""
             vals += "'\(i.1)'"
             if i != row.last! {
                 cols += ", "
@@ -105,7 +110,7 @@ extension Table {
         }
         return "\(SQLITE_KEYWORDS["INS"]!) " +
                "\(SQLITE_KEYWORDS["INTO"]!) " +
-               "'\(name)' (" +
+               "\"\(name)\" (" +
                cols +
                ") \(SQLITE_KEYWORDS["VAL"]!) (" +
                vals +
@@ -118,4 +123,25 @@ extension Table {
 //----------------------------------------------------------------------------//
 extension Table {
 //    func update(columns : [Column], values : [String], predec)
+}
+
+//----------------------------------------------------------------------------//
+//                                SELECT                                      //
+//----------------------------------------------------------------------------//
+extension Table {
+    func select(columns : [String], where : (String, String)) -> String {
+        let row_filter = "(\"\(`where`.0)\" = '\(`where`.1)')"
+        var cols = ""
+        for column in columns {
+            cols += #"""# + column + #"""#
+            if column != columns.last {
+                cols += ", "
+            }
+        }
+        return "\(SQLITE_KEYWORDS["SEL"]!) " +
+               "\(cols) " +
+               "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\" " +
+               "\(SQLITE_KEYWORDS["WHERE"]!) " +
+               row_filter
+    }
 }

@@ -17,7 +17,7 @@ import Foundation
 /// | option 2 | value 2 |
 /// |   ....   |   ...   |
 /// | option N | value N |
-func get_setting_sql() -> String {
+func get_setting_creation_sql() -> String {
     let table = Table(name: ZYY_SET_TBL)
     let columns = [Column(name: ZYY_SET_COL_OPT,
                           type: "TEXT",
@@ -27,7 +27,7 @@ func get_setting_sql() -> String {
 }
 
 /// Default settings
-func get_setting_default_rows_sql() -> String {
+func get_setting_insert_default_rows_sql() -> String {
     let table = Table(name: ZYY_SET_TBL)
                 /// build_count = 0
     var rows = [[(ZYY_SET_COL_OPT, ZYY_SET_OPT_BUILD_COUNT),
@@ -71,7 +71,10 @@ func get_setting_default_rows_sql() -> String {
 
 /// Page table:
 /// | id | title | link | date | content |
-func get_page_sql() -> String {
+///            \    |           /
+///             \   |          /
+///             (base64 encoded)
+func get_page_creation_sql() -> String {
     let table = Table(name: ZYY_PAGE_TBL)
     let columns = [Column(name: ZYY_PAGE_COL_ID,
                           type: "INTEGER",
@@ -83,10 +86,15 @@ func get_page_sql() -> String {
     return table.create_table_sql(columns: columns)
 }
 
+/// Creates tables and writes default values to it.
 func create_tables() {
     exec(at: ZYY_DB_FILENAME,
-         sql: get_setting_sql() + /// Create Setting table
-              get_setting_default_rows_sql() + /// Insert default settings
-              get_page_sql() /// Create page table
+         sql: get_setting_creation_sql() + /// Create Setting table
+              get_setting_insert_default_rows_sql() + /// Insert default settings
+              get_page_creation_sql() /// Create page table
     )
 }
+
+//----------------------------------------------------------------------------//
+//                                SELECT                                      //
+//----------------------------------------------------------------------------//
