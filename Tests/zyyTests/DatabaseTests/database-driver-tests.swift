@@ -22,5 +22,22 @@ final class DatabaseDriverTests : XCTestCase {
         /* Remove temporary files */
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
     }
+    
+    func test_set_setting() throws {
+        /* Create tables */
+        create_tables()
+
+        set_setting(with: ZYY_SET_OPT_EDITOR, new_value: "emacs")
+        set_setting(with: ZYY_SET_OPT_BUILD_COUNT, new_value: "2")
+        set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+                    new_value: get_current_date_string())
+        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_EDITOR), "emacs")
+        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_BUILD_COUNT), "2")
+        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME),
+                       get_current_date_string())
+        
+        /* Remove temporary files */
+        try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
+    }
 }
 

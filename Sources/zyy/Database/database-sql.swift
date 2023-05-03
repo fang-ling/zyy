@@ -26,6 +26,27 @@ func get_setting_creation_sql() -> String {
     return table.create_table_sql(columns: columns)
 }
 
+/// Page table:
+/// | id | title | link | date | content |
+///            \    |           /
+///             \   |          /
+///             (base64 encoded)
+func get_page_creation_sql() -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    let columns = [Column(name: ZYY_PAGE_COL_ID,
+                          type: "INTEGER",
+                          is_primary_key: true),
+                   Column(name: ZYY_PAGE_COL_TITLE, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_LINK, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_DATE, type: "TEXT"),
+                   Column(name: ZYY_PAGE_COL_CONTENT, type: "TEXT")]
+    return table.create_table_sql(columns: columns)
+}
+
+//----------------------------------------------------------------------------//
+//                                INSERT INTO                                 //
+//----------------------------------------------------------------------------//
+
 /// Default settings
 func get_setting_insert_default_rows_sql() -> String {
     let table = Table(name: ZYY_SET_TBL)
@@ -69,28 +90,21 @@ func get_setting_insert_default_rows_sql() -> String {
     return sql
 }
 
-/// Page table:
-/// | id | title | link | date | content |
-///            \    |           /
-///             \   |          /
-///             (base64 encoded)
-func get_page_creation_sql() -> String {
-    let table = Table(name: ZYY_PAGE_TBL)
-    let columns = [Column(name: ZYY_PAGE_COL_ID,
-                          type: "INTEGER",
-                          is_primary_key: true),
-                   Column(name: ZYY_PAGE_COL_TITLE, type: "TEXT"),
-                   Column(name: ZYY_PAGE_COL_LINK, type: "TEXT"),
-                   Column(name: ZYY_PAGE_COL_DATE, type: "TEXT"),
-                   Column(name: ZYY_PAGE_COL_CONTENT, type: "TEXT")]
-    return table.create_table_sql(columns: columns)
-}
-
 //----------------------------------------------------------------------------//
 //                                SELECT                                      //
 //----------------------------------------------------------------------------//
 func get_setting_select_sql(with option : String) -> String {
     let table = Table(name: ZYY_SET_TBL)
     return table.select(columns: [ZYY_SET_COL_VAL],
+                        where: (ZYY_SET_COL_OPT, "'\(option)'"))
+}
+
+//----------------------------------------------------------------------------//
+//                                UPDATE                                      //
+//----------------------------------------------------------------------------//
+func get_setting_update_sql(with option : String,
+                            new_value : String) -> String {
+    let table = Table(name: ZYY_SET_TBL)
+    return table.update(column_value_pairs: [(ZYY_SET_COL_VAL, new_value)],
                         where: (ZYY_SET_COL_OPT, "'\(option)'"))
 }

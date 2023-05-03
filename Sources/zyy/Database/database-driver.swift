@@ -26,3 +26,11 @@ func get_setting(database : String = ZYY_DB_FILENAME,
     }
     return result[ZYY_SET_COL_VAL]
 }
+
+/// Update the specific setting
+func set_setting(database : String = ZYY_DB_FILENAME,
+                 with option : String,
+                 new_value : String) {
+    exec(at: database, sql: get_setting_update_sql(with: option,
+                                                   new_value: new_value))
+}
