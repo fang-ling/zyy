@@ -9,6 +9,17 @@ import XCTest
 @testable import zyy
 
 final class DatabaseDriverTests : XCTestCase {
+    func test_create_tables() throws {
+        /* Create tables */
+        create_tables()
+        
+        exec(at: ZYY_DB_FILENAME,
+             sql: "SELECT * FROM Setting;\nSELECT * FROM Page;")
+        
+        /* Remove temporary files */
+        try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
+    }
+    
     func test_get_setting() throws {
         /* Create tables */
         create_tables()

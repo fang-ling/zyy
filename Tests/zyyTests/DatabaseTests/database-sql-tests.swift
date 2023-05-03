@@ -19,34 +19,38 @@ final class DatabaseSQLTests : XCTestCase {
                        """)
     }
     
-//    func test_get_setting_default_rows_sql() {
-//        let result = exec(at: ":memory:",
-//                          sql: get_setting_creation_sql() +
-//                               get_setting_insert_default_rows_sql() +
-//                               "SELECT * FROM \(ZYY_SET_TBL);")
-//        var tbl = [[ZYY_SET_COL_OPT : ZYY_SET_OPT_BUILD_COUNT,
-//                    ZYY_SET_COL_VAL : "0"],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_EDITOR,
-//                    ZYY_SET_COL_VAL : "nano"],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                    ZYY_SET_COL_VAL : get_current_date_string()],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_TITLE,
-//                    ZYY_SET_COL_VAL : ""],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_URL,
-//                    ZYY_SET_COL_VAL : ""],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_AUTHOR,
-//                    ZYY_SET_COL_VAL : ""],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_START_YEAR,
-//                    ZYY_SET_COL_VAL : ""],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_CUSTOM_HEAD,
-//                    ZYY_SET_COL_VAL : ""],
-//                   [ZYY_SET_COL_OPT : ZYY_SET_OPT_CUSTOM_MARKDOWN,
-//                    ZYY_SET_COL_VAL : ""]]
-//        for i in ZYY_SET_OPT_CUSTOM_FIELDS + ZYY_SET_OPT_CUSTOM_FIELD_URLS {
-//            tbl.append([ZYY_SET_COL_OPT : i, ZYY_SET_COL_VAL : ""])
-//        }
-//        XCTAssertEqual(result, tbl)
-//    }
+    func test_get_setting_default_rows_sql() {
+        let d = get_current_date_string()
+        let sql =
+  """
+  INSERT INTO "Setting" ("option", "value") VALUES ('build_count', '0');
+  INSERT INTO "Setting" ("option", "value") VALUES ('editor', 'nano');
+  INSERT INTO "Setting" ("option", "value") VALUES ('index_update_time', '\(d)');
+  INSERT INTO "Setting" ("option", "value") VALUES ('title', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('url', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('author', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('start_year', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_head', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_markdown', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_1', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_2', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_3', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_4', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_5', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_6', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_7', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_8', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_1', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_2', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_3', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_4', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_5', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_6', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_7', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_url_8', '');
+  """
+        XCTAssertEqual(sql, get_setting_insert_default_rows_sql())
+    }
     
     func test_get_page_sql() {
         XCTAssertEqual(get_page_creation_sql(),
@@ -61,14 +65,10 @@ final class DatabaseSQLTests : XCTestCase {
                        """)
     }
     
-//    func test_get_setting_select_sql() {
-//        let result = exec(at: ":memory:",
-//                          sql: get_setting_creation_sql() +
-//                               get_setting_insert_default_rows_sql() +
-//                               get_setting_select_sql(with: ZYY_SET_OPT_EDITOR))
-//        let tbl = [[ZYY_SET_COL_VAL : "nano"]]
-//        XCTAssertEqual(tbl, result)
-//    }
+    func test_get_setting_select_sql() {
+        let sql = #"SELECT "value" FROM "Setting" WHERE ("option" = 'editor');"#
+        XCTAssertEqual(sql, get_setting_select_sql(with: ZYY_SET_OPT_EDITOR))
+    }
     
     func test_get_setting_update_sql() {
         let sql = #"UPDATE "Setting" SET "value" = 'emacs' "# +
