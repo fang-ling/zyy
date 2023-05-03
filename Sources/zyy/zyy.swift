@@ -26,6 +26,10 @@ let DB_SECTION_TABLE_COL_COVER   = "cover"
 let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
 let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
 /* Settings options */
+/// TODO: Replace consts with enum type
+//enum SettingOptions : String {
+//    case build_count = "build_count"
+//}
 let ZYY_SET_OPT_BUILD_COUNT = "build_count"
 let ZYY_SET_OPT_EDITOR = "editor"
 let ZYY_SET_OPT_INDEX_UPDATE_TIME = "index_update_time"
@@ -63,10 +67,6 @@ extension zyy {
             }
             /* Create db */
             create_tables()
-//            create_database()
-//            set_setting(field: ZYY_SET_OPT_BUILD_COUNT, value: "0")
-//            set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                        value: get_current_date_string())
             print("Creating \(ZYY_DB_FILENAME)")
             print("You may want to invoke `zyy configure` command to " +
                   "finish setting up your website.")
@@ -85,12 +85,11 @@ extension zyy {
         
         /* This looks terrible :( */
         func run() {
-            /* Interactive settings */
             /* Check if database exists */
             if !FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
-                error("Database file: \(ZYY_DB_FILENAME): " +
-                      "No such file or directory")
+                fatal_error(.no_such_file)
             }
+            /* Update index page modified time unconditionally. */
             zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                             value: get_current_date_string())
             print("Hint: Press enter directly to leave it as-is")

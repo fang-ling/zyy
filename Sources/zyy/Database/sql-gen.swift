@@ -12,7 +12,8 @@ let SQLITE_KEYWORDS = ["CR" : "CREATE", "TB" : "TABLE", "PK" : "PRIMARY KEY",
                        "N"  : "NOT NULL", "U" : "UNIQUE", "INS" : "INSERT",
                        "INTO" : "INTO", "IF" : "IF", "NOT" : "NOT",
                        "EX" : "EXISTS", "VAL" : "VALUES", "SEL" : "SELECT",
-                       "FR" : "FROM", "WHERE" : "WHERE"]
+                       "FR" : "FROM", "WHERE" : "WHERE", "UPD" : "UPDATE",
+                       "SET" : "SET"]
 
 /// From SQLite.org:
 /// The SQL standard requires double-quotes around identifiers and single-quotes
@@ -122,15 +123,32 @@ extension Table {
 //                                UPDATE                                      //
 //----------------------------------------------------------------------------//
 extension Table {
-//    func update(columns : [Column], values : [String], predec)
+    func update(column_value_pairs: [(String, String)],
+                where : (String, String)) -> String {
+        let row_filter = "(\"\(`where`.0)\" = \(`where`.1))"
+        var pairs = ""
+        for i in column_value_pairs.indices {
+            pairs += "\"\(column_value_pairs[i].0)\" = " +
+                     "'\(column_value_pairs[i].1)'"
+            if i != column_value_pairs.count - 1 {
+                pairs += ", "
+            }
+        }
+        return "\(SQLITE_KEYWORDS["UPD"]!) \"\(name)\" " +
+               "\(SQLITE_KEYWORDS["SET"]!) " +
+               "\(pairs) " +
+               "\(SQLITE_KEYWORDS["WHERE"]!) " +
+               "\(row_filter);"
+    }
 }
 
 //----------------------------------------------------------------------------//
 //                                SELECT                                      //
 //----------------------------------------------------------------------------//
+/// Remember to add single-quotes around string literals.
 extension Table {
     func select(columns : [String], where : (String, String)) -> String {
-        let row_filter = "(\"\(`where`.0)\" = '\(`where`.1)')"
+        let row_filter = "(\"\(`where`.0)\" = \(`where`.1))"
         var cols = ""
         for column in columns {
             cols += #"""# + column + #"""#
@@ -142,6 +160,6 @@ extension Table {
                "\(cols) " +
                "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\" " +
                "\(SQLITE_KEYWORDS["WHERE"]!) " +
-               row_filter
+               "\(row_filter);"
     }
 }

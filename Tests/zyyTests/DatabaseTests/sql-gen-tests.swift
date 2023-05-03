@@ -44,10 +44,21 @@ final class SQLGenTests: XCTestCase {
         let table = Table(name: "users")
         
         let SQL = #"SELECT "name", "email" FROM "# +
-                  #""users" WHERE ("name" = 'Alice')"#
+                  #""users" WHERE ("name" = 'Alice');"#
         XCTAssertEqual(SQL,
                        table.select(columns: ["name", "email"],
-                                    where: ("name", "Alice")))
+                                    where: ("name", "'Alice'")))
+    }
+    
+    func test_update() {
+        let table = Table(name: "users")
+        
+        let SQL = #"UPDATE "users" SET "email" = 'alice@icloud.com' "# +
+                  #"WHERE ("id" = 1);"#
+        XCTAssertEqual(SQL,
+                       table.update(column_value_pairs: [("email",
+                                                          "alice@icloud.com")],
+                                    where: ("id", "1")))
     }
 }
 

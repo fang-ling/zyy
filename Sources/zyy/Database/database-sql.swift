@@ -92,5 +92,5 @@ func get_page_creation_sql() -> String {
 func get_setting_select_sql(with option : String) -> String {
     let table = Table(name: ZYY_SET_TBL)
     return table.select(columns: [ZYY_SET_COL_VAL],
-                        where: (ZYY_SET_COL_OPT, option))
+                        where: (ZYY_SET_COL_OPT, "'\(option)'"))
 }
