@@ -18,7 +18,19 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
     var result = [SQLite3Row]()
     /* Open db file */
     var db : SQLite3Pointer? = nil
-    if sqlite3_open(path, &db) != SQLITE_OK {
+    /* The sqlite3_open_v2() interface works like sqlite3_open() except that it
+     * accepts two additional parameters for additional control over the new
+     * database connection.
+     *
+     * Regardless of the compile-time or start-time settings, URI filenames can
+     * be enabled for individual database connections by including the
+     * SQLITE_OPEN_URI bit in the set of bits passed as the F parameter to
+     * sqlite3_open_v2(N,P,F,V).
+     *
+     * 'sqlite3_config' is unavailable: Variadic function is unavailable
+     */
+    let db_flag = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_URI
+    if sqlite3_open_v2(path, &db, db_flag, nil) != SQLITE_OK {
         print(String(cString: sqlite3_errmsg(db!)))
         fatal_error(.cannot_open_db)
     }
@@ -41,7 +53,10 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
         var code = SQLITE_OK
         repeat {
             code = sqlite3_step(stmt)
-            if code == SQLITE_ERROR {
+            /* Generic error */
+            if code == SQLITE_ERROR ||
+            /* Abort due to constraint violation */
+               code == SQLITE_CONSTRAINT {
                 print(String(cString: sqlite3_errmsg(db!)))
                 fatal_error(.failed_to_evaluate_sql)
             }
@@ -62,6 +77,9 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
                 result.append(row)
             }
         } while (code != SQLITE_DONE)
+        /* SQLITE_DONE means that the statement has finished executing
+         * successfully. sqlite3_step() should not be called again.
+         */
         sqlite3_finalize(stmt)
     }
     /* Deinit */

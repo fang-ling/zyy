@@ -86,15 +86,11 @@ func get_page_creation_sql() -> String {
     return table.create_table_sql(columns: columns)
 }
 
-/// Creates tables and writes default values to it.
-func create_tables() {
-    exec(at: ZYY_DB_FILENAME,
-         sql: get_setting_creation_sql() + /// Create Setting table
-              get_setting_insert_default_rows_sql() + /// Insert default settings
-              get_page_creation_sql() /// Create page table
-    )
-}
-
 //----------------------------------------------------------------------------//
 //                                SELECT                                      //
 //----------------------------------------------------------------------------//
+func get_setting_select_sql(with option : String) -> String {
+    let table = Table(name: ZYY_SET_TBL)
+    return table.select(columns: [ZYY_SET_COL_VAL],
+                        where: (ZYY_SET_COL_OPT, option))
+}

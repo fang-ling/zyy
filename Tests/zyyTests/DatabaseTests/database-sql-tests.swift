@@ -8,7 +8,7 @@
 import XCTest
 @testable import zyy
 
-final class DatabaseTests : XCTestCase {
+final class DatabaseSQLTests : XCTestCase {
     func test_get_setting_sql() {
         XCTAssertEqual(get_setting_creation_sql(),
                        """
@@ -59,6 +59,15 @@ final class DatabaseTests : XCTestCase {
                            "content" TEXT
                        );
                        """)
+    }
+    
+    func test_get_setting_select_sql() {
+        let result = exec(at: ":memory:",
+                          sql: get_setting_creation_sql() +
+                               get_setting_insert_default_rows_sql() +
+                               get_setting_select_sql(with: ZYY_SET_OPT_EDITOR))
+        let tbl = [[ZYY_SET_COL_VAL : "nano"]]
+        XCTAssertEqual(tbl, result)
     }
 }
 
