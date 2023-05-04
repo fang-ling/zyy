@@ -55,7 +55,7 @@ func get_setting_insert_default_rows_sql() -> String {
                  (ZYY_SET_COL_VAL, "0")],
                 /// editor = nano # Every mac's built-in cmdline text editor
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_EDITOR),
-                 (ZYY_SET_COL_VAL, "nano")],
+                 (ZYY_SET_COL_VAL, "/usr/bin/nano")],
                 /// index_update_time = `current_time` # non-user visible
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_INDEX_UPDATE_TIME),
                  (ZYY_SET_COL_VAL, get_current_date_string())],
@@ -75,7 +75,7 @@ func get_setting_insert_default_rows_sql() -> String {
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_HEAD),
                  (ZYY_SET_COL_VAL, "")],
                 /// custom_markdown = ""
-                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_MARKDOWN),
+                [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_MD),
                  (ZYY_SET_COL_VAL, "")]]
     for i in ZYY_SET_OPT_CUSTOM_FIELDS + ZYY_SET_OPT_CUSTOM_FIELD_URLS {
         rows.append([(ZYY_SET_COL_OPT, i), (ZYY_SET_COL_VAL, "")])

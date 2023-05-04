@@ -32,7 +32,7 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
     let db_flag = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_URI
     if sqlite3_open_v2(path, &db, db_flag, nil) != SQLITE_OK {
         print(String(cString: sqlite3_errmsg(db!)))
-        fatal_error(.cannot_open_db)
+        fatal_error(.error)
     }
     /* Prepare (Support multiple queries) */
     var pz_tail : UnsafePointer<CChar>?
@@ -47,7 +47,7 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
                               &stmt,
                               &pz_tail) != SQLITE_OK {
             print(String(cString: sqlite3_errmsg(db!)))
-            fatal_error(.failed_to_compile_sql)
+            fatal_error(.error)
         }
         /* Query using sqlite3_step */
         var code = SQLITE_OK
@@ -58,7 +58,7 @@ func exec(at path : String, sql : String) -> [SQLite3Row] {
             /* Abort due to constraint violation */
                code == SQLITE_CONSTRAINT {
                 print(String(cString: sqlite3_errmsg(db!)))
-                fatal_error(.failed_to_evaluate_sql)
+                fatal_error(.error)
             }
             var row = SQLite3Row()
             for i in 0 ..< sqlite3_column_count(stmt) {

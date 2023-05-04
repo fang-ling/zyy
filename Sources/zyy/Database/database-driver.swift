@@ -17,6 +17,7 @@ func create_tables(database : String = ZYY_DB_FILENAME) {
 }
 
 /// Returns the sepcific setting
+/// Notice that custom_head and custom_html are base64 encoded.
 func get_setting(database : String = ZYY_DB_FILENAME,
                  with option : String) -> String? {
     guard
@@ -24,13 +25,21 @@ func get_setting(database : String = ZYY_DB_FILENAME,
                       sql: get_setting_select_sql(with: option)).first else {
         return nil
     }
+    if option == ZYY_SET_OPT_CUSTOM_HEAD || option == ZYY_SET_OPT_CUSTOM_MD {
+        return result[ZYY_SET_COL_VAL]?.from_base64()
+    }
     return result[ZYY_SET_COL_VAL]
 }
 
-/// Update the specific setting
+/// Update the specific setting.
+/// Notice that custom_head and custom_html are base64 encoded.
 func set_setting(database : String = ZYY_DB_FILENAME,
                  with option : String,
                  new_value : String) {
+    var new_value = new_value
+    if option == ZYY_SET_OPT_CUSTOM_HEAD || option == ZYY_SET_OPT_CUSTOM_MD {
+        new_value = new_value.to_base64()
+    }
     exec(at: database, sql: get_setting_update_sql(with: option,
                                                    new_value: new_value))
 }

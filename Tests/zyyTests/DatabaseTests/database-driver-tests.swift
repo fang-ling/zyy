@@ -42,10 +42,12 @@ final class DatabaseDriverTests : XCTestCase {
         set_setting(with: ZYY_SET_OPT_BUILD_COUNT, new_value: "2")
         set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                     new_value: get_current_date_string())
+        set_setting(with: ZYY_SET_OPT_CUSTOM_MD, new_value: "![](link)")
         XCTAssertEqual(get_setting(with: ZYY_SET_OPT_EDITOR), "emacs")
         XCTAssertEqual(get_setting(with: ZYY_SET_OPT_BUILD_COUNT), "2")
         XCTAssertEqual(get_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME),
                        get_current_date_string())
+        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_CUSTOM_MD), "![](link)")
         
         /* Remove temporary files */
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
