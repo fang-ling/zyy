@@ -6,6 +6,9 @@ import ArgumentParser
 //----------------------------------------------------------------------------//
 /* Databse filename (not user changeable) */
 let ZYY_DB_FILENAME = "zyy.db"
+/* Temporary filename */
+let ZYY_CONFIG_TEMP = "zyy.config"
+let ZYY_MD_TEMP = "zyy.md"
 /* Database table name */
 let ZYY_SET_TBL = "Setting"
 let ZYY_SEC_TBL = "Section"
@@ -83,18 +86,7 @@ extension zyy {
             abstract: "Set up the website."
         )
         
-        /// Config file format:
-        /// optionX = valueX
-        /// "valueX" can be empty to indicate no such value.
-        /// Everything behind '#' in a single line will be removed.
-        func run() {
-            /* Check if database exists */
-            if !FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
-                fatal_error(.no_such_file)
-            }
-            /* Update index page modified time unconditionally. */
-            set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-                        new_value: get_current_date_string())
+        private func get_config_file() -> String {
             /* List user-editable settings */
             var config =
     """
@@ -124,6 +116,36 @@ extension zyy {
     # Custom MARKDOWN text on index.html
     \(ZYY_SET_OPT_CUSTOM_MD) = \(get_setting(with: ZYY_SET_OPT_CUSTOM_MD)!)
     """
+            return config
+        }
+        
+        private func parse_config_file() {
+            
+        }
+        
+        /// Config file format:
+        /// optionX = valueX
+        /// "valueX" can be empty to indicate no such value.
+        /// Everything behind '#' in a single line will be removed.
+        func run() {
+            /* Check if database exists */
+            if !FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
+                fatal_error(.no_such_file)
+            }
+            /* Update index page modified time unconditionally. */
+            set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+                        new_value: get_current_date_string())
+            
+            /* Write config to temporary file */
+            do {
+                try get_config_file().write(toFile: ZYY_CONFIG_TEMP,
+                                            atomically: true,
+                                            encoding: .utf8)
+            } catch {
+                print(error.localizedDescription)
+            }
+            /* Launch command line editor */
+            posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_CONFIG_TEMP)
             /* Website name*/
 //            var site_name = get_setting(field: ZYY_SET_OPT_TITLE)
 //            print("What's the name of your site[\(site_name)]: ")
