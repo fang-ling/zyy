@@ -90,9 +90,9 @@ extension zyy {
                 fatal_error(.no_such_file)
             }
             /* Update index page modified time unconditionally. */
-            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-                            value: get_current_date_string())
-            print("Hint: Press enter directly to leave it as-is")
+            set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+                        new_value: get_current_date_string())
+//            print("Hint: Press enter directly to leave it as-is")
             /* Website name*/
             var site_name = get_setting(field: ZYY_SET_OPT_TITLE)
             print("What's the name of your site[\(site_name)]: ")
@@ -536,29 +536,29 @@ struct zyy : ParsableCommand {
     }
     
     /* Add a new setting in table, and will replace the old one if exists. */
-    private static func set_setting(field : String, value : String) {
-        /* See: https://stackoverflow.com
-         *      /questions/3634984/insert-if-not-exists-else-update
-         * Use the `INSERT OR IGNORE` followed by an `UPDATE`.
-         */
-        var SQL = """
-                  INSERT OR IGNORE INTO \(ZYY_SET_TBL)
-                  (\(ZYY_SET_COL_OPT), \(ZYY_SET_COL_VAL))
-                  VALUES(
-                      '\(field)', '\(value)'
-                  );
-                  """
-                  
-        let sqlite = SQLite(at: ZYY_DB_FILENAME)
-        sqlite.exec(sql: SQL)
-            SQL = """
-                  UPDATE \(ZYY_SET_TBL)
-                  SET \(ZYY_SET_COL_OPT) = '\(value)'
-                  WHERE \(ZYY_SET_COL_VAL) = '\(field)';
-                  """
-        sqlite.exec(sql: SQL)
-        sqlite.SQLite3_close()
-    }
+//    private static func set_setting(field : String, value : String) {
+//        /* See: https://stackoverflow.com
+//         *      /questions/3634984/insert-if-not-exists-else-update
+//         * Use the `INSERT OR IGNORE` followed by an `UPDATE`.
+//         */
+//        var SQL = """
+//                  INSERT OR IGNORE INTO \(ZYY_SET_TBL)
+//                  (\(ZYY_SET_COL_OPT), \(ZYY_SET_COL_VAL))
+//                  VALUES(
+//                      '\(field)', '\(value)'
+//                  );
+//                  """
+//                  
+//        let sqlite = SQLite(at: ZYY_DB_FILENAME)
+//        sqlite.exec(sql: SQL)
+//            SQL = """
+//                  UPDATE \(ZYY_SET_TBL)
+//                  SET \(ZYY_SET_COL_OPT) = '\(value)'
+//                  WHERE \(ZYY_SET_COL_VAL) = '\(field)';
+//                  """
+//        sqlite.exec(sql: SQL)
+//        sqlite.SQLite3_close()
+//    }
     
     /* Get a setting value from given `field`. */
     static func get_setting(field : String) -> String {

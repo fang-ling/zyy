@@ -11,10 +11,6 @@
 import Foundation
 
 enum FatalError {
-    /* Database */
-    case cannot_open_db
-    case failed_to_compile_sql
-    case failed_to_evaluate_sql
     /* File IO */
     case file_already_exists
     case no_such_file
@@ -38,12 +34,6 @@ func error(_ msg : String) {
 
 func fatal_error(_ error_type : FatalError) {
     switch error_type {
-    case .cannot_open_db:
-        fatalError()
-    case .failed_to_compile_sql:
-        fatalError()
-    case .failed_to_evaluate_sql:
-        fatalError()
     case .file_already_exists:
         fatalError("A file or folder with the same name already exists")
     case .no_such_file:
