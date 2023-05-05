@@ -43,3 +43,12 @@ func set_setting(database : String = ZYY_DB_FILENAME,
     exec(at: database, sql: get_setting_update_sql(with: option,
                                                    new_value: new_value))
 }
+
+/// Update multiple setting
+/// TO-DO: Construct a large SQL instead of consecutively calling set_setting().
+func set_settings(database : String = ZYY_DB_FILENAME,
+                  option_value_pairs: [(String, String)]) {
+    for pair in option_value_pairs {
+        set_setting(database: database, with: pair.0, new_value: pair.1)
+    }
+}

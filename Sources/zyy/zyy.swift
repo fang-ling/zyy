@@ -7,8 +7,8 @@ import ArgumentParser
 /* Databse filename (not user changeable) */
 let ZYY_DB_FILENAME = "zyy.db"
 /* Temporary filename */
-let ZYY_CONFIG_TEMP = "zyy.config"
-let ZYY_MD_TEMP = "zyy.md"
+let ZYY_CONFIG_TEMP = ".zyy.config"
+let ZYY_MD_TEMP = ".zyy.md"
 /* Database table name */
 let ZYY_SET_TBL = "Setting"
 let ZYY_SEC_TBL = "Section"
@@ -71,7 +71,7 @@ extension zyy {
             /* Create db */
             create_tables()
             print("Creating \(ZYY_DB_FILENAME)")
-            print("You may want to invoke `zyy configure` command to " +
+            print("Invoke `zyy config` command to " +
                   "finish setting up your website.")
         }
     }
@@ -101,12 +101,14 @@ extension zyy {
     # The start year of your website
     \(ZYY_SET_OPT_START_YEAR) = \(get_setting(with: ZYY_SET_OPT_START_YEAR)!)
     # Custom fields in head box
+    
     """
             for i in zip(ZYY_SET_OPT_CUSTOM_FIELDS,
                          ZYY_SET_OPT_CUSTOM_FIELD_URLS) {
                 config += """
                           \(i.0) = \(get_setting(with: i.0)!)
                           \(i.1) = \(get_setting(with: i.1)!)
+                          
                           """
             }
             config +=
@@ -119,8 +121,17 @@ extension zyy {
             return config
         }
         
-        private func parse_config_file() {
-            
+        private
+        func parse_config_file(_ config : String) -> [(String, String)] {
+            var contents = config.components(separatedBy: .newlines)
+            contents.removeAll(where: { $0.hasPrefix("#")})
+            var settings = [(String, String)]()
+            for content in contents {
+                var delta = content.components(separatedBy: "=")
+                settings.append((delta[0].trimmingCharacters(in: .whitespaces),
+                                 delta[1].trimmingCharacters(in: .whitespaces)))
+            }
+            return settings
         }
         
         /// Config file format:
@@ -137,104 +148,20 @@ extension zyy {
                         new_value: get_current_date_string())
             
             /* Write config to temporary file */
-            do {
-                try get_config_file().write(toFile: ZYY_CONFIG_TEMP,
-                                            atomically: true,
-                                            encoding: .utf8)
-            } catch {
-                print(error.localizedDescription)
-            }
+            try! get_config_file().write(toFile: ZYY_CONFIG_TEMP,
+                                         atomically: true,
+                                         encoding: .utf8)
             /* Launch command line editor */
             posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_CONFIG_TEMP)
-            /* Website name*/
-//            var site_name = get_setting(field: ZYY_SET_OPT_TITLE)
-//            print("What's the name of your site[\(site_name)]: ")
-//            site_name = readLine() ?? site_name /* May be unnecessary */
-//            if site_name != "" { /* User input something */
-//                set_setting(field: ZYY_SET_OPT_TITLE,
-//                            value: site_name)
-//            }
-            /* Site url */
-//            var site_url = get_setting(field: ZYY_SET_OPT_URL)
-//            print("What's the URL of your site[\(site_url)]: ")
-//            site_url = readLine() ?? site_url /* May be unnecessary */
-//            if site_url != "" {
-//                set_setting(field: ZYY_SET_OPT_URL, value: site_url)
-//            }
-            /* Head box custom fields */
-//            for i in 0 ..< ZYY_SET_OPT_CUSTOM_FIELDS.count {
-//                var c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i])
-//                print("What's the \(getOrdinalNumbers(i+1)) custom field " +
-//                      "in head box of the index page[\(c)]: ")
-//                c = readLine() ?? c
-//                if c != "" {
-//                    set_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i],
-//                               value: c)
-//                }
-//                c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i])
-//                print("Does it have a link[\(c)]: ")
-//                c = readLine() ?? c
-//                if c != "" {
-//                    set_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i],
-//                               value: c)
-//                }
-//                print("Need more?[y / n (Default is no)]")
-//                if let ans = readLine() {
-//                    if ans.count == 0 || ans.starts(with: "n") {
-//                        break
-//                    }
-//                }
-//            }
-            /* Author */
-//            var author = get_setting(field: ZYY_SET_OPT_AUTHOR)
-//            print("What's your name[\(author)]: ")
-//            author = readLine() ?? author /* May be unnecessary */
-//            if author != "" {
-//                set_setting(field: ZYY_SET_OPT_AUTHOR, value: author)
-//            }
-            /* Start year */
-//            var st_year = get_setting(field: ZYY_SET_OPT_START_YEAR)
-//            print("Start year of the website[\(st_year)]: ")
-//            st_year = readLine() ?? st_year
-//            if st_year != "" {
-//                set_setting(field: ZYY_SET_OPT_START_YEAR,
-//                            value: st_year)
-//            }
-//            var custom_html =
-//                get_setting(field: ZYY_SET_OPT_CUSTOM_MD).from_base64()!
-//            print("Custom MARKDOWN on home page:")
-//            do {
-//                try custom_html.write(toFile: TEMP_FILENAME,
-//                                      atomically: true,
-//                                      encoding: .utf8)
-//                //TO-DO: support different editors
-//                try PosixProcess("/usr/local/bin/emacs", TEMP_FILENAME).spawn()
-//                custom_html = try String(contentsOfFile: TEMP_FILENAME,
-//                                         encoding: .utf8)
-//                try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
-//            } catch {
-//                command_line_error(error.localizedDescription)
-//            }
-//            set_setting(field: ZYY_SET_OPT_CUSTOM_MD,
-//                        value: custom_html.to_base64())
-            
-//            var custom_head =
-//                get_setting(field: ZYY_SET_OPT_CUSTOM_HEAD).from_base64()!
-//            print("Custom HTML in <head>...</head>:")
-//            do {
-//                try custom_head.write(toFile: TEMP_FILENAME,
-//                                      atomically: true,
-//                                      encoding: .utf8)
-//                //TO-DO: support different editors
-//                try PosixProcess("/usr/local/bin/emacs", TEMP_FILENAME).spawn()
-//                custom_head = try String(contentsOfFile: TEMP_FILENAME,
-//                                         encoding: .utf8)
-//                try PosixProcess("/bin/rm", TEMP_FILENAME).spawn()
-//            } catch {
-//                command_line_error(error.localizedDescription)
-//            }
-//            set_setting(field: ZYY_SET_OPT_CUSTOM_HEAD,
-//                        value: custom_head.to_base64())
+            /* Read config file */
+            let config = try! String(contentsOfFile: ZYY_CONFIG_TEMP,
+                                     encoding: .utf8)
+            print(config)
+            let settings = parse_config_file(config)
+            /* Write settings to database */
+            set_settings(option_value_pairs: settings)
+            /* Remove the temporary file */
+            try! FileManager.default.removeItem(atPath: ZYY_CONFIG_TEMP)
         }
     }
     
@@ -848,7 +775,7 @@ struct zyy : ParsableCommand {
     
     public static func getAllHeadBoxCustomFields() -> [[String]] {
         var res = [[String]](repeating: [String](), count: 2)
-        /* Head box custom fields */
+//         Head box custom fields
         for i in 0 ..< ZYY_SET_OPT_CUSTOM_FIELDS.count {
 //            var c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELDS[i])
 //            if c != "" {
