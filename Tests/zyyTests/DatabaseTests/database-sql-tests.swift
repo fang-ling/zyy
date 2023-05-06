@@ -77,5 +77,18 @@ final class DatabaseSQLTests : XCTestCase {
                                               new_value: "emacs"),
                        sql)
     }
+    
+    func test_get_section_creation_sql() {
+        XCTAssertEqual(get_section_creation_sql(),
+                       """
+                       CREATE TABLE IF NOT EXISTS "Section" (
+                           "heading" TEXT PRIMARY KEY,
+                           "caption" TEXT,
+                           "cover" TEXT,
+                           "hlink" TEXT,
+                           "clink" TEXT
+                       );
+                       """)
+    }
 }
 

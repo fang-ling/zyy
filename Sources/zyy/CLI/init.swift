@@ -8,9 +8,6 @@
 import Foundation
 import ArgumentParser
 
-//----------------------------------------------------------------------------//
-//                               Init Command                                 //
-//----------------------------------------------------------------------------//
 extension zyy {
     struct Init : ParsableCommand {
         static var configuration = CommandConfiguration(

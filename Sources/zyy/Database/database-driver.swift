@@ -12,7 +12,8 @@ func create_tables(database : String = ZYY_DB_FILENAME) {
     exec(at: database,
          sql: get_setting_creation_sql() + /// Create Setting table
               get_setting_insert_default_rows_sql() + /// Add default settings
-              get_page_creation_sql() /// Create page table
+              get_page_creation_sql() + /// Create Page table
+              get_section_creation_sql() /// Create Section table
     )
 }
 

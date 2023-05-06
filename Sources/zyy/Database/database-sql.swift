@@ -43,6 +43,23 @@ func get_page_creation_sql() -> String {
     return table.create_table_sql(columns: columns)
 }
 
+/// Section table:
+/// | heading | caption | cover | hlink | clink |
+///                |
+///                |
+///         (base64 encoded)
+func get_section_creation_sql() -> String {
+    let table = Table(name: ZYY_SEC_TBL)
+    let columns = [Column(name: ZYY_SEC_COL_HEADING,
+                          type: "TEXT",
+                          is_primary_key: true),
+                   Column(name: ZYY_SEC_COL_CAPTION, type: "TEXT"),
+                   Column(name: ZYY_SEC_COL_COVER, type: "TEXT"),
+                   Column(name: ZYY_SEC_COL_HLINK, type: "TEXT"),
+                   Column(name: ZYY_SEC_COL_CLINK, type: "TEXT")]
+    return table.create_table_sql(columns: columns)
+}
+
 //----------------------------------------------------------------------------//
 //                                INSERT INTO                                 //
 //----------------------------------------------------------------------------//

@@ -8,9 +8,6 @@
 import Foundation
 import ArgumentParser
 
-//----------------------------------------------------------------------------//
-//                               Config Command                               //
-//----------------------------------------------------------------------------//
 extension zyy {
     struct Config : ParsableCommand {
         static var configuration = CommandConfiguration(

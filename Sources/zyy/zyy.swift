@@ -23,11 +23,12 @@ let ZYY_PAGE_COL_TITLE = "title"
 let ZYY_PAGE_COL_LINK = "link"
 let ZYY_PAGE_COL_DATE = "date"
 let ZYY_PAGE_COL_CONTENT = "content"
-let DB_SECTION_TABLE_COL_HEADING = "heading"
-let DB_SECTION_TABLE_COL_CAPTION = "caption"
-let DB_SECTION_TABLE_COL_COVER   = "cover"
-let DB_SECTION_TABLE_COL_HLINK   = "hlink" /* Heading link */
-let DB_SECTION_TABLE_COL_CLINK   = "clink" /* Caption link */
+/// Section table
+let ZYY_SEC_COL_HEADING = "heading"
+let ZYY_SEC_COL_CAPTION = "caption"
+let ZYY_SEC_COL_COVER   = "cover"
+let ZYY_SEC_COL_HLINK   = "hlink" /* Heading link */
+let ZYY_SEC_COL_CLINK   = "clink" /* Caption link */
 /* Settings options */
 /// TODO: Replace consts with enum type
 //enum SettingOptions : String {
@@ -454,11 +455,11 @@ struct zyy : ParsableCommand {
     private static func set_section(_ s : Section) {
         var SQL = """
                   INSERT OR IGNORE INTO \(ZYY_SEC_TBL)
-                  (\(DB_SECTION_TABLE_COL_HEADING),
-                   \(DB_SECTION_TABLE_COL_CAPTION),
-                   \(DB_SECTION_TABLE_COL_COVER),
-                   \(DB_SECTION_TABLE_COL_HLINK),
-                   \(DB_SECTION_TABLE_COL_CLINK))
+                  (\(ZYY_SEC_COL_HEADING),
+                   \(ZYY_SEC_COL_CAPTION),
+                   \(ZYY_SEC_COL_COVER),
+                   \(ZYY_SEC_COL_HLINK),
+                   \(ZYY_SEC_COL_CLINK))
                   VALUES(
                       '\(s.heading)', '\(s.caption.to_base64())',
                       '\(s.cover)', '\(s.hlink)', '\(s.clink)'
@@ -468,12 +469,12 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
             SQL = """
                   UPDATE \(ZYY_SEC_TBL)
-                  SET \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)',
-                      \(DB_SECTION_TABLE_COL_CAPTION) = '\(s.caption.to_base64())',
-                      \(DB_SECTION_TABLE_COL_COVER) = '\(s.cover)',
-                      \(DB_SECTION_TABLE_COL_HLINK) = '\(s.hlink)',
-                      \(DB_SECTION_TABLE_COL_CLINK) = '\(s.clink)'
-                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(s.heading)';
+                  SET \(ZYY_SEC_COL_HEADING) = '\(s.heading)',
+                      \(ZYY_SEC_COL_CAPTION) = '\(s.caption.to_base64())',
+                      \(ZYY_SEC_COL_COVER) = '\(s.cover)',
+                      \(ZYY_SEC_COL_HLINK) = '\(s.hlink)',
+                      \(ZYY_SEC_COL_CLINK) = '\(s.clink)'
+                  WHERE \(ZYY_SEC_COL_HEADING) = '\(s.heading)';
                   """
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
@@ -484,26 +485,26 @@ struct zyy : ParsableCommand {
     private static func get_section(heading : String) -> Section {
         let SQL = """
                   SELECT * FROM \(ZYY_SEC_TBL)
-                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
+                  WHERE \(ZYY_SEC_COL_HEADING) = '\(heading)';
                   """
         let sqlite = SQLite(at: ZYY_DB_FILENAME)
         let result = sqlite.exec(sql: SQL)
         var value = Section()
         /* Already find result in SQL, so result.count should be either 0 or 1*/
         if let row = result.first {
-            if let val = row[DB_SECTION_TABLE_COL_HEADING] {
+            if let val = row[ZYY_SEC_COL_HEADING] {
                 value.heading = val
             }
-            if let val = row[DB_SECTION_TABLE_COL_CAPTION] {
+            if let val = row[ZYY_SEC_COL_CAPTION] {
                 value.caption = val.from_base64()!
             }
-            if let val = row[DB_SECTION_TABLE_COL_COVER] {
+            if let val = row[ZYY_SEC_COL_COVER] {
                 value.cover = val
             }
-            if let val = row[DB_SECTION_TABLE_COL_HLINK] {
+            if let val = row[ZYY_SEC_COL_HLINK] {
                 value.hlink = val
             }
-            if let val = row[DB_SECTION_TABLE_COL_CLINK] {
+            if let val = row[ZYY_SEC_COL_CLINK] {
                 value.clink = val
             }
         }
@@ -515,7 +516,7 @@ struct zyy : ParsableCommand {
     private static func remove_section(heading : String) {
         let SQL = """
                   DELETE FROM \(ZYY_SEC_TBL)
-                  WHERE \(DB_SECTION_TABLE_COL_HEADING) = '\(heading)';
+                  WHERE \(ZYY_SEC_COL_HEADING) = '\(heading)';
                   """
         let sqlite = SQLite(at: ZYY_DB_FILENAME)
         sqlite.exec(sql: SQL)
@@ -532,19 +533,19 @@ struct zyy : ParsableCommand {
         var ret = [Section]()
         for i in result {
             var value = Section()
-            if let val = i[DB_SECTION_TABLE_COL_HEADING] {
+            if let val = i[ZYY_SEC_COL_HEADING] {
                 value.heading = val
             }
-            if let val = i[DB_SECTION_TABLE_COL_CAPTION] {
+            if let val = i[ZYY_SEC_COL_CAPTION] {
                 value.caption = val.from_base64()!
             }
-            if let val = i[DB_SECTION_TABLE_COL_COVER] {
+            if let val = i[ZYY_SEC_COL_COVER] {
                 value.cover = val
             }
-            if let val = i[DB_SECTION_TABLE_COL_HLINK] {
+            if let val = i[ZYY_SEC_COL_HLINK] {
                 value.hlink = val
             }
-            if let val = i[DB_SECTION_TABLE_COL_CLINK] {
+            if let val = i[ZYY_SEC_COL_CLINK] {
                 value.clink = val
             }
             ret.append(value)
