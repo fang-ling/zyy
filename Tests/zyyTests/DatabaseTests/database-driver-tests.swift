@@ -24,7 +24,7 @@ final class DatabaseDriverTests : XCTestCase {
         /* Create tables */
         create_tables()
 
-        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_EDITOR), "nano")
+        XCTAssertEqual(get_setting(with: ZYY_SET_OPT_EDITOR), "/usr/bin/nano")
         XCTAssertEqual(get_setting(with: ZYY_SET_OPT_BUILD_COUNT), "0")
         XCTAssertEqual(get_setting(with: ZYY_SET_OPT_URL), "")
         /* Expect nil */

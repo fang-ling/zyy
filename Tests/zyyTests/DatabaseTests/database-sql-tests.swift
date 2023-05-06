@@ -24,7 +24,7 @@ final class DatabaseSQLTests : XCTestCase {
         let sql =
   """
   INSERT INTO "Setting" ("option", "value") VALUES ('build_count', '0');
-  INSERT INTO "Setting" ("option", "value") VALUES ('editor', 'nano');
+  INSERT INTO "Setting" ("option", "value") VALUES ('editor', '/usr/bin/nano');
   INSERT INTO "Setting" ("option", "value") VALUES ('index_update_time', '\(d)');
   INSERT INTO "Setting" ("option", "value") VALUES ('title', '');
   INSERT INTO "Setting" ("option", "value") VALUES ('url', '');
