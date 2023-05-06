@@ -124,10 +124,12 @@ extension zyy {
         private
         func parse_config_file(_ config : String) -> [(String, String)] {
             var contents = config.components(separatedBy: .newlines)
-            contents.removeAll(where: { $0.hasPrefix("#")})
+            /// Ignore comments and empty lines
+            contents.removeAll(where: { $0.hasPrefix("#") || $0 == "" })
             var settings = [(String, String)]()
             for content in contents {
-                var delta = content.components(separatedBy: "=")
+                /* Some editor may trim trailing spaces. */
+                let delta = (content + " ").components(separatedBy: "=")
                 settings.append((delta[0].trimmingCharacters(in: .whitespaces),
                                  delta[1].trimmingCharacters(in: .whitespaces)))
             }
@@ -156,7 +158,6 @@ extension zyy {
             /* Read config file */
             let config = try! String(contentsOfFile: ZYY_CONFIG_TEMP,
                                      encoding: .utf8)
-            print(config)
             let settings = parse_config_file(config)
             /* Write settings to database */
             set_settings(option_value_pairs: settings)
