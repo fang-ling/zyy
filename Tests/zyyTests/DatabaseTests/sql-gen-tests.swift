@@ -67,5 +67,11 @@ final class SQLGenTests: XCTestCase {
                                                           "alice@icloud.com")],
                                     where: ("id", "1")))
     }
+    
+    func test_delete() {
+        let table = Table(name: "users")
+        let SQL = #"DELETE FROM "users";"#
+        XCTAssertEqual(table.delete(), SQL)
+    }
 }
 

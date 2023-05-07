@@ -87,3 +87,17 @@ func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
     }
     return result
 }
+
+/// Add a new section.
+func add_section(database : String = ZYY_DB_FILENAME, section : Section) {
+    var section = section
+    section.caption = section.caption.to_base64()
+    exec(at: database, sql: get_section_insert_sql(section: section))
+}
+
+/// Add new sections
+func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
+    for section in sections {
+        add_section(database : database, section: section)
+    }
+}

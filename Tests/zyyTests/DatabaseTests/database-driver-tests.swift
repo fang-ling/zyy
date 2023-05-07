@@ -118,5 +118,20 @@ final class DatabaseDriverTests : XCTestCase {
         
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
     }
+    
+    func test_add_section() throws {
+        create_tables()
+        
+        var alpha = Section()
+        alpha.heading = "Test"
+        alpha.caption = "tracy"
+        alpha.cover = "https://example.com"
+        alpha.hlink = "https://example.com"
+        alpha.clink = "https://example.com"
+        add_section(section: alpha)
+        XCTAssertEqual(get_sections().first, alpha)
+        
+        try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
+    }
 }
 

@@ -96,5 +96,18 @@ final class DatabaseSQLTests : XCTestCase {
                   #"FROM "Section";"#
         XCTAssertEqual(get_section_select_all_sql(), SQL)
     }
+    
+    func test_get_section_update_sql() {
+        var section = Section()
+        section.heading = "Test1"
+        section.caption = "Test2"
+        section.cover = "Test3"
+        section.hlink = "Test4"
+        section.clink = "Test5"
+        let SQL = #"INSERT INTO "Section" ("heading", "caption", "# +
+                  #""cover", "hlink", "clink") VALUES ('Test1', 'Test2', "# +
+                  #"'Test3', 'Test4', 'Test5');"#
+        XCTAssertEqual(get_section_insert_sql(section: section), SQL)
+    }
 }
 

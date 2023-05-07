@@ -13,7 +13,7 @@ let SQLITE_KEYWORDS = ["CR" : "CREATE", "TB" : "TABLE", "PK" : "PRIMARY KEY",
                        "INTO" : "INTO", "IF" : "IF", "NOT" : "NOT",
                        "EX" : "EXISTS", "VAL" : "VALUES", "SEL" : "SELECT",
                        "FR" : "FROM", "WHERE" : "WHERE", "UPD" : "UPDATE",
-                       "SET" : "SET"]
+                       "SET" : "SET", "DEL" : "DELETE"]
 
 /// From SQLite.org:
 /// The SQL standard requires double-quotes around identifiers and single-quotes
@@ -173,6 +173,16 @@ extension Table {
         }
         return "\(SQLITE_KEYWORDS["SEL"]!) " +
                "\(cols) " +
+               "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\";"
+    }
+}
+
+//----------------------------------------------------------------------------//
+//                                DELETE                                      //
+//----------------------------------------------------------------------------//
+extension Table {
+    func delete() -> String {
+        return "\(SQLITE_KEYWORDS["DEL"]!) " +
                "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\";"
     }
 }
