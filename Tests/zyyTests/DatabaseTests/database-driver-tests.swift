@@ -67,5 +67,56 @@ final class DatabaseDriverTests : XCTestCase {
         
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
     }
+    
+    func test_get_sections() throws {
+        create_tables()
+
+        XCTAssertEqual([], get_sections())
+
+        exec(at: ZYY_DB_FILENAME,
+             sql: """
+                  INSERT INTO Section (
+                      "heading",
+                      "caption",
+                      "cover",
+                      "hlink",
+                      "clink"
+                  ) VALUES (
+                      'Test',
+                      'dHJhY3k=',
+                      'https://example.com',
+                      'https://example.com',
+                      'https://example.com'
+                  );
+                  """)
+        var alpha = Section()
+        alpha.heading = "Test"
+        alpha.caption = "tracy"
+        alpha.cover = "https://example.com"
+        alpha.hlink = "https://example.com"
+        alpha.clink = "https://example.com"
+        XCTAssertEqual([alpha], get_sections())
+
+        /* EMPTY */
+        exec(at: ZYY_DB_FILENAME,
+             sql: """
+                  INSERT INTO Section (
+                      "heading",
+                      "caption",
+                      "cover"
+                  ) VALUES (
+                      'Test2',
+                      'dHJhY3k=',
+                      'https://example.com'
+                  );
+                  """)
+        var beta = Section()
+        beta.heading = "Test2"
+        beta.caption = "tracy"
+        beta.cover = "https://example.com"
+        XCTAssertEqual([alpha, beta], get_sections())
+        
+        try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
+    }
 }
 

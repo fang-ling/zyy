@@ -90,5 +90,11 @@ final class DatabaseSQLTests : XCTestCase {
                        );
                        """)
     }
+    
+    func test_get_section_select_all_sql() {
+        let SQL = #"SELECT "heading", "caption", "cover", "hlink", "clink" "# +
+                  #"FROM "Section";"#
+        XCTAssertEqual(get_section_select_all_sql(), SQL)
+    }
 }
 

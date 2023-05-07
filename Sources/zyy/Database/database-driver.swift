@@ -17,6 +17,10 @@ func create_tables(database : String = ZYY_DB_FILENAME) {
     )
 }
 
+//----------------------------------------------------------------------------//
+//                          Setting table                                     //
+//----------------------------------------------------------------------------//
+
 /// Returns the sepcific setting
 /// Notice that custom_head and custom_html are base64 encoded.
 func get_setting(database : String = ZYY_DB_FILENAME,
@@ -52,4 +56,34 @@ func set_settings(database : String = ZYY_DB_FILENAME,
     for pair in option_value_pairs {
         set_setting(database: database, with: pair.0, new_value: pair.1)
     }
+}
+
+//----------------------------------------------------------------------------//
+//                          Section table                                     //
+//----------------------------------------------------------------------------//
+
+/// Returns all of the sections
+func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
+    var result = [Section]()
+    let delta = exec(at: database, sql: get_section_select_all_sql())
+    for i in delta {
+        var alpha = Section()
+        if let heading = i[ZYY_SEC_COL_HEADING] {
+            alpha.heading = heading
+        }
+        if let caption = i[ZYY_SEC_COL_CAPTION] {
+            alpha.caption = caption.from_base64()!
+        }
+        if let cover = i[ZYY_SEC_COL_COVER] {
+            alpha.cover = cover
+        }
+        if let hlink = i[ZYY_SEC_COL_HLINK] {
+            alpha.hlink = hlink
+        }
+        if let clink = i[ZYY_SEC_COL_CLINK] {
+            alpha.clink = clink
+        }
+        result.append(alpha)
+    }
+    return result
 }

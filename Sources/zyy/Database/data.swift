@@ -8,7 +8,7 @@
 import Foundation
 
 /* Section data */
-struct Section {
+struct Section : Equatable {
     var heading : String
     var caption : String
     var cover : String

@@ -50,6 +50,13 @@ final class SQLGenTests: XCTestCase {
                                     where: ("name", "'Alice'")))
     }
     
+    func test_select2() {
+        let table = Table(name: "users")
+        
+        let SQL = #"SELECT "name", "email" FROM "users";"#
+        XCTAssertEqual(SQL, table.select(columns: ["name", "email"]))
+    }
+    
     func test_update() {
         let table = Table(name: "users")
         

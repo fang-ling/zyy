@@ -116,6 +116,13 @@ func get_setting_select_sql(with option : String) -> String {
                         where: (ZYY_SET_COL_OPT, "'\(option)'"))
 }
 
+func get_section_select_all_sql() -> String {
+    let table = Table(name: ZYY_SEC_TBL)
+    return table.select(columns: [ZYY_SEC_COL_HEADING, ZYY_SEC_COL_CAPTION,
+                                  ZYY_SEC_COL_COVER, ZYY_SEC_COL_HLINK,
+                                  ZYY_SEC_COL_CLINK])
+}
+
 //----------------------------------------------------------------------------//
 //                                UPDATE                                      //
 //----------------------------------------------------------------------------//

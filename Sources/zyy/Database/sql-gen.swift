@@ -162,4 +162,17 @@ extension Table {
                "\(SQLITE_KEYWORDS["WHERE"]!) " +
                "\(row_filter);"
     }
+    
+    func select(columns : [String]) -> String {
+        var cols = ""
+        for column in columns {
+            cols += #"""# + column + #"""#
+            if column != columns.last {
+                cols += ", "
+            }
+        }
+        return "\(SQLITE_KEYWORDS["SEL"]!) " +
+               "\(cols) " +
+               "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\";"
+    }
 }
