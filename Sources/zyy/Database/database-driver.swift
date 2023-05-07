@@ -101,3 +101,8 @@ func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
         add_section(database : database, section: section)
     }
 }
+
+/// Removes all sections
+func remove_sections(database : String = ZYY_DB_FILENAME) {
+    exec(at: database, sql: get_section_clear_sql())
+}

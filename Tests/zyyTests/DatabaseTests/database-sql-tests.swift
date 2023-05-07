@@ -109,5 +109,10 @@ final class DatabaseSQLTests : XCTestCase {
                   #"'Test3', 'Test4', 'Test5');"#
         XCTAssertEqual(get_section_insert_sql(section: section), SQL)
     }
+    
+    func test_get_section_clear_sql() {
+        let SQL = #"DELETE FROM "Section";"#
+        XCTAssertEqual(get_section_clear_sql(), SQL)
+    }
 }
 

@@ -23,3 +23,14 @@ extension String {
         return Data(self.utf8).base64EncodedString()
     }
 }
+
+/// Returns true if the string can be convert to Int
+extension String {
+    func is_int() -> Bool {
+        if Int(self) != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+}

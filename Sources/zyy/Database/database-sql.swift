@@ -141,3 +141,11 @@ func get_section_insert_sql(section : Section) -> String {
                                    (ZYY_SEC_COL_HLINK, section.hlink),
                                    (ZYY_SEC_COL_CLINK, section.clink)])
 }
+
+//----------------------------------------------------------------------------//
+//                                DELETE                                      //
+//----------------------------------------------------------------------------//
+func get_section_clear_sql() -> String {
+    let table = Table(name: ZYY_SEC_TBL)
+    return table.delete()
+}
