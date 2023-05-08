@@ -64,8 +64,7 @@ extension zyy {
             return settings
         }
         
-        private func get_section_file() -> String {
-            let sections = get_sections()
+        private func get_section_file(sections : [Section]) -> String {
             var result = ""
             if sections.isEmpty {
                 result += """
@@ -158,9 +157,9 @@ extension zyy {
             /* Clear Section table */
             remove_sections()
             /* Write sections to temporary file */
-            try! get_section_file().write(toFile: ZYY_MD_TEMP,
-                                          atomically: true,
-                                          encoding: .utf8)
+            try! get_section_file(sections: sections).write(toFile: ZYY_MD_TEMP,
+                                                            atomically: true,
+                                                            encoding: .utf8)
             /* Launch command line editor */
             posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
             /* Read section file */
