@@ -25,7 +25,7 @@ struct Section : Equatable {
 }
 
 /* Page data */
-struct Page {
+struct Page : Equatable {
     var id : Int
     var title : String
     var content : String

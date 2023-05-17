@@ -146,3 +146,11 @@ func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
     }
     return result
 }
+
+func add_page(database : String = ZYY_DB_FILENAME, page : Page) {
+    var page = page
+    page.title = page.title.to_base64()
+    page.content = page.content.to_base64()
+    page.link = page.link.to_base64()
+    exec(at: database, sql: get_page_insert_sql(page: page))
+}

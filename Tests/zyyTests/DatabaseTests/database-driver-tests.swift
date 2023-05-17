@@ -150,5 +150,22 @@ final class DatabaseDriverTests : XCTestCase {
         
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
     }
+    
+    func test_get_pages_and_add_page() throws {
+        create_tables()
+
+        var page = Page()
+        page.id = 1
+        page.date = "May 17, 2023"
+        page.link = "https://a.com"
+        page.title = "Ssu-yen"
+        page.content = "Fang-ling"
+        XCTAssertEqual(get_pages(), [])
+        
+        add_page(page: page)
+        XCTAssertEqual([page], get_pages())
+        
+        try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
+    }
 }
 
