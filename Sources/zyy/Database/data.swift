@@ -26,12 +26,14 @@ struct Section : Equatable {
 
 /* Page data */
 struct Page {
+    var id : Int
     var title : String
     var content : String
     var link : String
     var date : String
     
     init() {
+        id = 0
         title = ""
         content = ""
         link = ""

@@ -84,276 +84,156 @@ extension zyy {
     }
 }
 
-extension zyy {
-    struct SectionCommand : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "section",
-            abstract: "Create, delete and work on sections.",
-            subcommands: [Add.self, Edit.self,
-                          Remove.self, Swap.self, List.self]
-        )
-    }
-}
+//extension zyy {
+//    struct SectionCommand : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            commandName: "section",
+//            abstract: "Create, delete and work on sections.",
+//            subcommands: [Add.self, Edit.self,
+//                          Remove.self, Swap.self, List.self]
+//        )
+//    }
+//}
 
-extension zyy.SectionCommand {
-    struct Swap : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Exchange two sections."
-        )
-        
-        @Argument(help: "The name of the first section to swap.")
-        var name1 : String
-        @Argument(help: "The name of the second section to swap.")
-        var name2 : String
-        
-        func run() {
-            /* Check existence */
-            let sec1 = zyy.get_section(heading: name1)
-            if sec1.heading != name1 {
-                command_line_error("No such section:\n" + name1)
-            }
-            let sec2 = zyy.get_section(heading: name2)
-            if sec2.heading != name2 {
-                command_line_error("No such section:\n" + name2)
-            }
-            /* Update index modified date */
-//            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                            value: get_current_date_string())
-            /* There should be a SQL way to do this. */
-            var sections = zyy.list_sections()
-            for i in sections { /* Remove all old sections */
-                zyy.remove_section(heading: i.heading)
-            }
-            
-            let i = sections.firstIndex(where: {$0.heading == sec1.heading})!
-            let j = sections.firstIndex(where: {$0.heading == sec2.heading})!
-            sections.swapAt(i, j)
-            
-            for i in sections {
-                zyy.set_section(i)
-            }
-        }
-    }
-    
-    struct Add : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Add a section with specific name."
-        )
-        
-        @Argument(help: "The name of the new section.")
-        var name : String
-        
-        func run() {
-            var sec = zyy.get_section(heading: name)
-            if sec.heading == name {
-                command_line_error("Already existed:\n" + name)
-            }
-//            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                            value: get_current_date_string())
-            sec.heading = name
-            print("Caption:")
-            sec.caption = readLine() ?? ""
-            print("Cover:")
-            sec.cover = readLine() ?? ""
-            print("Heading link:")
-            sec.hlink = readLine() ?? ""
-            print("Cover link:")
-            sec.clink = readLine() ?? ""
-            zyy.set_section(sec)
-        }
-    }
-    
-    struct Edit : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Modify the specific section."
-        )
-        
-        @Argument(help: "The name of the section.")
-        var name : String
-        
-        func run() {
-            var sec = zyy.get_section(heading: name)
-            if sec.heading != name {
-                command_line_error("No such section:\n" + name)
-            }
-            print("Hint: Press enter directly to leave it as-is")
-//            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                            value: get_current_date_string())
-            print("Caption[\(sec.caption)]:")
-            let caption = readLine() ?? ""
-            if caption != "" {
-                sec.caption = caption
-            }
-            print("Cover[\(sec.cover)]:")
-            let cover = readLine() ?? ""
-            if cover != "" {
-                sec.cover = cover
-            }
-            print("Heading link[\(sec.hlink)]:")
-            let hlink = readLine() ?? ""
-            if hlink != "" {
-                sec.hlink = hlink
-            }
-            print("Cover link[\(sec.clink)]:")
-            let clink = readLine() ?? ""
-            if clink != "" {
-                sec.clink = clink
-            }
-            zyy.set_section(sec)
-        }
-    }
-    
-    struct Remove : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Remove the section."
-        )
-        
-        @Argument(help: "The name of the section.")
-        var name : String
-        
-        func run() {
-            let sec = zyy.get_section(heading: name)
-            if sec.heading != name {
-                command_line_error("No such section:\n" + name)
-            }
-//            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
-//                            value: get_current_date_string())
-            zyy.remove_section(heading: name)
-        }
-    }
-    
-    struct List : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "List all sections."
-        )
-        
-        func run() {
-            for i in zyy.list_sections() {
-                print(i.heading)
-            }
-        }
-    }
-}
-
-extension zyy {
-    struct PageCommand : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "page",
-            abstract: "Create, delete and work on pages.",
-            subcommands: [Add.self, Edit.self, Remove.self, List.self]
-        )
-    }
-}
-
-extension zyy.PageCommand {
-    struct List : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "List all pages."
-        )
-        
-        func run() {
-            for i in zyy.list_pages() {
-                print(i.title)
-            }
-        }
-    }
-    
-    struct Add : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Add new page"
-        )
-        
-        @Argument(help: "The title of the new page.")
-        var title : String
-        
-        func run() {
-            var page = zyy.get_page(by: title)
-            if page.title == title {
-                command_line_error("Already existed:\n" + title)
-            }
-            page.date = get_current_date_string()
-            page.title = title
-            page.content = ""
-            print("Content:")
-            do {
-                try page.content.write(toFile: zyy.TEMP_FILENAME,
-                                       atomically: true,
-                                       encoding: .utf8)
-                //TO-DO: support different editors
-                try PosixProcess("/usr/local/bin/emacs",
-                                 zyy.TEMP_FILENAME).spawn()
-                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
-                                          encoding: .utf8)
-                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
-            } catch {
-                command_line_error(error.localizedDescription)
-            }
-            print("Website link (relative):")
-            page.link = readLine() ?? ""
-            zyy.set_page(page)
-        }
-    }
-    
-    struct Edit : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Modify the page."
-        )
-        
-        @Argument(help: "The title of the page.")
-        var title : String
-        
-        func run() {
-            var page = zyy.get_page(by: title)
-            if page.title != title {
-                command_line_error("No such section:\n" + title)
-            }
-            page.date = get_current_date_string()
-            print("Hint: Press enter directly to leave it as-is")
-            print("Title[\(page.title)]:")
-            let _title = readLine() ?? ""
-            if _title != "" {
-                page.title = _title
-            }
-            do {
-                try page.content.write(toFile: zyy.TEMP_FILENAME,
-                                       atomically: true,
-                                       encoding: .utf8)
-                //TO-DO: support different editors
-                try PosixProcess("/usr/local/bin/emacs",
-                                 zyy.TEMP_FILENAME).spawn()
-                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
-                                          encoding: .utf8)
-                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
-            } catch {
-                command_line_error(error.localizedDescription)
-            }
-            print("Website link (relative)[\(page.link)]:")
-            let link = readLine() ?? ""
-            if link != "" {
-                page.link = link
-            }
-            zyy.remove_page(title: title) /* remove old title (if changed) */
-            zyy.set_page(page)
-        }
-    }
-    
-    struct Remove : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Remove the page."
-        )
-        
-        @Argument(help: "The title of the page.")
-        var title : String
-        
-        func run() {
-            let page = zyy.get_page(by: title)
-            if page.title != title {
-                command_line_error("No such page:\n" + title)
-            }
-            zyy.remove_page(title: title)
-        }
-    }
-}
+//extension zyy.SectionCommand {
+//    struct Swap : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            abstract: "Exchange two sections."
+//        )
+//
+//        @Argument(help: "The name of the first section to swap.")
+//        var name1 : String
+//        @Argument(help: "The name of the second section to swap.")
+//        var name2 : String
+//
+//        func run() {
+//            /* Check existence */
+//            let sec1 = zyy.get_section(heading: name1)
+//            if sec1.heading != name1 {
+//                command_line_error("No such section:\n" + name1)
+//            }
+//            let sec2 = zyy.get_section(heading: name2)
+//            if sec2.heading != name2 {
+//                command_line_error("No such section:\n" + name2)
+//            }
+//            /* Update index modified date */
+////            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+////                            value: get_current_date_string())
+//            /* There should be a SQL way to do this. */
+//            var sections = zyy.list_sections()
+//            for i in sections { /* Remove all old sections */
+//                zyy.remove_section(heading: i.heading)
+//            }
+//
+//            let i = sections.firstIndex(where: {$0.heading == sec1.heading})!
+//            let j = sections.firstIndex(where: {$0.heading == sec2.heading})!
+//            sections.swapAt(i, j)
+//
+//            for i in sections {
+//                zyy.set_section(i)
+//            }
+//        }
+//    }
+//
+//    struct Add : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            abstract: "Add a section with specific name."
+//        )
+//
+//        @Argument(help: "The name of the new section.")
+//        var name : String
+//
+//        func run() {
+//            var sec = zyy.get_section(heading: name)
+//            if sec.heading == name {
+//                command_line_error("Already existed:\n" + name)
+//            }
+////            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+////                            value: get_current_date_string())
+//            sec.heading = name
+//            print("Caption:")
+//            sec.caption = readLine() ?? ""
+//            print("Cover:")
+//            sec.cover = readLine() ?? ""
+//            print("Heading link:")
+//            sec.hlink = readLine() ?? ""
+//            print("Cover link:")
+//            sec.clink = readLine() ?? ""
+//            zyy.set_section(sec)
+//        }
+//    }
+//
+//    struct Edit : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            abstract: "Modify the specific section."
+//        )
+//
+//        @Argument(help: "The name of the section.")
+//        var name : String
+//
+//        func run() {
+//            var sec = zyy.get_section(heading: name)
+//            if sec.heading != name {
+//                command_line_error("No such section:\n" + name)
+//            }
+//            print("Hint: Press enter directly to leave it as-is")
+////            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+////                            value: get_current_date_string())
+//            print("Caption[\(sec.caption)]:")
+//            let caption = readLine() ?? ""
+//            if caption != "" {
+//                sec.caption = caption
+//            }
+//            print("Cover[\(sec.cover)]:")
+//            let cover = readLine() ?? ""
+//            if cover != "" {
+//                sec.cover = cover
+//            }
+//            print("Heading link[\(sec.hlink)]:")
+//            let hlink = readLine() ?? ""
+//            if hlink != "" {
+//                sec.hlink = hlink
+//            }
+//            print("Cover link[\(sec.clink)]:")
+//            let clink = readLine() ?? ""
+//            if clink != "" {
+//                sec.clink = clink
+//            }
+//            zyy.set_section(sec)
+//        }
+//    }
+//
+//    struct Remove : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            abstract: "Remove the section."
+//        )
+//
+//        @Argument(help: "The name of the section.")
+//        var name : String
+//
+//        func run() {
+//            let sec = zyy.get_section(heading: name)
+//            if sec.heading != name {
+//                command_line_error("No such section:\n" + name)
+//            }
+////            zyy.set_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME,
+////                            value: get_current_date_string())
+//            zyy.remove_section(heading: name)
+//        }
+//    }
+//
+//    struct List : ParsableCommand {
+//        static var configuration = CommandConfiguration(
+//            abstract: "List all sections."
+//        )
+//
+//        func run() {
+//            for i in zyy.list_sections() {
+//                print(i.heading)
+//            }
+//        }
+//    }
+//}
 
 @main
 struct zyy : ParsableCommand {
@@ -361,7 +241,6 @@ struct zyy : ParsableCommand {
         abstract: "A utility for building personal websites.",
         version: VERSION,
         subcommands: [Init.self, Config.self, Build.self, Update.self,
-                      SectionCommand.self,
                       PageCommand.self]
     )
     

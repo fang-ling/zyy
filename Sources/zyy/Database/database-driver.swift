@@ -106,3 +106,43 @@ func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
 func remove_sections(database : String = ZYY_DB_FILENAME) {
     exec(at: database, sql: get_section_clear_sql())
 }
+
+//----------------------------------------------------------------------------//
+//                             Page table                                     //
+//----------------------------------------------------------------------------//
+
+func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
+    var result = [Page]()
+    let pages = exec(at: database,
+                     sql: get_page_select_all_sql(
+                        columns: [ZYY_PAGE_COL_ID,
+                                  ZYY_PAGE_COL_DATE,
+                                  ZYY_PAGE_COL_CONTENT,
+                                  ZYY_PAGE_COL_TITLE,
+                                  ZYY_PAGE_COL_LINK]
+                     ))
+    for page in pages {
+        var delta = Page()
+        guard let id_str = page[ZYY_PAGE_COL_ID] else {
+            fatalError("Failed to parse page id")
+            //fatal_error(.error)
+        }
+        if let id = Int(id_str) {
+            delta.id = id
+        }
+        if let date = page[ZYY_PAGE_COL_DATE] {
+            delta.date = date
+        }
+        if let title = page[ZYY_PAGE_COL_TITLE] {
+            delta.title = title.from_base64()!
+        }
+        if let link = page[ZYY_PAGE_COL_LINK] {
+            delta.link = link.from_base64()!
+        }
+        if let content = page[ZYY_PAGE_COL_CONTENT] {
+            delta.content = content.from_base64()!
+        }
+        result.append(delta)
+    }
+    return result
+}
