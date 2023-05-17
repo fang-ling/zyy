@@ -134,5 +134,18 @@ final class DatabaseSQLTests : XCTestCase {
                   #"'Ssu-yen', 'Fang-ling');"#
         XCTAssertEqual(SQL, get_page_insert_sql(page: page))
     }
+    
+    func test_get_page_update_sql() {
+        var page = Page()
+        page.id = 1
+        page.date = "May 17, 2023"
+        page.link = "https://a.com"
+        page.title = "Ssu-yen"
+        page.content = "Fang-ling"
+        let SQL = #"UPDATE "Page" SET "# +
+                  #""date" = 'May 17, 2023', "link" = 'https://a.com', "# +
+                  #""title" = 'Ssu-yen', "content" = 'Fang-ling' "# +
+                  #"WHERE ("id" = 1);"#
+        XCTAssertEqual(SQL, get_page_update_sql(page: page))
+    }
 }
-

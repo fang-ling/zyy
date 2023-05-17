@@ -155,6 +155,17 @@ func get_setting_update_sql(with option : String,
                         where: (ZYY_SET_COL_OPT, "'\(option)'"))
 }
 
+func get_page_update_sql(page : Page) -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    return table.update(
+        column_value_pairs: [(ZYY_PAGE_COL_DATE, page.date),
+                             (ZYY_PAGE_COL_LINK, page.link),
+                             (ZYY_PAGE_COL_TITLE, page.title),
+                             (ZYY_PAGE_COL_CONTENT, page.content)],
+        where: (ZYY_PAGE_COL_ID, "\(page.id)")
+    )
+}
+
 //----------------------------------------------------------------------------//
 //                                DELETE                                      //
 //----------------------------------------------------------------------------//
