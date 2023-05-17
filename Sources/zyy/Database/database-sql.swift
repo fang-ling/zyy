@@ -107,6 +107,23 @@ func get_setting_insert_default_rows_sql() -> String {
     return sql
 }
 
+func get_section_insert_sql(section : Section) -> String {
+    let table = Table(name: ZYY_SEC_TBL)
+    return table.insert_into(row: [(ZYY_SEC_COL_HEADING, section.heading),
+                                   (ZYY_SEC_COL_CAPTION, section.caption),
+                                   (ZYY_SEC_COL_COVER, section.cover),
+                                   (ZYY_SEC_COL_HLINK, section.hlink),
+                                   (ZYY_SEC_COL_CLINK, section.clink)])
+}
+
+func get_page_insert_sql(page : Page) -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    return table.insert_into(row: [(ZYY_PAGE_COL_DATE, page.date),
+                                   (ZYY_PAGE_COL_LINK, page.link),
+                                   (ZYY_PAGE_COL_TITLE, page.title),
+                                   (ZYY_PAGE_COL_CONTENT, page.content)])
+}
+
 //----------------------------------------------------------------------------//
 //                                SELECT                                      //
 //----------------------------------------------------------------------------//
@@ -136,15 +153,6 @@ func get_setting_update_sql(with option : String,
     let table = Table(name: ZYY_SET_TBL)
     return table.update(column_value_pairs: [(ZYY_SET_COL_VAL, new_value)],
                         where: (ZYY_SET_COL_OPT, "'\(option)'"))
-}
-
-func get_section_insert_sql(section : Section) -> String {
-    let table = Table(name: ZYY_SEC_TBL)
-    return table.insert_into(row: [(ZYY_SEC_COL_HEADING, section.heading),
-                                   (ZYY_SEC_COL_CAPTION, section.caption),
-                                   (ZYY_SEC_COL_COVER, section.cover),
-                                   (ZYY_SEC_COL_HLINK, section.hlink),
-                                   (ZYY_SEC_COL_CLINK, section.clink)])
 }
 
 //----------------------------------------------------------------------------//

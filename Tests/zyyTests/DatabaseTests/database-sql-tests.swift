@@ -122,5 +122,17 @@ final class DatabaseSQLTests : XCTestCase {
                                                          ZYY_PAGE_COL_DATE,
                                                          ZYY_PAGE_COL_TITLE]))
     }
+    
+    func test_get_page_insert_sql() {
+        var page = Page()
+        page.date = "May 17, 2023"
+        page.link = "https://a.com"
+        page.title = "Ssu-yen"
+        page.content = "Fang-ling"
+        let SQL = #"INSERT INTO "Page" ("date", "link", "title", "content") "# +
+                  #"VALUES ('May 17, 2023', 'https://a.com', "# +
+                  #"'Ssu-yen', 'Fang-ling');"#
+        XCTAssertEqual(SQL, get_page_insert_sql(page: page))
+    }
 }
 
