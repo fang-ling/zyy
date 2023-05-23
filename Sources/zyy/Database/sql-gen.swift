@@ -1,6 +1,6 @@
 //
 //  sql-gen.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/4/25.
 //
@@ -48,7 +48,7 @@ struct Column : Equatable {
     var is_primary_key : Bool
     var is_unique : Bool
     var is_not_null : Bool
-    
+
     init(name : String,
          type : String,
          is_primary_key : Bool = false,
@@ -162,7 +162,7 @@ extension Table {
                "\(SQLITE_KEYWORDS["WHERE"]!) " +
                "\(row_filter);"
     }
-    
+
     func select(columns : [String]) -> String {
         var cols = ""
         for column in columns {
@@ -184,5 +184,14 @@ extension Table {
     func delete() -> String {
         return "\(SQLITE_KEYWORDS["DEL"]!) " +
                "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\";"
+    }
+
+    func delete(where : (String, String)) -> String {
+        let row_filter = "(\"\(`where`.0)\" = \(`where`.1))"
+        return
+          "\(SQLITE_KEYWORDS["DEL"]!) " +
+          "\(SQLITE_KEYWORDS["FR"]!) \"\(name)\" " +
+          "\(SQLITE_KEYWORDS["WHERE"]!) " +
+          "\(row_filter);"
     }
 }

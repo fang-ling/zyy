@@ -1,6 +1,6 @@
 //
 //  database-driver.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/5/3.
 //
@@ -161,4 +161,8 @@ func set_page(database : String = ZYY_DB_FILENAME, page : Page) {
     page.content = page.content.to_base64()
     page.link = page.link.to_base64()
     exec(at: database, sql: get_page_update_sql(page: page))
+}
+
+func remove_page(database : String = ZYY_DB_FILENAME, id : Int) {
+    exec(at: database, sql: get_page_delete_sql(id: id))
 }

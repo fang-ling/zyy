@@ -1,6 +1,6 @@
 //
 //  database-sql-tests.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/4/26.
 //
@@ -18,7 +18,7 @@ final class DatabaseSQLTests : XCTestCase {
                        );
                        """)
     }
-    
+
     func test_get_setting_default_rows_sql() {
         let d = get_current_date_string()
         let sql =
@@ -51,7 +51,7 @@ final class DatabaseSQLTests : XCTestCase {
   """
         XCTAssertEqual(sql, get_setting_insert_default_rows_sql())
     }
-    
+
     func test_get_page_sql() {
         XCTAssertEqual(get_page_creation_sql(),
                        """
@@ -64,12 +64,12 @@ final class DatabaseSQLTests : XCTestCase {
                        );
                        """)
     }
-    
+
     func test_get_setting_select_sql() {
         let sql = #"SELECT "value" FROM "Setting" WHERE ("option" = 'editor');"#
         XCTAssertEqual(sql, get_setting_select_sql(with: ZYY_SET_OPT_EDITOR))
     }
-    
+
     func test_get_setting_update_sql() {
         let sql = #"UPDATE "Setting" SET "value" = 'emacs' "# +
                   #"WHERE ("option" = 'editor');"#
@@ -77,7 +77,7 @@ final class DatabaseSQLTests : XCTestCase {
                                               new_value: "emacs"),
                        sql)
     }
-    
+
     func test_get_section_creation_sql() {
         XCTAssertEqual(get_section_creation_sql(),
                        """
@@ -90,13 +90,13 @@ final class DatabaseSQLTests : XCTestCase {
                        );
                        """)
     }
-    
+
     func test_get_section_select_all_sql() {
         let SQL = #"SELECT "heading", "caption", "cover", "hlink", "clink" "# +
                   #"FROM "Section";"#
         XCTAssertEqual(get_section_select_all_sql(), SQL)
     }
-    
+
     func test_get_section_update_sql() {
         var section = Section()
         section.heading = "Test1"
@@ -109,12 +109,12 @@ final class DatabaseSQLTests : XCTestCase {
                   #"'Test3', 'Test4', 'Test5');"#
         XCTAssertEqual(get_section_insert_sql(section: section), SQL)
     }
-    
+
     func test_get_section_clear_sql() {
         let SQL = #"DELETE FROM "Section";"#
         XCTAssertEqual(get_section_clear_sql(), SQL)
     }
-    
+
     func test_get_page_select_all_sql() {
         let SQL = #"SELECT "id", "date", "title" FROM "Page";"#
         XCTAssertEqual(SQL,
@@ -122,7 +122,7 @@ final class DatabaseSQLTests : XCTestCase {
                                                          ZYY_PAGE_COL_DATE,
                                                          ZYY_PAGE_COL_TITLE]))
     }
-    
+
     func test_get_page_insert_sql() {
         var page = Page()
         page.date = "May 17, 2023"
@@ -134,7 +134,7 @@ final class DatabaseSQLTests : XCTestCase {
                   #"'Ssu-yen', 'Fang-ling');"#
         XCTAssertEqual(SQL, get_page_insert_sql(page: page))
     }
-    
+
     func test_get_page_update_sql() {
         var page = Page()
         page.id = 1
@@ -147,5 +147,10 @@ final class DatabaseSQLTests : XCTestCase {
                   #""title" = 'Ssu-yen', "content" = 'Fang-ling' "# +
                   #"WHERE ("id" = 1);"#
         XCTAssertEqual(SQL, get_page_update_sql(page: page))
+    }
+
+    func test_get_page_delete_sql() {
+        let SQL = #"DELETE FROM "Page" WHERE ("id" = 1);"#
+        XCTAssertEqual(SQL, get_page_delete_sql(id: 1));
     }
 }

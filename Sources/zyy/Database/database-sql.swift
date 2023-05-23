@@ -1,6 +1,6 @@
 //
 //  database-sql.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/4/26.
 //
@@ -172,4 +172,9 @@ func get_page_update_sql(page : Page) -> String {
 func get_section_clear_sql() -> String {
     let table = Table(name: ZYY_SEC_TBL)
     return table.delete()
+}
+
+func get_page_delete_sql(id : Int) -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    return table.delete(where: (ZYY_PAGE_COL_ID, "\(id)"))
 }
