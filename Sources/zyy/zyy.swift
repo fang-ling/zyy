@@ -60,7 +60,7 @@ extension zyy {
         static var configuration = CommandConfiguration(
             abstract: "Build static files."
         )
-        
+
         func run() {
 //            let count = Int(get_setting(field: ZYY_SET_OPT_BUILD_COUNT),
 //                            radix: 16)!
@@ -69,12 +69,12 @@ extension zyy {
             HTML.write_to_file()
         }
     }
-    
+
     struct Update : ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "Update database file. (debug use only)"
         )
-        
+
         func run() {
 //            create_database()
 //            set_setting(field: DB_SETTING_FIELD_BUILD_COUNT, value: "0")
@@ -240,17 +240,16 @@ struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for building personal websites.",
         version: VERSION,
-        subcommands: [Init.self, Config.self, Build.self, Update.self,
-                      PageCommand.self]
+        subcommands: [Init.self, Config.self, Build.self, Update.self]
     )
-    
+
     /* Command Line related String constants */
     public static let VERSION = "0.0.4-beta"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
-    
+
     /* Miscs */
     static let TEMP_FILENAME = ".zyy_temp"
-    
+
 //    private static func create_database() {
 //        /* Setting table */
 //        var SQL = """
@@ -284,7 +283,7 @@ struct zyy : ParsableCommand {
 //        sqlite.exec(sql: SQL)
 //        sqlite.SQLite3_close()
 //    }
-    
+
     /* Add a new setting in table, and will replace the old one if exists. */
 //    private static func set_setting(field : String, value : String) {
 //        /* See: https://stackoverflow.com
@@ -298,7 +297,7 @@ struct zyy : ParsableCommand {
 //                      '\(field)', '\(value)'
 //                  );
 //                  """
-//                  
+//
 //        let sqlite = SQLite(at: ZYY_DB_FILENAME)
 //        sqlite.exec(sql: SQL)
 //            SQL = """
@@ -309,7 +308,7 @@ struct zyy : ParsableCommand {
 //        sqlite.exec(sql: SQL)
 //        sqlite.SQLite3_close()
 //    }
-    
+
 //    /* Get a setting value from given `field`. */
 //    static func get_setting(field : String) -> String {
 //        let SQL = """
@@ -328,7 +327,7 @@ struct zyy : ParsableCommand {
 //        sqlite.SQLite3_close()
 //        return value
 //    }
-    
+
     /* Add a new section in table, and will replace the old one if exists. */
     /* Use the `INSERT OR IGNORE` followed by an `UPDATE`. */
     private static func set_section(_ s : Section) {
@@ -358,7 +357,7 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
-    
+
     /* Get a section value from given section `heading`.
      */
     private static func get_section(heading : String) -> Section {
@@ -390,7 +389,7 @@ struct zyy : ParsableCommand {
         sqlite.SQLite3_close()
         return value
     }
-    
+
     /* Remove a section */
     private static func remove_section(heading : String) {
         let SQL = """
@@ -401,7 +400,7 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
-    
+
     /* List sections */
     static func list_sections() -> [Section] {
         let SQL = """
@@ -432,7 +431,7 @@ struct zyy : ParsableCommand {
         sqlite.SQLite3_close()
         return ret
     }
-    
+
     /* Search for page with specific title */
     private static func get_page(by title : String) -> Page {
         let title = title.to_base64()
@@ -460,7 +459,7 @@ struct zyy : ParsableCommand {
         sqlite.SQLite3_close()
         return value
     }
-    
+
     /* Modify or insert a new page */
     private static func set_page(_ p : Page) {
         var SQL = """
@@ -489,7 +488,7 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
-    
+
     /* Remove a page */
     private static func remove_page(title : String) {
         let SQL = """
@@ -500,7 +499,7 @@ struct zyy : ParsableCommand {
         sqlite.exec(sql: SQL)
         sqlite.SQLite3_close()
     }
-    
+
     /* List all pages */
     static func list_pages() -> [Page] {
         let SQL = """
@@ -528,7 +527,7 @@ struct zyy : ParsableCommand {
         sqlite.SQLite3_close()
         return ret
     }
-    
+
     /* Maybe there exists a better way to do this. :< */
     /* Return `i-st`, `i-nd`, `i-rd` or `i-th`, i is a number. */
     private static func getOrdinalNumbers(_ i : Int) -> String {
@@ -542,7 +541,7 @@ struct zyy : ParsableCommand {
             return "\(i)-th"
         }
     }
-    
+
     public static func getAllHeadBoxCustomFields() -> [[String]] {
         var res = [[String]](repeating: [String](), count: 2)
 //         Head box custom fields
@@ -551,7 +550,7 @@ struct zyy : ParsableCommand {
 //            if c != "" {
 //                res[0].append(c)
 //            }
-            
+
 //            c = get_setting(field: ZYY_SET_OPT_CUSTOM_FIELD_URLS[i])
 //            if c != "" {
 //                res[1].append(c)
