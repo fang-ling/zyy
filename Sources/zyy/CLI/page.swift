@@ -1,6 +1,6 @@
 //
 //  page.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/5/17.
 //
@@ -9,37 +9,42 @@ import ArgumentParser
 import Foundation
 
 extension zyy {
-    struct PageCommand : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "page",
-            abstract: "Create, delete and work on pages.",
-            subcommands: [Add.self, Edit.self, Remove.self, List.self]
-        )
-    }
-}
-
-extension zyy.PageCommand {
     struct List : ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "List all pages."
         )
-        
+
         func run() {
-            for i in zyy.list_pages() {
-                print(i.title)
+            print("PAGEID|TITLE")
+            for page in get_pages() {
+                print("\(String(format: "%6d", page.id))|\(page.title)")
             }
         }
     }
-    
-    struct Add : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Add new page"
-        )
-        
-        @Argument(help: "The title of the new page.")
-        var title : String
-        
-        func run() {
+}
+
+ // extension zyy.PageCommand {
+ //    struct List : ParsableCommand {
+ //        static var configuration = CommandConfiguration(
+ //            abstract: "List all pages."
+ //        )
+
+ //        func run() {
+ //            for i in zyy.list_pages() {
+ //                print(i.title)
+ //            }
+ //        }
+ //    }
+
+ //    struct Add : ParsableCommand {
+ //        static var configuration = CommandConfiguration(
+ //            abstract: "Add new page"
+ //        )
+
+ //        @Argument(help: "The title of the new page.")
+ //        var title : String
+
+ //        func run() {
 //            var page = zyy.get_page(by: title)
 //            if page.title == title {
 //                command_line_error("Already existed:\n" + title)
@@ -64,18 +69,18 @@ extension zyy.PageCommand {
 //            print("Website link (relative):")
 //            page.link = readLine() ?? ""
 //            zyy.set_page(page)
-        }
-    }
-    
-    struct Edit : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Modify the page."
-        )
-        
-        @Argument(help: "The title of the page.")
-        var title : String
-        
-        func run() {
+    //     }
+    // }
+
+    // struct Edit : ParsableCommand {
+    //     static var configuration = CommandConfiguration(
+    //         abstract: "Modify the page."
+    //     )
+
+    //     @Argument(help: "The title of the page.")
+    //     var title : String
+
+    //     func run() {
 //            var page = zyy.get_page(by: title)
 //            if page.title != title {
 //                command_line_error("No such section:\n" + title)
@@ -107,23 +112,23 @@ extension zyy.PageCommand {
 //            }
 //            zyy.remove_page(title: title) /* remove old title (if changed) */
 //            zyy.set_page(page)
-        }
-    }
-    
-    struct Remove : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Remove the page."
-        )
-        
-        @Argument(help: "The title of the page.")
-        var title : String
-        
-        func run() {
+    //     }
+    // }
+
+    // struct Remove : ParsableCommand {
+    //     static var configuration = CommandConfiguration(
+    //         abstract: "Remove the page."
+    //     )
+
+    //     @Argument(help: "The title of the page.")
+    //     var title : String
+
+    //     func run() {
 //            let page = zyy.get_page(by: title)
 //            if page.title != title {
 //                command_line_error("No such page:\n" + title)
 //            }
 //            zyy.remove_page(title: title)
-        }
-    }
-}
+//         }
+//     }
+// }
