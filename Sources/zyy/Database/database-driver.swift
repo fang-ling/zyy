@@ -111,6 +111,44 @@ func remove_sections(database : String = ZYY_DB_FILENAME) {
 //                             Page table                                     //
 //----------------------------------------------------------------------------//
 
+func get_page(database : String = ZYY_DB_FILENAME, by id : Int) -> Page? {
+    let result = exec(at: ZYY_DB_FILENAME,
+                      sql: get_page_select_sql(columns:
+                                                 [
+                                                   ZYY_PAGE_COL_ID,
+                                                   ZYY_PAGE_COL_DATE,
+                                                   ZYY_PAGE_COL_CONTENT,
+                                                   ZYY_PAGE_COL_TITLE,
+                                                   ZYY_PAGE_COL_LINK
+                                                 ],
+                                               by: id))
+    /* It should guaranteed that result.count <= 1 */
+    guard let page_data = result.first else {
+        return nil
+    }
+    var page = Page()
+    guard let id_str = page_data[ZYY_PAGE_COL_ID] else {
+        fatalError("Failed to parse page id")
+        //fatal_error(.error)
+    }
+    if let id = Int(id_str) {
+        page.id = id
+    }
+    if let date = page_data[ZYY_PAGE_COL_DATE] {
+        page.date = date
+    }
+    if let title = page_data[ZYY_PAGE_COL_TITLE] {
+        page.title = title.from_base64()!
+    }
+    if let link = page_data[ZYY_PAGE_COL_LINK] {
+        page.link = link.from_base64()!
+    }
+    if let content = page_data[ZYY_PAGE_COL_CONTENT] {
+        page.content = content.from_base64()!
+    }
+    return page
+}
+
 func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
     var result = [Page]()
     let pages = exec(at: database,

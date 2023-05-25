@@ -140,6 +140,11 @@ func get_section_select_all_sql() -> String {
                                   ZYY_SEC_COL_CLINK])
 }
 
+func get_page_select_sql(columns : [String], by id : Int) -> String {
+    let table = Table(name: ZYY_PAGE_TBL)
+    return table.select(columns: columns, where: (ZYY_PAGE_COL_ID, "\(id)"));
+}
+
 func get_page_select_all_sql(columns : [String]) -> String {
     let table = Table(name: ZYY_PAGE_TBL)
     return table.select(columns: columns)

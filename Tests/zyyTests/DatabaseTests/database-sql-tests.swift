@@ -153,4 +153,16 @@ final class DatabaseSQLTests : XCTestCase {
         let SQL = #"DELETE FROM "Page" WHERE ("id" = 1);"#
         XCTAssertEqual(SQL, get_page_delete_sql(id: 1));
     }
+
+    func test_get_page_select_sql() {
+        let SQL =
+          #"SELECT "date", "title", "content" FROM "Page" "# +
+          #"WHERE ("id" = 1);"#
+        XCTAssertEqual(SQL,
+                       get_page_select_sql(columns: [
+                                             ZYY_PAGE_COL_DATE,
+                                             ZYY_PAGE_COL_TITLE,
+                                             ZYY_PAGE_COL_CONTENT],
+                                           by: 1))
+    }
 }

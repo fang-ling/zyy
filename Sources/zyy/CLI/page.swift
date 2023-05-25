@@ -14,6 +14,7 @@ private func get_page_header(page : Page?) -> String {
       \(ZYY_PAGE_COL_TITLE) = \(page == nil ? "" : page!.title)
       \(ZYY_PAGE_COL_LINK) = \(page == nil ? "" : page!.link)
       ###
+      \(page == nil ? "" : page!.content)
 
       """
 }
@@ -62,9 +63,9 @@ extension zyy {
           abstract: "Add new page."
         )
 
-        func run() {
+        func run() throws {
             /* Write empty header to temp file */
-            try! get_page_header(page: nil).write(toFile: ZYY_MD_TEMP,
+            try get_page_header(page: nil).write(toFile: ZYY_MD_TEMP,
                                                   atomically: true,
                                                   encoding: .utf8)
             /* Launch command line editor */
@@ -76,50 +77,30 @@ extension zyy {
             /* Write to database */
             add_page(page: page)
             /* Remove temp file */
-            try! FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
+            try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
+        }
+    }
+
+    struct Edit : ParsableCommand {
+        static var configuration = CommandConfiguration(
+          abstract: "Modify the page."
+        )
+
+        @Argument(help: "The id of the page.")
+        var id : Int
+
+        func run() throws {
+            //var page = get_page
         }
     }
 }
 
- //    struct Add : ParsableCommand {
- //        static var configuration = CommandConfiguration(
- //            abstract: ""
- //        )
-
- //        @Argument(help: "The title of the new page.")
- //        var title : String
-
- //        func run() {
-//            var page = zyy.get_page(by: title)
-//            if page.title == title {
-//                command_line_error("Already existed:\n" + title)
-//            }
-//            page.date = get_current_date_string()
-//            page.title = title
-//            page.content = ""
-//            print("Content:")
-//            do {
-//                try page.content.write(toFile: zyy.TEMP_FILENAME,
-//                                       atomically: true,
-//                                       encoding: .utf8)
-//                //TO-DO: support different editors
-//                try PosixProcess("/usr/local/bin/emacs",
-//                                 zyy.TEMP_FILENAME).spawn()
-//                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
-//                                          encoding: .utf8)
-//                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
-//            } catch {
-//                command_line_error(error.localizedDescription)
-//            }
-//            print("Website link (relative):")
-//            page.link = readLine() ?? ""
-//            zyy.set_page(page)
     //     }
     // }
 
     // struct Edit : ParsableCommand {
     //     static var configuration = CommandConfiguration(
-    //         abstract: "Modify the page."
+    //         abstract: ""
     //     )
 
     //     @Argument(help: "The title of the page.")
