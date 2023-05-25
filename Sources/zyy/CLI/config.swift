@@ -1,6 +1,6 @@
 //
 //  config.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/5/6.
 //
@@ -13,7 +13,7 @@ extension zyy {
         static var configuration = CommandConfiguration(
             abstract: "Set up the website."
         )
-        
+
         private func get_config_file() -> String {
             /* List user-editable settings */
             var config =
@@ -29,14 +29,14 @@ extension zyy {
     # The start year of your website
     \(ZYY_SET_OPT_START_YEAR) = \(get_setting(with: ZYY_SET_OPT_START_YEAR)!)
     # Custom fields in head box
-    
+
     """
             for i in zip(ZYY_SET_OPT_CUSTOM_FIELDS,
                          ZYY_SET_OPT_CUSTOM_FIELD_URLS) {
                 config += """
                           \(i.0) = \(get_setting(with: i.0)!)
                           \(i.1) = \(get_setting(with: i.1)!)
-                          
+
                           """
             }
             config +=
@@ -48,7 +48,7 @@ extension zyy {
     """
             return config
         }
-        
+
         private
         func parse_config_file(_ config : String) -> [(String, String)] {
             var contents = config.components(separatedBy: .newlines)
@@ -63,7 +63,7 @@ extension zyy {
             }
             return settings
         }
-        
+
         private func get_section_file(sections : [Section]) -> String {
             var result = ""
             if sections.isEmpty {
@@ -74,7 +74,7 @@ extension zyy {
                           cover =
                           hlink =
                           clink =
-                          
+
                           """
             } else {
                 var i = 1
@@ -86,14 +86,14 @@ extension zyy {
                               cover = \(section.cover)
                               hlink = \(section.hlink)
                               clink = \(section.clink)
-                              
+
                               """
                     i += 1
                 }
             }
             return result
         }
-        
+
         private func parse_section_file(_ file : String) -> [Section] {
             var contents = file.components(separatedBy: .newlines)
             /// Ignore empty lines and line with pure number
@@ -117,18 +117,18 @@ extension zyy {
                 section.clink =
                     (contents[i + 4] + " ").components(separatedBy: "=")[1]
                                            .trimmingCharacters(in: .whitespaces)
-                
+
                 sections.append(section)
                 i += 5
             }
             return sections
         }
-        
+
         /// Config file format:
         /// optionX = valueX
         /// "valueX" can be empty to indicate no such value.
         /// Everything behind '#' in a single line will be removed.
-        func run() {
+        func run() throws {
             /* Check if database exists */
             if !FileManager.default.fileExists(atPath: ZYY_DB_FILENAME) {
                 fatal_error(.no_such_file)
@@ -136,11 +136,11 @@ extension zyy {
             /* Update index page modified time unconditionally. */
             set_setting(with: ZYY_SET_OPT_INDEX_UPDATE_TIME,
                         new_value: get_current_date_string())
-            
+
             /* Write config to temporary file */
-            try! get_config_file().write(toFile: ZYY_CONFIG_TEMP,
-                                         atomically: true,
-                                         encoding: .utf8)
+            try get_config_file().write(toFile: ZYY_CONFIG_TEMP,
+                                        atomically: true,
+                                        encoding: .utf8)
             /* Launch command line editor */
             posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_CONFIG_TEMP)
             /* Read config file */
@@ -150,16 +150,16 @@ extension zyy {
             /* Write settings to database */
             set_settings(option_value_pairs: settings)
             /* Remove the temporary file */
-            try! FileManager.default.removeItem(atPath: ZYY_CONFIG_TEMP)
-            
+            try FileManager.default.removeItem(atPath: ZYY_CONFIG_TEMP)
+
             /* Get all of the sections */
             var sections = get_sections()
             /* Clear Section table */
             remove_sections()
             /* Write sections to temporary file */
-            try! get_section_file(sections: sections).write(toFile: ZYY_MD_TEMP,
-                                                            atomically: true,
-                                                            encoding: .utf8)
+            try get_section_file(sections: sections).write(toFile: ZYY_MD_TEMP,
+                                                           atomically: true,
+                                                           encoding: .utf8)
             /* Launch command line editor */
             posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
             /* Read section file */
@@ -168,7 +168,7 @@ extension zyy {
             /* Write sections to database */
             add_sections(sections: sections)
             /* Remove the temporary file */
-            try! FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
+            try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
         }
     }
 }

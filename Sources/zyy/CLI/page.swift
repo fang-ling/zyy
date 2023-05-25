@@ -66,8 +66,8 @@ extension zyy {
         func run() throws {
             /* Write empty header to temp file */
             try get_page_header(page: nil).write(toFile: ZYY_MD_TEMP,
-                                                  atomically: true,
-                                                  encoding: .utf8)
+                                                 atomically: true,
+                                                 encoding: .utf8)
             /* Launch command line editor */
             posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
             /* Read page file */
@@ -90,57 +90,27 @@ extension zyy {
         var id : Int
 
         func run() throws {
-            //var page = get_page
+            guard let page = get_page(by: id) else {
+                fatalError("No such page with id \(id).")
+            }
+            /* Write header to temp file */
+            try get_page_header(page: page).write(toFile: ZYY_MD_TEMP,
+                                                  atomically: true,
+                                                  encoding: .utf8)
+            /* Launch command line editor */
+            posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
+            /* Read page file */
+            let page_file = try! String(contentsOfFile: ZYY_MD_TEMP,
+                                        encoding: .utf8)
+            var new_page = parse_page_file(page_file: page_file)
+            new_page.id = page.id /// Be careful
+            /* Write to database */
+            set_page(page: new_page)
+            /* Remove temp file */
+            try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
         }
     }
 }
-
-    //     }
-    // }
-
-    // struct Edit : ParsableCommand {
-    //     static var configuration = CommandConfiguration(
-    //         abstract: ""
-    //     )
-
-    //     @Argument(help: "The title of the page.")
-    //     var title : String
-
-    //     func run() {
-//            var page = zyy.get_page(by: title)
-//            if page.title != title {
-//                command_line_error("No such section:\n" + title)
-//            }
-//            page.date = get_current_date_string()
-//            print("Hint: Press enter directly to leave it as-is")
-//            print("Title[\(page.title)]:")
-//            let _title = readLine() ?? ""
-//            if _title != "" {
-//                page.title = _title
-//            }
-//            do {
-//                try page.content.write(toFile: zyy.TEMP_FILENAME,
-//                                       atomically: true,
-//                                       encoding: .utf8)
-//                //TO-DO: support different editors
-//                try PosixProcess("/usr/local/bin/emacs",
-//                                 zyy.TEMP_FILENAME).spawn()
-//                page.content = try String(contentsOfFile: zyy.TEMP_FILENAME,
-//                                          encoding: .utf8)
-//                try PosixProcess("/bin/rm", zyy.TEMP_FILENAME).spawn()
-//            } catch {
-//                command_line_error(error.localizedDescription)
-//            }
-//            print("Website link (relative)[\(page.link)]:")
-//            let link = readLine() ?? ""
-//            if link != "" {
-//                page.link = link
-//            }
-//            zyy.remove_page(title: title) /* remove old title (if changed) */
-//            zyy.set_page(page)
-    //     }
-    // }
-
     // struct Remove : ParsableCommand {
     //     static var configuration = CommandConfiguration(
     //         abstract: "Remove the page."

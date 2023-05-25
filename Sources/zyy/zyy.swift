@@ -240,7 +240,8 @@ struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for building personal websites.",
         version: VERSION,
-        subcommands: [Init.self, Config.self, Build.self, List.self, Add.self]
+        subcommands: [Init.self, Config.self, Build.self,
+                      List.self, Add.self, Edit.self]
     )
 
     /* Command Line related String constants */
