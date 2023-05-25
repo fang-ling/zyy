@@ -110,21 +110,18 @@ extension zyy {
             try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
         }
     }
+
+    struct Remove : ParsableCommand {
+         static var configuration = CommandConfiguration(
+           abstract: "Remove the page."
+         )
+
+         @Argument(help: "The id of the page.")
+         var id : Int
+
+         func run() throws {
+             /* It's not necessary to check if the page exists. */
+             remove_page(id: id)
+         }
+    }
 }
-    // struct Remove : ParsableCommand {
-    //     static var configuration = CommandConfiguration(
-    //         abstract: "Remove the page."
-    //     )
-
-    //     @Argument(help: "The title of the page.")
-    //     var title : String
-
-    //     func run() {
-//            let page = zyy.get_page(by: title)
-//            if page.title != title {
-//                command_line_error("No such page:\n" + title)
-//            }
-//            zyy.remove_page(title: title)
-//         }
-//     }
-// }

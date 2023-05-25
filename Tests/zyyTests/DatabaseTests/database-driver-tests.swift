@@ -203,6 +203,9 @@ final class DatabaseDriverTests : XCTestCase {
         remove_page(id: 1)
         XCTAssertEqual([], get_pages())
 
+        /* Test remove not existed page */
+        remove_page(id: 19358)
+
         try FileManager.default.removeItem(atPath: ZYY_DB_FILENAME)
     }
 
