@@ -54,23 +54,6 @@ let ZYY_SET_OPT_CUSTOM_FIELD_URLS = ["custom_field_url_1", "custom_field_url_2",
                                      "custom_field_url_3", "custom_field_url_4",
                                      "custom_field_url_5", "custom_field_url_6",
                                      "custom_field_url_7", "custom_field_url_8"]
-
-extension zyy {
-    struct Build : ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Build static files."
-        )
-
-        func run() {
-//            let count = Int(get_setting(field: ZYY_SET_OPT_BUILD_COUNT),
-//                            radix: 16)!
-//            set_setting(field: ZYY_SET_OPT_BUILD_COUNT,
-//                        value: String(count + 1, radix: 16))
-            HTML.write_to_file()
-        }
-    }
-}
-
 @main
 struct zyy : ParsableCommand {
     static var configuration = CommandConfiguration(

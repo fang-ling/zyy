@@ -1,6 +1,6 @@
 //
 //  html.swift
-//  
+//
 //
 //  Created by Fang Ling on 2022/11/7.
 //
@@ -379,13 +379,13 @@ MathJax = {
  * </html>
  */
 
-struct HTML {
+struct HTML2 {
     private static let FONT_LINK = "https://fonts.googleapis.com/css?family=" +
                        "Gentium+Book+Basic:400,700italic,700,400italic:latin"
     private static let MAIN_STYLE_CSS_FILENAME = "style.css"
     private static let CHL_CSS_FILENAME = "gist-embed.css"
     /* The height of stack preview div is determined by javascript. */
-    
+
     public static func write_to_file() {
         do {
             /* gist-embed.css */
@@ -399,12 +399,12 @@ struct HTML {
             let index_t = ""
 //                zyy.get_setting(field: ZYY_SET_OPT_INDEX_UPDATE_TIME)
             /* index.html */
-            try HTML.render_index(date: index_t).write(toFile: "index.html",
+            try HTML2.render_index(date: index_t).write(toFile: "index.html",
                                                        atomically: true,
                                                        encoding: .utf8)
             // TO-DO: add file hierarch
             for page in zyy.list_pages() {
-                try HTML.render_page(page: page)
+                try HTML2.render_page(page: page)
                 .write(toFile: page.link.components(separatedBy: "/").last!,
                        atomically: true,
                        encoding: .utf8)
@@ -413,7 +413,7 @@ struct HTML {
             print(error.localizedDescription)
         }
     }
-    
+
     private static func render_head(titleText : String) -> DOMTreeNode {
         let head = DOMTreeNode(name: "head", attr: [:])
         head.add(DOMTreeNode(name: "meta", attr: ["charset" : "UTF-8"]))
@@ -436,7 +436,7 @@ struct HTML {
         head.add(custom_head)
         return head
     }
-    
+
     /*
      *  <h1>
      *      <strong>...</strong>
@@ -449,7 +449,7 @@ struct HTML {
         h1.add(strong)
         return h1
     }
-    
+
     /*
      *  <div>
      *      Plain text or <a> separated by dots.
@@ -473,7 +473,7 @@ struct HTML {
         }
         return div
     }
-    
+
     private static
     func render_stack_preview(by section : Section) -> DOMTreeNode {
         let stack_preview = DOMTreeNode(name: "div",
@@ -502,7 +502,7 @@ struct HTML {
         stack_preview.add(caption_p)
         return stack_preview
     }
-    
+
     private static func render_stack_preview_container() -> DOMTreeNode {
         let div = DOMTreeNode(name: "div",
                               attr: ["class" : "stackpreview-container"])
@@ -511,7 +511,7 @@ struct HTML {
         }
         return div
     }
-    
+
     private static func render_foot_box(date: String) -> DOMTreeNode {
         let author = ""//zyy.get_setting(field: ZYY_SET_OPT_AUTHOR)
         let site_url = ""//zyy.get_setting(field: ZYY_SET_OPT_URL)
@@ -526,7 +526,7 @@ struct HTML {
         div.add(i)
         return div
     }
-    
+
     private static func render_footer() -> DOMTreeNode {
         let site_url = ""//zyy.get_setting(field: ZYY_SET_OPT_URL)
         let author = ""//zyy.get_setting(field: ZYY_SET_OPT_AUTHOR)
@@ -554,7 +554,7 @@ struct HTML {
         div.add(p)
         return div
     }
-    
+
     private static func render_index_body(date: String) -> DOMTreeNode {
         let sitename = ""//zyy.get_setting(field: ZYY_SET_OPT_TITLE)
         let body = DOMTreeNode(name: "body", attr: [:])
@@ -572,7 +572,7 @@ struct HTML {
         body.add(js)
         return body
     }
-    
+
     public static func render_index(date: String) -> String {
         let sitename = ""//zyy.get_setting(field: ZYY_SET_OPT_TITLE)
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
@@ -582,7 +582,7 @@ struct HTML {
         DOMTreeNode.inorder_tree_traversal(html, &string)
         return "<!DOCTYPE html>\n" + string
     }
-    
+
     private static func render_page(page : Page) -> String {
         var page = page
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
@@ -590,7 +590,7 @@ struct HTML {
         let body = DOMTreeNode(name: "body", attr: [:])
         body.add(render_title(title_text: page.title))
         body.add(render_head_box())
-        
+
         /* Replace $...$ and $$...$$ with a unique string */
         /* Should not use $ for other purpose. */
         let latex_math = #/(\${1,2})(?:(?!\1)[\s\S])*\1/#
@@ -603,7 +603,7 @@ struct HTML {
         var has_math = false
         for m in page.content.matches(of: latex_math) {
             has_math = true
-            
+
             uuid = UUID().uuidString
             formula = String(m.output.0)
             origin_formula = formula
@@ -615,7 +615,7 @@ struct HTML {
             if origin_formula != formula {
                 uuid_to_origin_formula[uuid] = origin_formula
             }
-            
+
             formula_to_uuid[formula] = uuid
         }
         /* Replace formulas with corresponding uuid */
@@ -630,13 +630,13 @@ struct HTML {
                                                                  with: i.value)
             }
         }
-        
+
         /* Replace code block */
         var has_code = false
         let code_block = #/<code(?:\s[^>]*)?>[\s\S]*?<\/code>|`{3}([\S\s]*?)`{3}|~~([\S\s]*?)~~__([\s\S]*?)__/#
         for m in page.content.matches(of: code_block) {
             has_code = true
-            
+
             var lines = m.output.0.components(separatedBy: .newlines)
             // - TODO: Assuming code block is
             //   ```language
@@ -650,7 +650,7 @@ struct HTML {
             for i in lines {
                 code += i + "\n"
             }
-            
+
             var replace = ""
             DOMTreeNode.inorder_tree_traversal_code(Code.toHTML(code: code,
                                                                 language: lang),
@@ -659,7 +659,7 @@ struct HTML {
             page.content = page.content.replacingOccurrences(of: m.output.0,
                                                              with: replace)
         }
-        
+
         page.content = cmark_markdown_to_html_with_ext(page.content,
                                                        CMARK_OPT_UNSAFE)
         /* Restore formulas after change to html */
@@ -675,7 +675,7 @@ struct HTML {
         body.add(render_foot_box(date: page.date))
         body.add(DOMTreeNode(name: "br", attr: [:]))
         body.add(render_footer())
-        
+
         let head = render_head(titleText: page.title)
         if has_math {
             head.add(MATHJAX_JS)

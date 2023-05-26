@@ -1,6 +1,6 @@
 //
 //  data.swift
-//  
+//
 //
 //  Created by Fang Ling on 2022/11/26.
 //
@@ -14,7 +14,7 @@ struct Section : Equatable {
     var cover : String
     var hlink : String
     var clink : String
-    
+
     init() {
         heading = ""
         caption = ""
@@ -31,7 +31,7 @@ struct Page : Equatable {
     var content : String
     var link : String
     var date : String
-    
+
     init() {
         id = 0
         title = ""
