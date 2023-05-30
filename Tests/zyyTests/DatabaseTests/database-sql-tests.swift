@@ -21,6 +21,8 @@ final class DatabaseSQLTests : XCTestCase {
 
     func test_get_setting_default_rows_sql() {
         let d = get_current_date_string()
+        let h = "PCEtLUN1c3RvbSBoZWFkLS0+"
+        let m = "PCEtLUN1c3RvbSBtYXJrZG93bi0tPg=="
         let sql =
   """
   INSERT INTO "Setting" ("option", "value") VALUES ('build_count', '0');
@@ -30,8 +32,8 @@ final class DatabaseSQLTests : XCTestCase {
   INSERT INTO "Setting" ("option", "value") VALUES ('url', '');
   INSERT INTO "Setting" ("option", "value") VALUES ('author', '');
   INSERT INTO "Setting" ("option", "value") VALUES ('start_year', '');
-  INSERT INTO "Setting" ("option", "value") VALUES ('custom_head', '');
-  INSERT INTO "Setting" ("option", "value") VALUES ('custom_markdown', '');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_head', '\(h)');
+  INSERT INTO "Setting" ("option", "value") VALUES ('custom_markdown', '\(m)');
   INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_1', '');
   INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_2', '');
   INSERT INTO "Setting" ("option", "value") VALUES ('custom_field_3', '');

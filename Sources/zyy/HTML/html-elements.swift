@@ -50,18 +50,18 @@ extension HTML {
      *  </div>
      */
     func get_head_box() -> DOMTreeNode {
-        let fields = zyy.getAllHeadBoxCustomFields()
+        let fields = get_all_headbox_custom_fields()
         let div = DOMTreeNode(name: "div",
                               attr: ["class" : "purplebox head-box"])
-        for i in fields[0].indices {
-            if (fields[1][i] == "") { /* Plain text node */
-                div.add(fields[0][i])
+        for i in fields.indices {
+            if fields[i].1.isEmpty { /* Plain text node */
+                div.add(fields[i].0)
             } else {
-                let a = DOMTreeNode(name: "a", attr: ["href" : fields[1][i]])
-                a.add(fields[0][i])
+                let a = DOMTreeNode(name: "a", attr: ["href" : fields[i].1])
+                a.add(fields[i].0)
                 div.add(a)
             }
-            if (i != fields[0].count - 1) { /* Add separater */
+            if (i != fields.count - 1) { /* Add separater */
                 div.add("&nbsp;&bull;&nbsp;");
             }
         }
@@ -99,7 +99,7 @@ extension HTML {
     func get_stack_preview_container() -> DOMTreeNode {
         let div = DOMTreeNode(name: "div",
                               attr: ["class" : "stackpreview-container"])
-        for section in zyy.list_sections() {
+        for section in sections {
             div.add(get_stack_preview(by: section))
         }
         return div
@@ -165,6 +165,19 @@ extension HTML {
         return body
     }
 
+    /*
+     * Main index html:
+     * <!doctype html>
+     * <html>
+     *   <head>
+     *     <meta>
+     *     <meta>
+     *     <link>
+     *     <style></style>
+     *     <title></title>
+     *   </head>
+     * </html>
+     */
     func get_index(date: String) -> String {
         let sitename = settings[ZYY_SET_OPT_TITLE]!
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
@@ -175,7 +188,7 @@ extension HTML {
         return "<!DOCTYPE html>\n" + string
     }
 
-    func render_page(page : Page) -> String {
+    func get_page(page : Page) -> String {
         var page = page
         let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
         /* Body */

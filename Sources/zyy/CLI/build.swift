@@ -47,7 +47,11 @@ extension zyy {
                 settings[url] = get_setting(with: url)
             }
 
-            //HTML.write_to_file()
+            HTML(
+              pages: pages,
+              sections: sections,
+              settings: settings
+            ).write_to_file()
         }
     }
 }

@@ -88,12 +88,12 @@ func get_setting_insert_default_rows_sql() -> String {
                 /// start_year = ""
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_START_YEAR),
                  (ZYY_SET_COL_VAL, "")],
-                /// custom_head = ""
+                /// custom_head = "<!--Custom head-->"
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_HEAD),
-                 (ZYY_SET_COL_VAL, "")],
-                /// custom_markdown = ""
+                 (ZYY_SET_COL_VAL, "PCEtLUN1c3RvbSBoZWFkLS0+")],
+                /// custom_markdown = "<!--Custom markdown-->"
                 [(ZYY_SET_COL_OPT, ZYY_SET_OPT_CUSTOM_MD),
-                 (ZYY_SET_COL_VAL, "")]]
+                 (ZYY_SET_COL_VAL, "PCEtLUN1c3RvbSBtYXJrZG93bi0tPg==")]]
     for i in ZYY_SET_OPT_CUSTOM_FIELDS + ZYY_SET_OPT_CUSTOM_FIELD_URLS {
         rows.append([(ZYY_SET_COL_OPT, i), (ZYY_SET_COL_VAL, "")])
     }

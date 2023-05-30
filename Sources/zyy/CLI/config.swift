@@ -39,13 +39,13 @@ extension zyy {
 
                           """
             }
-            config +=
+            /*config +=
     """
     # Custom HTML code in <head></head> tag
     \(ZYY_SET_OPT_CUSTOM_HEAD) = \(get_setting(with: ZYY_SET_OPT_CUSTOM_HEAD)!)
     # Custom MARKDOWN text on index.html
     \(ZYY_SET_OPT_CUSTOM_MD) = \(get_setting(with: ZYY_SET_OPT_CUSTOM_MD)!)
-    """
+    """*/
             return config
         }
 
@@ -151,6 +151,44 @@ extension zyy {
             set_settings(option_value_pairs: settings)
             /* Remove the temporary file */
             try FileManager.default.removeItem(atPath: ZYY_CONFIG_TEMP)
+
+            var custom_head = get_setting(with: ZYY_SET_OPT_CUSTOM_HEAD)!
+            /* Write custom head to temporary file */
+            try custom_head.write(
+              toFile: ZYY_MD_TEMP,
+              atomically: true,
+              encoding: .utf8
+            )
+            /* Launch command line editor */
+            posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
+            /* Read custom head */
+            custom_head = try! String(
+              contentsOfFile: ZYY_MD_TEMP,
+              encoding: .utf8
+            )
+            /* Write settings to database */
+            set_setting(with: ZYY_SET_OPT_CUSTOM_HEAD, new_value: custom_head)
+            /* Remove the temporary file */
+            try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
+
+            var custom_md = get_setting(with: ZYY_SET_OPT_CUSTOM_MD)!
+            /* Write custom markdown to temporary file */
+            try custom_md.write(
+              toFile: ZYY_MD_TEMP,
+              atomically: true,
+              encoding: .utf8
+            )
+            /* Launch command line editor */
+            posix_spawn(get_setting(with: ZYY_SET_OPT_EDITOR)!, ZYY_MD_TEMP)
+            /* Read custom head */
+            custom_md = try! String(
+              contentsOfFile: ZYY_MD_TEMP,
+              encoding: .utf8
+            )
+            /* Write settings to database */
+            set_setting(with: ZYY_SET_OPT_CUSTOM_MD, new_value: custom_md)
+            /* Remove the temporary file */
+            try FileManager.default.removeItem(atPath: ZYY_MD_TEMP)
 
             /* Get all of the sections */
             var sections = get_sections()
