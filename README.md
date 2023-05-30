@@ -31,4 +31,4 @@ This repo relies on the following third-party projects:
 
   - [sqlite/sqlite](https://github.com/sqlite/sqlite)
   - [github/cmark-gfm](https://github.com/github/cmark-gfm)
-  - [swift-argument-parser](https://github.com/apple/swift-argument-parser)
+  - [apple/swift-argument-parser](https://github.com/apple/swift-argument-parser)
