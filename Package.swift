@@ -19,14 +19,16 @@ let package = Package(
                 .product(name: "ArgumentParser",
                          package: "swift-argument-parser")
             ]),
-        .target(
+        .systemLibrary(
             name: "CMark",
-            path: "Sources/CMark"//,
-            //exclude: ["include/case_fold_switch.inc"]
+            pkgConfig: "libcmark-gfm",
+            providers: [
+              .brew(["cmark-gfm"])
+            ]
         ),
-        .target(
+        .systemLibrary(
             name: "CSQLite",
-            path: "Sources/CSQLite"
+            pkgConfig: "sqlite3"
         ),
         .testTarget(
             name: "zyyTests",

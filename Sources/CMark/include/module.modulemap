@@ -1,5 +1,0 @@
-module CMark {
-    header "cmark-gfm.h"
-    header "../extension/include/cmark-gfm-core-extensions.h"
-    export *
-}

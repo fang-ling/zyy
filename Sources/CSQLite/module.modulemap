@@ -1,0 +1,4 @@
+module CSQLite [system] {
+    header "include/csqlite3.h"
+    export *
+}
