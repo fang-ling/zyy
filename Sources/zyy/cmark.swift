@@ -6,6 +6,7 @@
 //
 
 import CMark
+import Foundation
 
 /*
  *  Convert 'text' (assumed to be a UTF-8 encoded swift string) from CommonMark
