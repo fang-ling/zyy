@@ -2,7 +2,28 @@
 
 The way we create the website: [fangling.uk](https://fangling.uk).
 
-> This project is under heavy construction.
+## Building zyy
+
+### Build Requirements
+
+#### macOS
+
+  - [Homebrew](https://brew.sh): The Missing Package Manager for macOS (or Linux)
+  - Install `cmark-gfm`
+
+```shell
+brew install cmark-gfm
+```
+
+### Build Procedure
+
+```shell
+cd zyy
+swift build -c release
+
+# Run built-in tests
+swift test
+```
 
 ## Credits
 
