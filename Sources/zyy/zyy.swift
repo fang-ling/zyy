@@ -64,6 +64,6 @@ struct zyy : ParsableCommand {
     )
 
     /* Command Line related String constants */
-    public static let VERSION = "0.1.1"
+    public static let VERSION = "0.1.2"
     public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
 }

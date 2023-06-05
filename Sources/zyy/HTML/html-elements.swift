@@ -142,6 +142,16 @@ extension HTML {
         let count = settings[ZYY_SET_OPT_BUILD_COUNT]!
         span.add("Build: \(count)")
         div.add(span)
+
+        let a3 = DOMTreeNode(
+          name: "a",
+          attr: ["href" : "https://erikdemaine.org"]
+        )
+        a3.add("by Prof. Erik Demaine")
+        div.add(DOMTreeNode(name: "br", attr: [:]))
+        div.add("Blog theme is highly inspired")
+        div.add(a3)
+
         let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])
         p.add("© \(st_year)-\(cr_year) \(author)")
         div.add(p)
