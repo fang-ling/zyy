@@ -37,7 +37,13 @@ private func parse_page_file(page_file : String) -> Page {
         }
     }
     comp.removeFirst()
-    page.content = comp.joined(separator: "###")
+    /*
+     * Don't known where the extraneous leading newlines come from. Trim it
+     * unconditionally.
+     */
+    page.content = comp.joined(
+      separator: "###"
+    ).trimmingCharacters(in: .newlines) + "\n"
     page.date = get_current_date_string()
     return page
 }
