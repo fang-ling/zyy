@@ -1,6 +1,6 @@
 //
 //  cmark.swift
-//  
+//
 //
 //  Created by Fang Ling on 2022/11/6.
 //
@@ -22,7 +22,7 @@ func cmark_markdown_to_html_with_ext(_ text : String,
     let parser = cmark_parser_new(options)
     /* Extensions register */
     cmark_gfm_core_extensions_ensure_registered()
-    
+
     /* Add extensions here */
     if let ext = cmark_find_syntax_extension("table") {
         cmark_parser_attach_syntax_extension(parser, ext)
@@ -34,11 +34,12 @@ func cmark_markdown_to_html_with_ext(_ text : String,
     let result = cmark_render_html(doc, options, nil)
     /* Free & return */
     cmark_node_free(doc)
-    
+    cmark_parser_free(parser)
+
     if result == nil {
         fatalError("Error: cmark_render_html()!")
     }
-    
+
     let result_str = String(cString: result!)
     free(result)
     return result_str
