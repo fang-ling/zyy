@@ -1,6 +1,6 @@
 //
 //  domtreenode.swift
-//  
+//
 //
 //  Created by Fang Ling on 2022/11/7.
 //
@@ -18,7 +18,7 @@ class DOMTreeNode {
                                               "link", "meta", "param", "wbr",
                                               "source", "track",
                                               "!doctype html"]
-    
+
     var child : [DOMTreeNode]
     /* Actual payload:
      * Example:
@@ -30,7 +30,7 @@ class DOMTreeNode {
     var attr : [String : String]
     private var text : String
     var isVoidElement : Bool
-    
+
     init(name : String, attr : [String : String]) {
         child = [DOMTreeNode]()
         self.name = name
@@ -38,7 +38,7 @@ class DOMTreeNode {
         text = ""
         isVoidElement = DOMTreeNode.VOID_ELEMENTS.contains(name)
     }
-    
+
     /* Internal use, create a pure text node */
     private init(text : String) {
         name = ""
@@ -47,20 +47,20 @@ class DOMTreeNode {
         isVoidElement = false
         self.attr = [:]
     }
-    
+
     func add(_ node : DOMTreeNode) {
         child.append(node)
     }
-    
+
     func add(_ text : String) {
         child.append(DOMTreeNode(text: text))
     }
-    
+
     public static func inorder_tree_traversal(_ node : DOMTreeNode,
                                               _ string : inout String) {
         if (node.text != "") { /* Pure text node have zero child. */
             //print(node.text)
-            string += node.text + "\n"
+            string += node.text //+ (node.name == "a" ? "" : "\n")
             return
         }
         //print("<\(node.name)", terminator: "")
@@ -69,17 +69,16 @@ class DOMTreeNode {
             //print(" \(i.key)='\(i.value)'", terminator: "")
             string += " \(i.key)='\(i.value)'"
         }
-        //print(">")
-        string += ">" + "\n"
+        /* Inline <a> */
+        string += ">"// + (node.name == "a" ? "" : "\n")
         for i in node.child {
             inorder_tree_traversal(i, &string)
         }
         if (!node.isVoidElement) {
-            //print("</\(node.name)>")
-            string += "</\(node.name)>" + "\n"
+            string += "</\(node.name)>"// + "\n"
         }
     }
-    
+
     public static func inorder_tree_traversal_code(_ node : DOMTreeNode,
                                                    _ string : inout String) {
         if (node.text != "") { /* Pure text node have zero child. */

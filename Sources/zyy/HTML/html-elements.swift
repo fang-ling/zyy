@@ -62,7 +62,7 @@ extension HTML {
                 div.add(a)
             }
             if (i != fields.count - 1) { /* Add separater */
-                div.add("&nbsp;&bull;&nbsp;");
+                div.add("&nbsp;&nbsp;&bull;&nbsp;&nbsp;");
             }
         }
         return div
