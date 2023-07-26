@@ -270,13 +270,13 @@ tr:nth-child(2n) {
         --purple-box-light-color: #63496a;
         --dark-link-pcolor: #BC6FF1;
         --dark-link-scolor: #D9ACF5;
-        --dark-page-bg: #393E46;
+        /*--dark-page-bg: #393E46;*/
 
         /* gist */
-        --color-canvas-default: var(--dark-page-bg);
+        --color-canvas-default: #2a3134;
         --color-fg-default: #e4e8ec;
-        --gist-border-pcolor: #727477;
-        --gist-border-scolor: #727477;
+        --gist-border-pcolor: #555;
+        --gist-border-scolor: #444;
     }
 
     body {
@@ -300,13 +300,13 @@ tr:nth-child(2n) {
         filter: brightness(.8) contrast(1.2);
     }
 
-    .page-container {
+    /*.page-container {
         background-color: var(--dark-page-bg);
         border-radius: 6px 6px;
         padding: 0.1em 1em 0.1em 1em;
         margin-top: 1em;
         margin-bottom: 1em;
-    }
+    }*/
 
     .section {
         padding: 0.9ex 0.5em;
