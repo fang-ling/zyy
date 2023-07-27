@@ -252,6 +252,13 @@ tr:nth-child(2n) {
   max-width: 100%;
 }*/
 
+/* Images in blog posts, centered */
+.page-container img {
+    width: 61.8%;
+    display: block;
+    margin: 0 auto
+}
+
 /* iPhone OS */
 @media screen and (max-width:500px) {
     body {
