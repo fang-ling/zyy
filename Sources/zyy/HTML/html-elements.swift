@@ -16,9 +16,28 @@ extension HTML {
                    name: "meta",
                    attr: ["name" : "viewport",
                           "content" : "width=device-width initial-scale=1"]))
-        head.add(DOMTreeNode(name: "link", attr: ["href" : HTML.FONT_LINK,
-                                                  "rel" : "stylesheet",
-                                                  "type" : "text/css"]))
+        /* First English, then Traditional Chinese */
+        head.add(
+          DOMTreeNode(
+            name: "link",
+            attr: [
+              "href" : HTML.FONT_LINK,
+              "rel" : "stylesheet",
+              "type" : "text/css"
+            ]
+          )
+        )
+        head.add(
+          DOMTreeNode(
+            name: "link",
+            attr: [
+              "href" : HTML.FONT_TC_LINK,
+              "rel" : "stylesheet",
+              "type" : "text/css"
+            ]
+          )
+        )
+
         head.add(DOMTreeNode(name: "link",
                              attr: ["href" : HTML.MAIN_STYLE_CSS_FILENAME,
                                     "rel" : "stylesheet",

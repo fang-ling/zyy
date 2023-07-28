@@ -13,7 +13,7 @@ let MAIN_STYLE_CSS : String =
     --color-neutral-muted: rgba(175, 184, 193, 0.2);
     --bg-color: #FFFBF5;
     --text-color: #1f0909;
-    --text-font: 'Gentium Book Basic', system-ui, serif;
+    --text-font: 'Gentium Book Basic', 'LXGW WenKai TC', system-ui, serif;
     /* table child 2n bg color */
     --color-canvas-subtle: #e8e7e7;
     --color-canvas-head: #dadada;

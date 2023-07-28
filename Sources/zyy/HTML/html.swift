@@ -15,6 +15,8 @@ struct HTML {
     static let FONT_LINK =
       "https://fonts.googleapis.com/css?family=" +
       "Gentium+Book+Basic:400,700italic,700,400italic:latin"
+    static let FONT_TC_LINK =
+      "https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/style.css"
     static let MAIN_STYLE_CSS_FILENAME = "style.css"
     static let CHL_CSS_FILENAME = "gist-embed.css"
 
