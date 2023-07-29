@@ -1,6 +1,6 @@
 //
 //  code-highlight.swift
-//  
+//
 //
 //  Created by Fang Ling on 2023/3/18.
 //
@@ -973,7 +973,7 @@ let CHL_CSS =
 }
 
 .gist .pl-k {
-    color:#d73a49
+    color:#9b2393
 }
 
 .gist .pl-s, .gist .pl-pds, .gist .pl-s .pl-pse .pl-s1, .gist .pl-sr, .gist .pl-sr .pl-cce, .gist .pl-sr .pl-sre, .gist .pl-sr .pl-sra {
@@ -2079,7 +2079,40 @@ let CHL_CSS =
 /// - Version: 0.0.1
 /// - Note: Currently support language is plain text.
 struct Code {
-    
+    static let SWIFT_KEYWORDS =
+      [
+        "associatedtype", "class", "deinit", "enum", "extension", "fileprivate",
+        "func", "import", "init", "inout", "internal", "let", "open",
+        "operator", "private", "precedencegroup", "protocol", "public",
+        "rethrows", "static", "struct", "subscript", "typealias", "var",
+        "break", "case", "catch", "continue", "default", "defer", "do", "else",
+        "fallthrough", "for", "guard", "if", "in", "repeat", "return", "throw",
+        "switch", "where", "while", "Any", "as", "await", "catch", "false",
+        "is", "nil", "rethrows", "self", "Self", "super", "throw", "throws",
+        "true", "try", "#available", "#colorLiteral", "#elseif", "#else",
+        "#endif", "#if", "#imageLiteral", "#keyPath", "#selector",
+        "#sourceLocation"
+      ]
+
+    static func highlight_keywords(line : String, language : String) -> String {
+        if language == "swift" {
+            var line = line
+            let words = Set(line.components(separatedBy: .whitespaces))
+            for word in words {
+                if SWIFT_KEYWORDS.contains(word) {
+                    line = line.replacingOccurrences(
+                      of: "\\b\(word)\\b",
+                      with: "<span class=\"pl-k\">\(word)</span>",
+                      options: .regularExpression
+                    )
+                }
+            }
+            return line
+        }
+        /* Not support */
+        return line
+    }
+
     /* Assume that `code` is line by line. */
     static func toHTML(code: String, language: String) -> DOMTreeNode {
         let gist = DOMTreeNode(name: "div", attr: ["class" : "gist"])
@@ -2121,14 +2154,15 @@ struct Code {
             // - TODO: lexcial analysic here
             var wrap_line = line.replacingOccurrences(of: "<", with: "&lt;")
             wrap_line = wrap_line.replacingOccurrences(of: ">", with: "&gt;")
+            wrap_line = highlight_keywords(line: wrap_line, language: language)
             col2.add(wrap_line)
-            
+
             tr.add(col1)
             tr.add(col2)
             tbody.add(tr)
             line_num += 1
         }
-        
+
         table.add(tbody)
         blob.add(table)
         box_body.add(blob)
@@ -2136,16 +2170,16 @@ struct Code {
         gist_file_box.add(file)
         gist_data.add(gist_file_box)
         gist_file.add(gist_data)
-        
+
         let gist_meta = DOMTreeNode(name: "div", attr: ["class" : "gist-meta"])
         gist_meta.add("Rendered with ♡ by ")
         let a = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO])
         a.add("zyy")
         gist_meta.add(a)
-        
+
         gist.add(gist_file)
         gist_file.add(gist_meta)
-        
+
         return gist
     }
 }

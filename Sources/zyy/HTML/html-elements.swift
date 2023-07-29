@@ -277,7 +277,7 @@ extension HTML {
             //   ............
             //   ```
             //
-            var lang = lines.removeFirst()
+            var lang = lines.removeFirst().lowercased()
             lang.removeFirst(3)
             lines.removeLast()
             var code = ""
@@ -286,9 +286,13 @@ extension HTML {
             }
 
             var replace = ""
-            DOMTreeNode.inorder_tree_traversal_code(Code.toHTML(code: code,
-                                                                language: lang),
-                                                    &replace)
+            DOMTreeNode.inorder_tree_traversal_code(
+              Code.toHTML(
+                code: code,
+                language: lang
+              ),
+              &replace
+            )
             replace = replace.replacingOccurrences(of: "<>", with: "")
             page.content = page.content.replacingOccurrences(of: m.output.0,
                                                              with: replace)

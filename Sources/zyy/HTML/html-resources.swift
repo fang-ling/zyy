@@ -333,6 +333,11 @@ table td, table th {
         color: var(--dark-link-scolor);
         text-decoration: none
     }
+
+    /* gist */
+    .gist .pl-k {
+        color:#fc5fa3 !important
+    }
 }
 """
 
