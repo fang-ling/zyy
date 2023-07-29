@@ -240,9 +240,9 @@ table td, table th {
     border-top: 1px solid var(--color-border-muted);
 }*/
 
-tr:nth-child(2n) {
+/*tr:nth-child(2n) {
     background: var(--color-canvas-subtle);
-}
+}*/
 
 /* MathJax long formulas */
 /*mjx-container {
