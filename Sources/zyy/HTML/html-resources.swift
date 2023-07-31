@@ -338,6 +338,9 @@ table td, table th {
     .gist .pl-k {
         color:#fc5fa3 !important
     }
+    .gist .pl-c {
+        color:#6c7986 !important
+    }
 }
 """
 

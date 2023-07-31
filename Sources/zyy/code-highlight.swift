@@ -953,7 +953,7 @@ let CHL_CSS =
 }
 
 .gist .pl-c {
-    color:#6a737d
+    color:#5d6c79
 }
 
 .gist .pl-c1, .gist .pl-s .pl-v {
@@ -973,6 +973,7 @@ let CHL_CSS =
 }
 
 .gist .pl-k {
+    font-weight:600;
     color:#9b2393
 }
 
@@ -2091,7 +2092,7 @@ struct Code {
         "is", "nil", "rethrows", "self", "Self", "super", "throw", "throws",
         "true", "try", "#available", "#colorLiteral", "#elseif", "#else",
         "#endif", "#if", "#imageLiteral", "#keyPath", "#selector",
-        "#sourceLocation"
+        "#sourceLocation", "mutating"
       ]
 
     static func highlight_keywords(line : String, language : String) -> String {
@@ -2111,6 +2112,12 @@ struct Code {
         }
         /* Not support */
         return line
+    }
+
+    static func highlight_comment(comment : String) -> String {
+        let pl_c_b = #"<span class="pl-c">"#
+        let pl_c_e = #"</span>"#
+        return pl_c_b + comment + pl_c_e
     }
 
     /* Assume that `code` is line by line. */
@@ -2138,7 +2145,23 @@ struct Code {
         let tbody = DOMTreeNode(name: "tbody", attr: [:])
         // - TODO: Add code highlight
         var line_num = 1
-        let code = code.trimmingCharacters(in: .newlines)
+        var code = code.trimmingCharacters(in: .newlines)
+        /* Match all / * * / comment */
+        let mul_comment = #/(\/\*.*?\*\/)/#
+        //#/(\/\/)(.*?)(?=[\n\r]|\*\))/#
+        var comment2uuid : [String : String] = [:]
+        var uuid2comment : [String : String] = [:]
+        for match in code.matches(of: mul_comment) {
+            let uuid = UUID().uuidString
+            let comment = String(match.output.0)
+            comment2uuid[comment] = uuid
+        }
+        /* Replace comment with corresponding uuid */
+        for i in comment2uuid {
+            let new_comment = highlight_comment(comment: i.key)
+            uuid2comment[i.value] = new_comment
+            code = code.replacingOccurrences(of: i.key, with: i.value)
+        }
         for line in code.components(separatedBy: .newlines) {
             let tr = DOMTreeNode(name: "tr", attr: [:])
             let col1 = DOMTreeNode(name: "td",
@@ -2155,6 +2178,13 @@ struct Code {
             var wrap_line = line.replacingOccurrences(of: "<", with: "&lt;")
             wrap_line = wrap_line.replacingOccurrences(of: ">", with: "&gt;")
             wrap_line = highlight_keywords(line: wrap_line, language: language)
+            /* Restore comment */
+            for i in uuid2comment {
+                wrap_line = wrap_line.replacingOccurrences(
+                  of: i.key,
+                  with: i.value
+                )
+            }
             col2.add(wrap_line)
 
             tr.add(col1)
