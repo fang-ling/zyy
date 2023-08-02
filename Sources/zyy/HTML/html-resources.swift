@@ -341,7 +341,9 @@ table td, table th {
     .gist .pl-c {
         color:#6c7986 !important
     }
-}
+    .gist .pl-c1 {
+        color:#d0bf69 !important
+    }
 """
 
 let STACK_PREVIEW_JS =

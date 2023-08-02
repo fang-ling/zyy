@@ -956,7 +956,11 @@ let CHL_CSS =
     color:#5d6c79
 }
 
-.gist .pl-c1, .gist .pl-s .pl-v {
+.gist .pl-c1 {
+    color:#1c00cf
+}
+
+.gist .pl-s .pl-v {
     color:#005cc5
 }
 
@@ -2114,6 +2118,21 @@ struct Code {
         return line
     }
 
+    static func highligh_number(line : String, language : String) -> String {
+        var line = line
+        if language == "swift" {
+            for match in line.matches(of: SwiftLexicalStruct.integer_literal) {
+                let number = String(match.output.0)
+                line = line.replacingOccurrences(
+                  of: "\\b\(number)\\b",
+                  with: "<span class=\"pl-c1\">\(number)</span>",
+                  options: .regularExpression
+                )
+            }
+        }
+        return line
+    }
+
     static func highlight_comment(comment : String) -> String {
         let pl_c_b = #"<span class="pl-c">"#
         let pl_c_e = #"</span>"#
@@ -2152,7 +2171,11 @@ struct Code {
         var comment2uuid : [String : String] = [:]
         var uuid2comment : [String : String] = [:]
         for match in code.matches(of: mul_comment) {
-            let uuid = UUID().uuidString
+            /* Required by number matching */
+            let uuid = UUID().uuidString.replacingOccurrences(
+              of: "-",
+              with: "A"
+            )
             let comment = String(match.output.0)
             comment2uuid[comment] = uuid
         }
@@ -2178,6 +2201,7 @@ struct Code {
             var wrap_line = line.replacingOccurrences(of: "<", with: "&lt;")
             wrap_line = wrap_line.replacingOccurrences(of: ">", with: "&gt;")
             wrap_line = highlight_keywords(line: wrap_line, language: language)
+            wrap_line = highligh_number(line: wrap_line, language: language)
             /* Restore comment */
             for i in uuid2comment {
                 wrap_line = wrap_line.replacingOccurrences(
