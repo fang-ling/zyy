@@ -275,12 +275,85 @@ struct SwiftLexicalStruct {
 
     static var integer_literal = Regex {
         /* decimal must have lowest priority: (0x, 0b and 0o) */
+        ChoiceOf {
+            binary_literal
+            octal_literal
+            hexadecimal_literal
+            decimal_literal
+        }
+    }
+
+    //------------------------------------------------------------------------//
+    //                   Grammar of a floating-point literal                  //
+    //------------------------------------------------------------------------//
+    static var sign = Regex {
+        ChoiceOf {
+            "+"
+            "-"
+        }
+    }
+
+    static var floating_point_p = Regex {
+        ChoiceOf {
+            "p"
+            "P"
+        }
+    }
+
+    static var floating_point_e = Regex {
+        ChoiceOf {
+            "e"
+            "E"
+        }
+    }
+
+    static var hexadecimal_exponent = Regex {
+        floating_point_p
+        Optionally { sign }
+        decimal_literal
+    }
+
+    static var hexadecimal_fraction = Regex {
+        "."
+        hexadecimal_digit
+        Optionally { hexadecimal_literal_characters }
+    }
+
+    static var decimal_exponent = Regex {
+        floating_point_e
+        Optionally { sign }
+        decimal_literal
+    }
+
+    static var decimal_fraction = Regex {
+        "."
+        decimal_literal
+    }
+
+    static var floating_point_literal_dec = Regex {
+        decimal_literal
+        Optionally { decimal_fraction }
+        Optionally { decimal_exponent }
+    }
+
+    static var floating_point_literal_hex = Regex {
+        hexadecimal_literal
+        Optionally { hexadecimal_fraction }
+        hexadecimal_exponent
+    }
+
+    static var floating_point_literal = Regex {
+        ChoiceOf {
+            floating_point_literal_dec
+            floating_point_literal_hex
+        }
+    }
+
+    static var numeric_literal = Regex {
         Capture {
             ChoiceOf {
-                binary_literal
-                octal_literal
-                hexadecimal_literal
-                decimal_literal
+                floating_point_literal
+                integer_literal
             }
         }
     }

@@ -2121,7 +2121,7 @@ struct Code {
     static func highligh_number(line : String, language : String) -> String {
         var line = line
         if language == "swift" {
-            for match in line.matches(of: SwiftLexicalStruct.integer_literal) {
+            for match in line.matches(of: SwiftLexicalStruct.numeric_literal) {
                 let number = String(match.output.0)
                 line = line.replacingOccurrences(
                   of: "\\b\(number)\\b",
