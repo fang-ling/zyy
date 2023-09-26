@@ -372,7 +372,12 @@ let MATHJAX_JS =
 MathJax = {
   tex: {
     inlineMath: [['$', '$']],
-    displayMath: [['$$', '$$']]
+    displayMath: [['$$', '$$']],
+    macros: {
+""" +
+#"      phi:"\\varphi""# +
+"""
+    }
   }
 };
 </script>
