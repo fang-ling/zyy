@@ -1,4 +1,0 @@
-module CMark [system] {
-    header "include/cmark.h"
-    export *
-}

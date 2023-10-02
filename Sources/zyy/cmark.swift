@@ -5,7 +5,8 @@
 //  Created by Fang Ling on 2022/11/6.
 //
 
-import CMark
+import cmark_gfm
+import cmark_gfm_extensions
 import Foundation
 
 /*
@@ -17,30 +18,32 @@ import Foundation
  *  This func is roughly follow the routines in cmark_markdown_to_html() except
  *  that some extensions was enabled.
  */
-func cmark_markdown_to_html_with_ext(_ text : String,
-                                     _ options : CInt) -> String {
-    let parser = cmark_parser_new(options)
-    /* Extensions register */
-    cmark_gfm_core_extensions_ensure_registered()
-
-    /* Add extensions here */
-    if let ext = cmark_find_syntax_extension("table") {
-        cmark_parser_attach_syntax_extension(parser, ext)
-    }
-    /* Parse */
-    cmark_parser_feed(parser, text, text.utf8.count)
-    let doc = cmark_parser_finish(parser)
-    /* Render */
-    let result = cmark_render_html(doc, options, nil)
-    /* Free & return */
-    cmark_node_free(doc)
-    cmark_parser_free(parser)
-
-    if result == nil {
-        fatalError("Error: cmark_render_html()!")
-    }
-
-    let result_str = String(cString: result!)
-    free(result)
-    return result_str
+func cmark_markdown_to_html_with_ext(
+  _ text : String, 
+  _ options : CInt
+) -> String {
+  let parser = cmark_parser_new(options)
+  /* Extensions register */
+  cmark_gfm_core_extensions_ensure_registered()
+  
+  /* Add extensions here */
+  if let ext = cmark_find_syntax_extension("table") {
+    cmark_parser_attach_syntax_extension(parser, ext)
+  }
+  /* Parse */
+  cmark_parser_feed(parser, text, text.utf8.count)
+  let doc = cmark_parser_finish(parser)
+  /* Render */
+  let result = cmark_render_html(doc, options, nil)
+  /* Free & return */
+  cmark_node_free(doc)
+  cmark_parser_free(parser)
+  
+  if result == nil {
+    fatalError("Error: cmark_render_html()!")
+  }
+  
+  let result_str = String(cString: result!)
+  free(result)
+  return result_str
 }

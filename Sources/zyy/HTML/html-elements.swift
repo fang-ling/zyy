@@ -5,7 +5,7 @@
 //  Created by Fang Ling on 2023/5/26.
 //
 
-import CMark
+import cmark_gfm
 import Foundation
 
 extension HTML {

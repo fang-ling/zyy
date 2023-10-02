@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "ccmark-gfm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fang-ling/ccmark-gfm",
+      "state" : {
+        "branch" : "master",
+        "revision" : "c8b0a8fdea7b7fea7aca49c51f8c1c354d14c313"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",

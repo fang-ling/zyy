@@ -46,24 +46,28 @@ let ZYY_SET_OPT_AUTHOR = "author"
 let ZYY_SET_OPT_START_YEAR = "start_year"
 let ZYY_SET_OPT_CUSTOM_HEAD = "custom_head"
 let ZYY_SET_OPT_CUSTOM_MD   = "custom_markdown"
-let ZYY_SET_OPT_CUSTOM_FIELDS = ["custom_field_1", "custom_field_2",
-                                 "custom_field_3", "custom_field_4",
-                                 "custom_field_5", "custom_field_6",
-                                 "custom_field_7", "custom_field_8",]
-let ZYY_SET_OPT_CUSTOM_FIELD_URLS = ["custom_field_url_1", "custom_field_url_2",
-                                     "custom_field_url_3", "custom_field_url_4",
-                                     "custom_field_url_5", "custom_field_url_6",
-                                     "custom_field_url_7", "custom_field_url_8"]
+let ZYY_SET_OPT_CUSTOM_FIELDS = [
+  "custom_field_1", "custom_field_2",
+  "custom_field_3", "custom_field_4",
+  "custom_field_5", "custom_field_6",
+  "custom_field_7", "custom_field_8",
+]
+let ZYY_SET_OPT_CUSTOM_FIELD_URLS = [
+  "custom_field_url_1", "custom_field_url_2",
+  "custom_field_url_3", "custom_field_url_4",
+  "custom_field_url_5", "custom_field_url_6",
+  "custom_field_url_7", "custom_field_url_8"
+]
 @main
 struct zyy : ParsableCommand {
-    static var configuration = CommandConfiguration(
-        abstract: "A utility for building personal websites.",
-        version: VERSION,
-        subcommands: [Init.self, Config.self, Build.self,
-                      List.self, Add.self, Edit.self, Remove.self]
-    )
-
-    /* Command Line related String constants */
-    public static let VERSION = "0.1.3"
-    public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
+  static var configuration = CommandConfiguration(
+    abstract: "A utility for building personal websites.",
+    version: VERSION,
+    subcommands: [Init.self, Config.self, Build.self,
+                  List.self, Add.self, Edit.self, Remove.self]
+  )
+  
+  /* Command Line related String constants */
+  public static let VERSION = "0.1.4"
+  public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
 }
