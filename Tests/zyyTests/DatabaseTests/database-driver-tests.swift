@@ -5,6 +5,7 @@
 //  Created by Fang Ling on 2023/5/3.
 //
 
+import CSQLite
 import XCTest
 @testable import zyy
 

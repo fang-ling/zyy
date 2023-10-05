@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "csqlite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fang-ling/csqlite",
+      "state" : {
+        "revision" : "7299e8eacd2bb2cc1d2c1ed489a9bab8ba181cc9",
+        "version" : "0.0.2"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
