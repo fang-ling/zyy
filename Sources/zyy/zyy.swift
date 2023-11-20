@@ -30,10 +30,6 @@ let ZYY_SEC_COL_COVER   = "cover"
 let ZYY_SEC_COL_HLINK   = "hlink" /* Heading link */
 let ZYY_SEC_COL_CLINK   = "clink" /* Caption link */
 /* Settings options */
-/// TODO: Replace consts with enum type
-//enum SettingOptions : String {
-//    case build_count = "build_count"
-//}
 let ZYY_SET_OPT_BUILD_COUNT = "build_count"
 let ZYY_SET_OPT_EDITOR = "editor"
 let ZYY_SET_OPT_INDEX_UPDATE_TIME = "index_update_time"

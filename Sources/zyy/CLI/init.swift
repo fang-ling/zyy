@@ -20,7 +20,7 @@ extension zyy {
                 fatal_error(.file_already_exists)
             }
             /* Create db */
-            create_tables()
+//            create_tables()
             print("Creating \(ZYY_DB_FILENAME)")
             print("Invoke `zyy config` command to " +
                   "finish setting up your website.")
