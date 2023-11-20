@@ -8,15 +8,70 @@
 import CSQLite
 import Foundation
 
-/// Creates tables and writes default values to it.
-func create_tables(database : String = ZYY_DB_FILENAME) {
-  exec(
-    at: database,
-    sql: get_setting_creation_sql() + /// Create Setting table
-    get_setting_insert_default_rows_sql() + /// Add default settings
-    get_page_creation_sql() + /// Create Page table
-    get_section_creation_sql() /// Create Section table
-  )
+struct DatabaseDriver {
+  var db : SQLite
+  
+  init() {
+    db = try! SQLite(ZYY_DB_FILENAME)
+  }
+  
+  /// Creates tables and writes default values to it.
+  func create_tables() {
+    do {
+      try db.run(
+        """
+        CREATE TABLE IF NOT EXISTS "Setting" (
+          "option" TEXT PRIMARY KEY,
+          "value" TEXT
+        );
+        CREATE TABLE IF NOT EXISTS "Page" (
+          "id" INTEGER PRIMARY KEY,
+          "title" TEXT,
+          "link" TEXT,
+          "date" TEXT,
+          "content" TEXT
+        );
+        CREATE TABLE IF NOT EXISTS "Section" (
+          "heading" TEXT PRIMARY KEY,
+          "caption" TEXT,
+          "cover" TEXT,
+          "hlink" TEXT,
+          "clink" TEXT
+        );
+        """
+      )
+      var ov = [
+        "build_count" : "0",
+        "editor" : "/usr/bin/nano",
+        "index_update_time" : get_current_date_string(),
+        "title" : "",
+        "url" : "",
+        "author" : "",
+        "start_year" : "",
+        "custom_head" : "PCEtLUN1c3RvbSBoZWFkLS0+",
+        "custom_markdown" : "PCEtLUN1c3RvbSBtYXJrZG93bi0tPg=="
+      ]
+      for i in 1 ... 8 {
+        ov["custom_field_\(i)"] = ""
+        ov["custom_field_url_\(i)"] = ""
+      }
+      for pair in ov {
+        try db.run(
+          """
+          INSERT INTO "Setting" (
+            "option", 
+            "value"
+          ) VALUES (
+            '\(pair.key.sqlite_string_literal())',
+            '\(pair.value.sqlite_string_literal())'
+          );
+          """
+        )
+      }
+    } catch {
+      print(error)
+    }
+  }
 }
 
 //----------------------------------------------------------------------------//
