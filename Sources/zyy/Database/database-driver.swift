@@ -138,6 +138,88 @@ struct DatabaseDriver {
       print(error)
     }
   }
+  
+  // MARK: - Section table
+  /* Returns all of the sections */
+  func get_sections() -> [Section] {
+    var result = [Section]()
+    do {
+      let delta = try db.run(
+        """
+        SELECT * FROM "\(ZYY_SEC_TBL)";
+        """
+      )
+      for i in delta {
+        var alpha = Section()
+        if let heading = i[ZYY_SEC_COL_HEADING] {
+          alpha.heading = heading
+        }
+        if let caption = i[ZYY_SEC_COL_CAPTION] {
+          alpha.caption = caption.from_base64()!
+        }
+        if let cover = i[ZYY_SEC_COL_COVER] {
+          alpha.cover = cover
+        }
+        if let hlink = i[ZYY_SEC_COL_HLINK] {
+          alpha.hlink = hlink
+        }
+        if let clink = i[ZYY_SEC_COL_CLINK] {
+          alpha.clink = clink
+        }
+        result.append(alpha)
+      }
+    } catch {
+      print(error)
+    }
+    return result
+  }
+
+  /* Add a new section. */
+  func add_section(_ section : Section) {
+    var section = section
+    section.caption = section.caption.to_base64()
+    do {
+      try db.run(
+        """
+        INSERT INTO "\(ZYY_SEC_TBL)" (
+          "\(ZYY_SEC_COL_HEADING)",
+          "\(ZYY_SEC_COL_CAPTION)",
+          "\(ZYY_SEC_COL_COVER)",
+          "\(ZYY_SEC_COL_HLINK)",
+          "\(ZYY_SEC_COL_CLINK)"
+        ) VALUES (
+          '\(section.heading.sqlite_string_literal())',
+          '\(section.caption.sqlite_string_literal())',
+          '\(section.cover.sqlite_string_literal())',
+          '\(section.hlink.sqlite_string_literal())',
+          '\(section.clink.sqlite_string_literal())'
+        );
+        """
+      )
+    } catch {
+      print(error)
+    }
+  }
+  
+  /* Add new sections */
+  func add_sections(_ sections : [Section]) {
+    for section in sections {
+      add_section(section)
+    }
+  }
+
+  /* Removes all sections */
+  func remove_sections() {
+    do {
+      try db.run(
+        """
+        DELETE FROM "\(ZYY_SEC_TBL)";
+        """
+      )
+    } catch {
+      print(error)
+    }
+  }
 }
 
 //----------------------------------------------------------------------------//
@@ -156,51 +238,17 @@ func set_settings(
 //----------------------------------------------------------------------------//
 //                          Section table                                     //
 //----------------------------------------------------------------------------//
-
-/// Returns all of the sections
 func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
-  var result = [Section]()
-//  let delta = exec(at: database, sql: get_section_select_all_sql())
-  var delta = [["":""]]
-  for i in delta {
-    var alpha = Section()
-    if let heading = i[ZYY_SEC_COL_HEADING] {
-      alpha.heading = heading
-    }
-    if let caption = i[ZYY_SEC_COL_CAPTION] {
-      alpha.caption = caption.from_base64()!
-    }
-    if let cover = i[ZYY_SEC_COL_COVER] {
-      alpha.cover = cover
-    }
-    if let hlink = i[ZYY_SEC_COL_HLINK] {
-      alpha.hlink = hlink
-    }
-    if let clink = i[ZYY_SEC_COL_CLINK] {
-      alpha.clink = clink
-    }
-    result.append(alpha)
-  }
-  return result
+  []
 }
 
-/// Add a new section.
 func add_section(database : String = ZYY_DB_FILENAME, section : Section) {
-  var section = section
-  section.caption = section.caption.to_base64()
-//  exec(at: database, sql: get_section_insert_sql(section: section))
 }
 
-/// Add new sections
 func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
-  for section in sections {
-    add_section(database : database, section: section)
-  }
 }
 
-/// Removes all sections
 func remove_sections(database : String = ZYY_DB_FILENAME) {
-//  exec(at: database, sql: get_section_clear_sql())
 }
 
 //----------------------------------------------------------------------------//
