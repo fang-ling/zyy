@@ -220,6 +220,151 @@ struct DatabaseDriver {
       print(error)
     }
   }
+  
+  // MARK: - Page table
+  func get_page(by id : Int) -> Page? {
+    do {
+      let result = try db.run(
+        """
+        SELECT
+          "\(ZYY_PAGE_COL_DATE)",
+          "\(ZYY_PAGE_COL_TITLE)",
+          "\(ZYY_PAGE_COL_CONTENT)"
+        FROM "\(ZYY_PAGE_TBL)" WHERE (
+          "\(ZYY_PAGE_COL_ID)" = \(id)
+        );
+        """
+      )
+      /* It should guaranteed that result.count <= 1 */
+      guard let page_data = result.first else {
+        return nil
+      }
+      var page = Page()
+      guard let id_str = page_data[ZYY_PAGE_COL_ID] else {
+        fatalError("Failed to parse page id")
+      }
+      if let id = Int(id_str) {
+        page.id = id
+      }
+      if let date = page_data[ZYY_PAGE_COL_DATE] {
+        page.date = date
+      }
+      if let title = page_data[ZYY_PAGE_COL_TITLE] {
+        page.title = title.from_base64()!
+      }
+      if let link = page_data[ZYY_PAGE_COL_LINK] {
+        page.link = link.from_base64()!
+      }
+      if let content = page_data[ZYY_PAGE_COL_CONTENT] {
+        page.content = content.from_base64()!
+      }
+      return page
+    } catch {
+      print(error)
+      return nil
+    }
+  }
+  
+  func get_pages() -> [Page] {
+    var result = [Page]()
+    do {
+      let pages = try db.run(
+        """
+        SELECT * FROM "\(ZYY_PAGE_TBL)";
+        """
+      )
+      for page in pages {
+        var delta = Page()
+        guard let id_str = page[ZYY_PAGE_COL_ID] else {
+          fatalError("Failed to parse page id")
+        }
+        if let id = Int(id_str) {
+          delta.id = id
+        }
+        if let date = page[ZYY_PAGE_COL_DATE] {
+          delta.date = date
+        }
+        if let title = page[ZYY_PAGE_COL_TITLE] {
+          delta.title = title.from_base64()!
+        }
+        if let link = page[ZYY_PAGE_COL_LINK] {
+          delta.link = link.from_base64()!
+        }
+        if let content = page[ZYY_PAGE_COL_CONTENT] {
+          delta.content = content.from_base64()!
+        }
+        result.append(delta)
+      }
+    } catch {
+      print(error)
+    }
+    return result
+  }
+  
+  func add_page(_ page : Page) {
+    var page = page
+    page.title = page.title.to_base64()
+    page.content = page.content.to_base64()
+    page.link = page.link.to_base64()
+    
+    do {
+      try db.run(
+        """
+        INSERT INTO "\(ZYY_PAGE_TBL)" (
+          "\(ZYY_PAGE_COL_DATE)",
+          "\(ZYY_PAGE_COL_LINK)",
+          "\(ZYY_PAGE_COL_TITLE)",
+          "\(ZYY_PAGE_COL_CONTENT)"
+        ) VALUES (
+          '\(page.date.sqlite_string_literal())',
+          '\(page.link.sqlite_string_literal())',
+          '\(page.title.sqlite_string_literal())',
+          '\(page.content.sqlite_string_literal())'
+        )
+        """
+      )
+    } catch {
+      print(error)
+    }
+  }
+  
+  func set_page(_ page : Page) {
+    var page = page
+    page.title = page.title.to_base64()
+    page.content = page.content.to_base64()
+    page.link = page.link.to_base64()
+    
+    do {
+      try db.run(
+        """
+        UPDATE "\(ZYY_PAGE_TBL)" SET
+          "\(ZYY_PAGE_COL_DATE)" = '\(page.date.sqlite_string_literal())',
+          "\(ZYY_PAGE_COL_LINK)" = '\(page.link.sqlite_string_literal())',
+          "\(ZYY_PAGE_COL_TITLE)" = '\(page.title.sqlite_string_literal())',
+          "\(ZYY_PAGE_COL_CONTENT)" = '\(page.content.sqlite_string_literal())'
+        WHERE (
+          "\(ZYY_PAGE_COL_ID)" = \(page.id)
+        );
+        """
+      )
+    } catch {
+      print(error)
+    }
+  }
+  
+  func remove_page(by id : Int) {
+    do {
+      try db.run(
+        """
+        DELETE FROM "\(ZYY_PAGE_TBL)" WHERE (
+          "\(ZYY_PAGE_COL_ID)" = \(id)
+        );
+        """
+      )
+    } catch {
+      print(error)
+    }
+  }
 }
 
 //----------------------------------------------------------------------------//
@@ -256,102 +401,18 @@ func remove_sections(database : String = ZYY_DB_FILENAME) {
 //----------------------------------------------------------------------------//
 
 func get_page(database : String = ZYY_DB_FILENAME, by id : Int) -> Page? {
-//  let result = exec(
-//    at: ZYY_DB_FILENAME,
-//    sql: get_page_select_sql(
-//      columns:
-//        [
-//          ZYY_PAGE_COL_ID,
-//          ZYY_PAGE_COL_DATE,
-//          ZYY_PAGE_COL_CONTENT,
-//          ZYY_PAGE_COL_TITLE,
-//          ZYY_PAGE_COL_LINK
-//        ],
-//      by: id
-//    )
-  return nil
-//  )
-//  /* It should guaranteed that result.count <= 1 */
-//  guard let page_data = result.first else {
-//    return nil
-//  }
-//  var page = Page()
-//  guard let id_str = page_data[ZYY_PAGE_COL_ID] else {
-//    fatalError("Failed to parse page id")
-//  }
-//  if let id = Int(id_str) {
-//    page.id = id
-//  }
-//  if let date = page_data[ZYY_PAGE_COL_DATE] {
-//    page.date = date
-//  }
-//  if let title = page_data[ZYY_PAGE_COL_TITLE] {
-//    page.title = title.from_base64()!
-//  }
-//  if let link = page_data[ZYY_PAGE_COL_LINK] {
-//    page.link = link.from_base64()!
-//  }
-//  if let content = page_data[ZYY_PAGE_COL_CONTENT] {
-//    page.content = content.from_base64()!
-//  }
-//  return page
+  nil
 }
 
 func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
-  var result = [Page]()
-//  let pages = exec(
-//    at: database,
-//    sql: get_page_select_all_sql(
-//      columns: [
-//        ZYY_PAGE_COL_ID,
-//        ZYY_PAGE_COL_DATE,
-//        ZYY_PAGE_COL_CONTENT,
-//        ZYY_PAGE_COL_TITLE,
-//        ZYY_PAGE_COL_LINK
-//      ]
-//    )
-//  )
-//  for page in pages {
-//    var delta = Page()
-//    guard let id_str = page[ZYY_PAGE_COL_ID] else {
-//      fatalError("Failed to parse page id")
-//    }
-//    if let id = Int(id_str) {
-//      delta.id = id
-//    }
-//    if let date = page[ZYY_PAGE_COL_DATE] {
-//      delta.date = date
-//    }
-//    if let title = page[ZYY_PAGE_COL_TITLE] {
-//      delta.title = title.from_base64()!
-//    }
-//    if let link = page[ZYY_PAGE_COL_LINK] {
-//      delta.link = link.from_base64()!
-//    }
-//    if let content = page[ZYY_PAGE_COL_CONTENT] {
-//      delta.content = content.from_base64()!
-//    }
-//    result.append(delta)
-//  }
-  return result
+  []
 }
 
 func add_page(database : String = ZYY_DB_FILENAME, page : Page) {
-  var page = page
-  page.title = page.title.to_base64()
-  page.content = page.content.to_base64()
-  page.link = page.link.to_base64()
-//  exec(at: database, sql: get_page_insert_sql(page: page))
 }
 
 func set_page(database : String = ZYY_DB_FILENAME, page : Page) {
-  var page = page
-  page.title = page.title.to_base64()
-  page.content = page.content.to_base64()
-  page.link = page.link.to_base64()
-//  exec(at: database, sql: get_page_update_sql(page: page))
 }
 
 func remove_page(database : String = ZYY_DB_FILENAME, id : Int) {
-//  exec(at: database, sql: get_page_delete_sql(id: id))
 }
