@@ -12,6 +12,7 @@ struct DatabaseDriver {
   var db : SQLite
   
   init() {
+    /* Don't need to call SQLite.deinit manually. */
     db = try! SQLite(ZYY_DB_FILENAME)
   }
   
@@ -371,48 +372,48 @@ struct DatabaseDriver {
 //                          Setting table                                     //
 //----------------------------------------------------------------------------//
 
-func get_setting(database : String = ZYY_DB_FILENAME, with option : String) -> String? { nil }
-
-func set_setting(database : String = ZYY_DB_FILENAME, with option : String, new_value : String) {}
-
-func set_settings(
-  database : String = ZYY_DB_FILENAME,
-  option_value_pairs: [(String, String)]
-) {}
+//func get_setting(database : String = ZYY_DB_FILENAME, with option : String) -> String? { nil }
+//
+//func set_setting(database : String = ZYY_DB_FILENAME, with option : String, new_value : String) {}
+//
+//func set_settings(
+//  database : String = ZYY_DB_FILENAME,
+//  option_value_pairs: [(String, String)]
+//) {}
 
 //----------------------------------------------------------------------------//
 //                          Section table                                     //
 //----------------------------------------------------------------------------//
-func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
-  []
-}
-
-func add_section(database : String = ZYY_DB_FILENAME, section : Section) {
-}
-
-func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
-}
-
-func remove_sections(database : String = ZYY_DB_FILENAME) {
-}
+//func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
+//  []
+//}
+//
+//func add_section(database : String = ZYY_DB_FILENAME, section : Section) {
+//}
+//
+//func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
+//}
+//
+//func remove_sections(database : String = ZYY_DB_FILENAME) {
+//}
 
 //----------------------------------------------------------------------------//
 //                             Page table                                     //
 //----------------------------------------------------------------------------//
 
-func get_page(database : String = ZYY_DB_FILENAME, by id : Int) -> Page? {
-  nil
-}
-
-func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
-  []
-}
-
-func add_page(database : String = ZYY_DB_FILENAME, page : Page) {
-}
-
-func set_page(database : String = ZYY_DB_FILENAME, page : Page) {
-}
-
-func remove_page(database : String = ZYY_DB_FILENAME, id : Int) {
-}
+//func get_page(database : String = ZYY_DB_FILENAME, by id : Int) -> Page? {
+//  nil
+//}
+//
+//func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
+//  []
+//}
+//
+//func add_page(database : String = ZYY_DB_FILENAME, page : Page) {
+//}
+//
+//func set_page(database : String = ZYY_DB_FILENAME, page : Page) {
+//}
+//
+//func remove_page(database : String = ZYY_DB_FILENAME, id : Int) {
+//}
