@@ -30,7 +30,8 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_TITLE)" TEXT,
           "\(ZYY_PAGE_COL_LINK)" TEXT,
           "\(ZYY_PAGE_COL_DATE)" TEXT,
-          "\(ZYY_PAGE_COL_CONTENT)" TEXT
+          "\(ZYY_PAGE_COL_CONTENT)" TEXT,
+          "\(ZYY_PAGE_COL_IS_HIDDEN)" INTEGER
         );
         CREATE TABLE IF NOT EXISTS "\(ZYY_SEC_TBL)" (
           "\(ZYY_SEC_COL_HEADING)" TEXT PRIMARY KEY,
@@ -230,7 +231,9 @@ struct DatabaseDriver {
         SELECT
           "\(ZYY_PAGE_COL_DATE)",
           "\(ZYY_PAGE_COL_TITLE)",
-          "\(ZYY_PAGE_COL_CONTENT)"
+          "\(ZYY_PAGE_COL_CONTENT)",
+          "\(ZYY_PAGE_COL_LINK)",
+          "\(ZYY_PAGE_COL_IS_HIDDEN)"
         FROM "\(ZYY_PAGE_TBL)" WHERE (
           "\(ZYY_PAGE_COL_ID)" = \(id)
         );
@@ -241,12 +244,7 @@ struct DatabaseDriver {
         return nil
       }
       var page = Page()
-      guard let id_str = page_data[ZYY_PAGE_COL_ID] else {
-        fatalError("Failed to parse page id")
-      }
-      if let id = Int(id_str) {
-        page.id = id
-      }
+      page.id = id
       if let date = page_data[ZYY_PAGE_COL_DATE] {
         page.date = date
       }
@@ -258,6 +256,9 @@ struct DatabaseDriver {
       }
       if let content = page_data[ZYY_PAGE_COL_CONTENT] {
         page.content = content.from_base64()!
+      }
+      if let is_hidden = page_data[ZYY_PAGE_COL_IS_HIDDEN] {
+        page.is_hidden = Int(is_hidden)!
       }
       return page
     } catch {
@@ -294,6 +295,9 @@ struct DatabaseDriver {
         if let content = page[ZYY_PAGE_COL_CONTENT] {
           delta.content = content.from_base64()!
         }
+        if let is_hidden = page[ZYY_PAGE_COL_IS_HIDDEN] {
+          delta.is_hidden = Int(is_hidden)!
+        }
         result.append(delta)
       }
     } catch {
@@ -315,12 +319,14 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_DATE)",
           "\(ZYY_PAGE_COL_LINK)",
           "\(ZYY_PAGE_COL_TITLE)",
-          "\(ZYY_PAGE_COL_CONTENT)"
+          "\(ZYY_PAGE_COL_CONTENT)",
+          "\(ZYY_PAGE_COL_IS_HIDDEN)"
         ) VALUES (
           '\(page.date.sqlite_string_literal())',
           '\(page.link.sqlite_string_literal())',
           '\(page.title.sqlite_string_literal())',
-          '\(page.content.sqlite_string_literal())'
+          '\(page.content.sqlite_string_literal())',
+          \(page.is_hidden)
         )
         """
       )
@@ -342,7 +348,8 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_DATE)" = '\(page.date.sqlite_string_literal())',
           "\(ZYY_PAGE_COL_LINK)" = '\(page.link.sqlite_string_literal())',
           "\(ZYY_PAGE_COL_TITLE)" = '\(page.title.sqlite_string_literal())',
-          "\(ZYY_PAGE_COL_CONTENT)" = '\(page.content.sqlite_string_literal())'
+          "\(ZYY_PAGE_COL_CONTENT)" = '\(page.content.sqlite_string_literal())',
+          "\(ZYY_PAGE_COL_IS_HIDDEN)" = \(page.is_hidden)
         WHERE (
           "\(ZYY_PAGE_COL_ID)" = \(page.id)
         );
@@ -367,53 +374,3 @@ struct DatabaseDriver {
     }
   }
 }
-
-//----------------------------------------------------------------------------//
-//                          Setting table                                     //
-//----------------------------------------------------------------------------//
-
-//func get_setting(database : String = ZYY_DB_FILENAME, with option : String) -> String? { nil }
-//
-//func set_setting(database : String = ZYY_DB_FILENAME, with option : String, new_value : String) {}
-//
-//func set_settings(
-//  database : String = ZYY_DB_FILENAME,
-//  option_value_pairs: [(String, String)]
-//) {}
-
-//----------------------------------------------------------------------------//
-//                          Section table                                     //
-//----------------------------------------------------------------------------//
-//func get_sections(database : String = ZYY_DB_FILENAME) -> [Section] {
-//  []
-//}
-//
-//func add_section(database : String = ZYY_DB_FILENAME, section : Section) {
-//}
-//
-//func add_sections(database : String = ZYY_DB_FILENAME, sections : [Section]) {
-//}
-//
-//func remove_sections(database : String = ZYY_DB_FILENAME) {
-//}
-
-//----------------------------------------------------------------------------//
-//                             Page table                                     //
-//----------------------------------------------------------------------------//
-
-//func get_page(database : String = ZYY_DB_FILENAME, by id : Int) -> Page? {
-//  nil
-//}
-//
-//func get_pages(database : String = ZYY_DB_FILENAME) -> [Page] {
-//  []
-//}
-//
-//func add_page(database : String = ZYY_DB_FILENAME, page : Page) {
-//}
-//
-//func set_page(database : String = ZYY_DB_FILENAME, page : Page) {
-//}
-//
-//func remove_page(database : String = ZYY_DB_FILENAME, id : Int) {
-//}

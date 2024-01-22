@@ -13,6 +13,7 @@ private func get_page_header(page : Page?) -> String {
       """
       \(ZYY_PAGE_COL_TITLE) = \(page == nil ? "" : page!.title)
       \(ZYY_PAGE_COL_LINK) = \(page == nil ? "" : page!.link)
+      \(ZYY_PAGE_COL_IS_HIDDEN) = \(page == nil ? 0 : page!.is_hidden)
       ###
       \(page == nil ? "" : page!.content)
       
@@ -28,12 +29,18 @@ private func parse_page_file(page_file : String) -> Page {
   var page = Page()
   for row in header_str.components(separatedBy: .newlines) {
     let entry = (row + " ").components(separatedBy: "=")
-    if entry.first!.trimmingCharacters(in: .whitespaces) ==
-        ZYY_PAGE_COL_TITLE {
+    if (
+      entry.first!.trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_TITLE
+    ) {
       page.title = entry.last!.trimmingCharacters(in: .whitespaces)
-    } else if entry.first!.trimmingCharacters(in: .whitespaces) ==
-                ZYY_PAGE_COL_LINK {
+    } else if (
+      entry.first!.trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_LINK
+    ) {
       page.link = entry.last!.trimmingCharacters(in: .whitespaces)
+    } else if (
+      entry[0].trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_IS_HIDDEN
+    ) {
+      page.is_hidden = Int(entry[1].trimmingCharacters(in: .whitespaces)) ?? 0
     }
   }
   comp.removeFirst()

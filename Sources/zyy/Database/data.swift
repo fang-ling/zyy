@@ -26,17 +26,19 @@ struct Section : Equatable {
 
 /* Page data */
 struct Page : Equatable {
-    var id : Int
-    var title : String
-    var content : String
-    var link : String
-    var date : String
-
-    init() {
-        id = 0
-        title = ""
-        content = ""
-        link = ""
-        date = ""
-    }
+  var id : Int
+  var title : String
+  var content : String
+  var link : String
+  var date : String
+  var is_hidden : Int
+  
+  init() {
+    id = 0
+    title = ""
+    content = ""
+    link = ""
+    date = ""
+    is_hidden = 0
+  }
 }

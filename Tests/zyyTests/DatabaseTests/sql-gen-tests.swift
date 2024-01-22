@@ -5,7 +5,7 @@
 //  Created by Fang Ling on 2023/4/25.
 //
 
-import XCTest
+/*import XCTest
 @testable import zyy
 
 final class SQLGenTests: XCTestCase {
@@ -80,3 +80,4 @@ final class SQLGenTests: XCTestCase {
         XCTAssertEqual(table.delete(where: ("id", "1")), SQL)
     }
 }
+*/

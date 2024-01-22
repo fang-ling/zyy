@@ -23,6 +23,7 @@ let ZYY_PAGE_COL_TITLE = "title"
 let ZYY_PAGE_COL_LINK = "link"
 let ZYY_PAGE_COL_DATE = "date"
 let ZYY_PAGE_COL_CONTENT = "content"
+let ZYY_PAGE_COL_IS_HIDDEN = "is_hidden"
 /// Section table
 let ZYY_SEC_COL_HEADING = "heading"
 let ZYY_SEC_COL_CAPTION = "caption"
@@ -64,6 +65,6 @@ struct zyy : ParsableCommand {
   )
   
   /* Command Line related String constants */
-  public static let VERSION = "0.1.4"
+  public static let VERSION = "0.1.5"
   public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
 }

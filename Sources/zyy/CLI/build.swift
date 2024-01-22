@@ -27,7 +27,7 @@ extension zyy {
         new: String(count + 1, radix: 16)
       )
       /* Grab all of the data */
-      let pages = db.get_pages()
+      let pages = db.get_pages().filter( {$0.is_hidden == 0} )
       let sections = db.get_sections()
       var settings = [String : String]()
       settings[ZYY_SET_OPT_BUILD_COUNT] =
