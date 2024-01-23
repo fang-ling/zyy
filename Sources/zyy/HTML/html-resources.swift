@@ -254,9 +254,10 @@ table td, table th {
 
 /* Images in blog posts, centered */
 .page-container img {
-    width: 61.8%;
-    display: block;
-    margin: 0 auto
+  border: 4px solid var(--purple-box-color);
+  width: 90%;
+  display: block;
+  margin: 0 auto
 }
 
 /* iPhone OS */
