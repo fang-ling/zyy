@@ -98,7 +98,8 @@ extension zyy {
       /* Read page file */
       let page_file = try! String(contentsOfFile: ZYY_MD_TEMP,
                                   encoding: .utf8)
-      let page = parse_page_file(page_file: page_file)
+      var page = parse_page_file(page_file: page_file)
+      page.date_created = get_current_date_string() /* The only write */
       /* Write to database */
       db.add_page(page)
       /* Remove temp file */
