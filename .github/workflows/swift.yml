@@ -18,8 +18,10 @@ jobs:
     - name: Build, Run tests
       run: |
         swift build -c release --target zyy-reactions --static-swift-stdlib
-        mv $GITHUB_WORKSPACE/.build/release/zyy-reactions $GITHUB_WORKSPACE/
-        tar -czvf zyy-reactions-linux-amd64.tar.gz zyy-reactions
+        ls $GITHUB_WORKSPACE/.build/
+        ls $GITHUB_WORKSPACE/.build/release/
+        mv $GITHUB_WORKSPACE/.build/release/zyy* $GITHUB_WORKSPACE/
+        tar -czvf zyy-reactions-linux-amd64.tar.gz zyy*
 
     - name: Create a Release
       uses: softprops/action-gh-release@v1
