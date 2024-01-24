@@ -1,0 +1,27 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: Swift
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build, Run tests
+      run: |
+        swift build -c release zyy-reactions --static-swift-stdlib
+        mv $GITHUB_WORKSPACE/.build/release/zyy-reactions $GITHUB_WORKSPACE/
+        tar -czvf zyy-reactions-linux-amd64.tar.gz zyy-reactions
+
+    - name: Create a Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: zyy-reactions-linux-amd64.tar.gz
