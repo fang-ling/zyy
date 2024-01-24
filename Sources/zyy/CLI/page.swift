@@ -14,6 +14,8 @@ private func get_page_header(page : Page?) -> String {
       \(ZYY_PAGE_COL_TITLE) = \(page == nil ? "" : page!.title)
       \(ZYY_PAGE_COL_LINK) = \(page == nil ? "" : page!.link)
       \(ZYY_PAGE_COL_IS_HIDDEN) = \(page == nil ? 0 : page!.is_hidden)
+      \(ZYY_PAGE_COL_IS_BLOG) = \(page == nil ? 0 : page!.is_blog)
+      \(ZYY_PAGE_COL_ARTWORK) = \(page == nil ? "" : page!.artwork)
       ###
       \(page == nil ? "" : page!.content)
       
@@ -41,6 +43,14 @@ private func parse_page_file(page_file : String) -> Page {
       entry[0].trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_IS_HIDDEN
     ) {
       page.is_hidden = Int(entry[1].trimmingCharacters(in: .whitespaces)) ?? 0
+    } else if (
+      entry[0].trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_IS_BLOG
+    ) {
+      page.is_blog = Int(entry[1].trimmingCharacters(in: .whitespaces)) ?? 0
+    } else if (
+      entry[0].trimmingCharacters(in: .whitespaces) == ZYY_PAGE_COL_ARTWORK
+    ) {
+      page.artwork = entry[1].trimmingCharacters(in: .whitespaces)
     }
   }
   comp.removeFirst()
@@ -54,8 +64,6 @@ private func parse_page_file(page_file : String) -> Page {
   page.date = get_current_date_string()
   return page
 }
-
-
 
 extension zyy {
   struct List : ParsableCommand {

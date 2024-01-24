@@ -32,6 +32,9 @@ struct Page : Equatable {
   var link : String
   var date : String
   var is_hidden : Int
+  var is_blog : Int
+  var date_created : String
+  var artwork : String /* Do not need base64 */
   
   init() {
     id = 0
@@ -40,5 +43,8 @@ struct Page : Equatable {
     link = ""
     date = ""
     is_hidden = 0
+    is_blog = 0
+    date_created = ""
+    artwork = ""
   }
 }

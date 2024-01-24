@@ -31,7 +31,10 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_LINK)" TEXT,
           "\(ZYY_PAGE_COL_DATE)" TEXT,
           "\(ZYY_PAGE_COL_CONTENT)" TEXT,
-          "\(ZYY_PAGE_COL_IS_HIDDEN)" INTEGER
+          "\(ZYY_PAGE_COL_IS_HIDDEN)" INTEGER,
+          "\(ZYY_PAGE_COL_IS_BLOG)" INTEGER,
+          "\(ZYY_PAGE_COL_DATE_CREATED)" TEXT,
+          "\(ZYY_PAGE_COL_ARTWORK)" TEXT
         );
         CREATE TABLE IF NOT EXISTS "\(ZYY_SEC_TBL)" (
           "\(ZYY_SEC_COL_HEADING)" TEXT PRIMARY KEY,
@@ -233,7 +236,10 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_TITLE)",
           "\(ZYY_PAGE_COL_CONTENT)",
           "\(ZYY_PAGE_COL_LINK)",
-          "\(ZYY_PAGE_COL_IS_HIDDEN)"
+          "\(ZYY_PAGE_COL_IS_HIDDEN)",
+          "\(ZYY_PAGE_COL_IS_BLOG)",
+          "\(ZYY_PAGE_COL_DATE_CREATED)",
+          "\(ZYY_PAGE_COL_ARTWORK)"
         FROM "\(ZYY_PAGE_TBL)" WHERE (
           "\(ZYY_PAGE_COL_ID)" = \(id)
         );
@@ -259,6 +265,15 @@ struct DatabaseDriver {
       }
       if let is_hidden = page_data[ZYY_PAGE_COL_IS_HIDDEN] {
         page.is_hidden = Int(is_hidden)!
+      }
+      if let is_blog = page_data[ZYY_PAGE_COL_IS_BLOG] {
+        page.is_blog = Int(is_blog)!
+      }
+      if let date_created = page_data[ZYY_PAGE_COL_DATE_CREATED] {
+        page.date_created = date_created
+      }
+      if let artwork = page_data[ZYY_PAGE_COL_ARTWORK] {
+        page.artwork = artwork
       }
       return page
     } catch {
@@ -298,6 +313,15 @@ struct DatabaseDriver {
         if let is_hidden = page[ZYY_PAGE_COL_IS_HIDDEN] {
           delta.is_hidden = Int(is_hidden)!
         }
+        if let is_blog = page[ZYY_PAGE_COL_IS_BLOG] {
+          delta.is_blog = Int(is_blog)!
+        }
+        if let date_created = page[ZYY_PAGE_COL_DATE_CREATED] {
+          delta.date_created = date_created
+        }
+        if let artwork = page[ZYY_PAGE_COL_ARTWORK] {
+          delta.artwork = artwork
+        }
         result.append(delta)
       }
     } catch {
@@ -320,13 +344,19 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_LINK)",
           "\(ZYY_PAGE_COL_TITLE)",
           "\(ZYY_PAGE_COL_CONTENT)",
-          "\(ZYY_PAGE_COL_IS_HIDDEN)"
+          "\(ZYY_PAGE_COL_IS_HIDDEN)",
+          "\(ZYY_PAGE_COL_IS_BLOG)",
+          "\(ZYY_PAGE_COL_DATE_CREATED)",
+          "\(ZYY_PAGE_COL_ARTWORK)"
         ) VALUES (
           '\(page.date.sqlite_string_literal())',
           '\(page.link.sqlite_string_literal())',
           '\(page.title.sqlite_string_literal())',
           '\(page.content.sqlite_string_literal())',
-          \(page.is_hidden)
+          \(page.is_hidden),
+          \(page.is_blog),
+          '\(page.date_created.sqlite_string_literal())',
+          '\(page.artwork.sqlite_string_literal())'
         )
         """
       )
@@ -341,6 +371,8 @@ struct DatabaseDriver {
     page.content = page.content.to_base64()
     page.link = page.link.to_base64()
     
+    let too_long = page.date_created.sqlite_string_literal()
+    
     do {
       try db.run(
         """
@@ -349,7 +381,10 @@ struct DatabaseDriver {
           "\(ZYY_PAGE_COL_LINK)" = '\(page.link.sqlite_string_literal())',
           "\(ZYY_PAGE_COL_TITLE)" = '\(page.title.sqlite_string_literal())',
           "\(ZYY_PAGE_COL_CONTENT)" = '\(page.content.sqlite_string_literal())',
-          "\(ZYY_PAGE_COL_IS_HIDDEN)" = \(page.is_hidden)
+          "\(ZYY_PAGE_COL_IS_HIDDEN)" = \(page.is_hidden),
+          "\(ZYY_PAGE_COL_IS_BLOG)" = \(page.is_blog),
+          "\(ZYY_PAGE_COL_DATE_CREATED)" = '\(too_long)',
+          "\(ZYY_PAGE_COL_ARTWORK)" = '\(page.artwork.sqlite_string_literal())'
         WHERE (
           "\(ZYY_PAGE_COL_ID)" = \(page.id)
         );
