@@ -379,20 +379,20 @@ extension HTML {
     req.onreadystatechange=function() {
       if (this.readyState == 4 && this.status == 200) {
         const msg = JSON.parse(req.responseText);
-        document.getElementById("zyy-rec-1").innerHTML="❤️  "+msg.emoji_1;
-        document.getElementById("zyy-rec-2").innerHTML="👍  "+msg.emoji_2;
-        document.getElementById("zyy-rec-3").innerHTML="😅  "+msg.emoji_3;
-        document.getElementById("zyy-rec-4").innerHTML="💩  "+msg.emoji_4;
+        document.getElementById("zyy-rec-1").innerHTML="❤️ "+msg.emoji_1;
+        document.getElementById("zyy-rec-2").innerHTML="👍 "+msg.emoji_2;
+        document.getElementById("zyy-rec-3").innerHTML="😅 "+msg.emoji_3;
+        document.getElementById("zyy-rec-4").innerHTML="💩 "+msg.emoji_4;
       }
     }
     
     \(js_func)
     </script>
     <div>
-      <button id="zyy-rec-1" class="zyy-reac" onclick="zyy_rec_upd1()">❤️  -19358</button>
-      <button id="zyy-rec-2" class="zyy-reac" onclick="zyy_rec_upd2()">👍  -19358</button>
-      <button id="zyy-rec-3" class="zyy-reac" onclick="zyy_rec_upd3()">😅  -19358</button>
-      <button id="zyy-rec-4" class="zyy-reac" onclick="zyy_rec_upd4()">💩  -19358</button>
+      <button id="zyy-rec-1" class="zyy-reac" onclick="zyy_rec_upd1()">❤️ -19358</button>
+      <button id="zyy-rec-2" class="zyy-reac" onclick="zyy_rec_upd2()">👍 -19358</button>
+      <button id="zyy-rec-3" class="zyy-reac" onclick="zyy_rec_upd3()">😅 -19358</button>
+      <button id="zyy-rec-4" class="zyy-reac" onclick="zyy_rec_upd4()">💩 -19358</button>
       <small>
         Reactions powered by <a href="https://vapor.codes" target="_blank">Vapor</a> + <a href="https://sqlite.org" target="_blank">SQLite</a>
       </small>
