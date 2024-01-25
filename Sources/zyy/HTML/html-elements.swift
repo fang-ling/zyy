@@ -358,17 +358,14 @@ extension HTML {
       margin-right: 1em;
       font-size: 12px;
       color: var(--text-color);
-      background-color: transparent;
-      border: 1px solid #d1d7dd;
+      background-color: var(--color-canvas-default);
+      border: 1px solid var(--gist-border-pcolor);
       border-radius: 5px;
     }
     .zyy-reac:hover {
       background-color: #ebeef2;
     }
     @media (prefers-color-scheme: dark) {
-      .zyy-reac {
-        border: 1px solid #31363c;
-      }
       .zyy-reac:hover {
         background-color: #22262c;
       }
@@ -382,20 +379,20 @@ extension HTML {
     req.onreadystatechange=function() {
       if (this.readyState == 4 && this.status == 200) {
         const msg = JSON.parse(req.responseText);
-        document.getElementById("zyy-rec-1").innerHTML="❤️ "+msg.emoji_1;
-        document.getElementById("zyy-rec-2").innerHTML="👍 "+msg.emoji_2;
-        document.getElementById("zyy-rec-3").innerHTML="😅 "+msg.emoji_3;
-        document.getElementById("zyy-rec-4").innerHTML="💩 "+msg.emoji_4;
+        document.getElementById("zyy-rec-1").innerHTML="❤️  "+msg.emoji_1;
+        document.getElementById("zyy-rec-2").innerHTML="👍  "+msg.emoji_2;
+        document.getElementById("zyy-rec-3").innerHTML="😅  "+msg.emoji_3;
+        document.getElementById("zyy-rec-4").innerHTML="💩  "+msg.emoji_4;
       }
     }
     
     \(js_func)
     </script>
     <div>
-      <button id="zyy-rec-1" class="zyy-reac" onclick="zyy_rec_upd1()">❤️ -19358</button>
-      <button id="zyy-rec-2" class="zyy-reac" onclick="zyy_rec_upd2()">👍 -19358</button>
-      <button id="zyy-rec-3" class="zyy-reac" onclick="zyy_rec_upd3()">😅 -19358</button>
-      <button id="zyy-rec-4" class="zyy-reac" onclick="zyy_rec_upd4()">💩 -19358</button>
+      <button id="zyy-rec-1" class="zyy-reac" onclick="zyy_rec_upd1()">❤️  -19358</button>
+      <button id="zyy-rec-2" class="zyy-reac" onclick="zyy_rec_upd2()">👍  -19358</button>
+      <button id="zyy-rec-3" class="zyy-reac" onclick="zyy_rec_upd3()">😅  -19358</button>
+      <button id="zyy-rec-4" class="zyy-reac" onclick="zyy_rec_upd4()">💩  -19358</button>
       <small>
         Reactions powered by <a href="https://vapor.codes" target="_blank">Vapor</a> + <a href="https://sqlite.org" target="_blank">SQLite</a>
       </small>
