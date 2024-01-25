@@ -353,6 +353,27 @@ extension HTML {
     
     let html =
     """
+    <style>
+    .zyy-reac {
+      margin-right: 1em;
+      font-size: 12px;
+      color: var(--text-color);
+      background-color: transparent;
+      border: 1px solid #d1d7dd;
+      border-radius: 5px;
+    }
+    .zyy-reac:hover {
+      background-color: #ebeef2;
+    }
+    @media (prefers-color-scheme: dark) {
+      .zyy-reac {
+        border: 1px solid #31363c;
+      }
+      .zyy-reac:hover {
+        background-color: #22262c;
+      }
+    }
+    </style>
     <script>
     const req = new XMLHttpRequest();
     req.open("GET", "https://api.fangl.ing/get?slug=\(slug)");
@@ -371,10 +392,10 @@ extension HTML {
     \(js_func)
     </script>
     <div>
-      <button id="zyy-rec-1" style="margin-right: 1em;" onclick="zyy_rec_upd1()">❤️ -19358</button>
-      <button id="zyy-rec-2" style="margin-right: 1em;" onclick="zyy_rec_upd2()">👍 -19358</button>
-      <button id="zyy-rec-3" style="margin-right: 1em;" onclick="zyy_rec_upd3()">😅 -19358</button>
-      <button id="zyy-rec-4" style="margin-right: 1em;" onclick="zyy_rec_upd4()">💩 -19358</button>
+      <button id="zyy-rec-1" class="zyy-reac" onclick="zyy_rec_upd1()">❤️ -19358</button>
+      <button id="zyy-rec-2" class="zyy-reac" onclick="zyy_rec_upd2()">👍 -19358</button>
+      <button id="zyy-rec-3" class="zyy-reac" onclick="zyy_rec_upd3()">😅 -19358</button>
+      <button id="zyy-rec-4" class="zyy-reac" onclick="zyy_rec_upd4()">💩 -19358</button>
       <small>
         Reactions powered by <a href="https://vapor.codes" target="_blank">Vapor</a> + <a href="https://sqlite.org" target="_blank">SQLite</a>
       </small>
