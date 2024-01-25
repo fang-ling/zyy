@@ -310,6 +310,9 @@ extension HTML {
                                      attr: ["class" : "page-container"])
     page_container.add(page.content)
     body.add(page_container)
+    if page.is_blog == 1 {
+      body.add(get_reaction(slug: page.link.components(separatedBy: ".")[0]))
+    }
     body.add(get_foot_box(date: page.date))
     body.add(DOMTreeNode(name: "br", attr: [:]))
     body.add(get_footer())
@@ -329,5 +332,54 @@ extension HTML {
     var string = ""
     DOMTreeNode.inorder_tree_traversal(html, &string)
     return "<!DOCTYPE html>\n" + string
+  }
+  
+  func get_reaction(slug: String) -> String {
+    var js_func = ""
+    for i in 1 ... 4 {
+      js_func +=
+      """
+      function zyy_rec_upd\(i)() {
+        const str = document.getElementById("zyy-rec-\(i)").innerHTML.split(' ');
+        document.getElementById("zyy-rec-\(i)").innerHTML = str[0] + ' ' + (parseInt(str[1]) + 1);
+        
+        const Http = new XMLHttpRequest();
+        Http.open("GET", "https://api.fangl.ing/add?slug=\(slug)&emoji=emoji_\(i)");
+        Http.send();
+      }
+      
+      """
+    }
+    
+    let html =
+    """
+    <script>
+    const req = new XMLHttpRequest();
+    req.open("GET", "https://api.fangl.ing/get?slug=\(slug)");
+    req.send();
+    
+    req.onreadystatechange=function() {
+      if (this.readyState == 4 && this.status == 200) {
+        const msg = JSON.parse(req.responseText);
+        document.getElementById("zyy-rec-1").innerHTML="❤️ "+msg.emoji_1;
+        document.getElementById("zyy-rec-2").innerHTML="👍 "+msg.emoji_2;
+        document.getElementById("zyy-rec-3").innerHTML="😅 "+msg.emoji_3;
+        document.getElementById("zyy-rec-4").innerHTML="💩 "+msg.emoji_4;
+      }
+    }
+    
+    \(js_func)
+    </script>
+    <div>
+      <button id="zyy-rec-1" style="margin-right: 1em;" onclick="zyy_rec_upd1()">❤️ -19358</button>
+      <button id="zyy-rec-2" style="margin-right: 1em;" onclick="zyy_rec_upd2()">👍 -19358</button>
+      <button id="zyy-rec-3" style="margin-right: 1em;" onclick="zyy_rec_upd3()">😅 -19358</button>
+      <button id="zyy-rec-4" style="margin-right: 1em;" onclick="zyy_rec_upd4()">💩 -19358</button>
+      <small>
+        Reactions powered by <a href="https://vapor.codes" target="_blank">Vapor</a> + <a href="https://sqlite.org" target="_blank">SQLite</a>
+      </small>
+    </div>
+    """
+    return html
   }
 }
