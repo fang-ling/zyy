@@ -26,7 +26,7 @@ let ZYY_PAGE_COL_CONTENT = "content"
 let ZYY_PAGE_COL_IS_HIDDEN = "is_hidden"
 let ZYY_PAGE_COL_IS_BLOG = "is_blog"
 let ZYY_PAGE_COL_DATE_CREATED = "date_created"
-let ZYY_PAGE_COL_ARTWORK = "artwork" /* Full link of the artwork */
+let ZYY_PAGE_COL_ARTWORK = "artwork" /* Full link of the artworks, sep by , */
 /// Section table
 let ZYY_SEC_COL_HEADING = "heading"
 let ZYY_SEC_COL_CAPTION = "caption"

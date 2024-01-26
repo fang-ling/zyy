@@ -9,7 +9,7 @@ import cmark_gfm
 import Foundation
 
 extension HTML {
-  func get_head(title_text : String) -> DOMTreeNode {
+  func get_head(title_text : String, _ is_blog : Bool = false) -> DOMTreeNode {
     let head = DOMTreeNode(name: "head", attr: [:])
     head.add(DOMTreeNode(name: "meta", attr: ["charset" : "UTF-8"]))
     head.add(DOMTreeNode(
@@ -38,10 +38,14 @@ extension HTML {
       )
     )
     
-    head.add(DOMTreeNode(name: "link",
-                         attr: ["href" : HTML.MAIN_STYLE_CSS_FILENAME,
-                                "rel" : "stylesheet",
-                                "type" : "text/css"]))
+    head.add(
+      DOMTreeNode(
+        name: "link",
+        attr: ["href" : (is_blog ? "../" : "") + HTML.MAIN_STYLE_CSS_FILENAME,
+               "rel" : "stylesheet",
+               "type" : "text/css"]
+      )
+    )
     let title = DOMTreeNode(name: "title", attr: [:])
     title.add(title_text)
     head.add(title)
@@ -65,10 +69,10 @@ extension HTML {
   
   /*
    *  <div>
-   *      Plain text or <a> separated by dots.
+   *      Plain text or <a>, separated by dots.
    *  </div>
    */
-  func get_head_box() -> DOMTreeNode {
+  func get_head_box(_ is_blog : Bool = false) -> DOMTreeNode {
     let fields = get_all_headbox_custom_fields()
     let div = DOMTreeNode(name: "div",
                           attr: ["class" : "purplebox head-box"])
@@ -76,7 +80,10 @@ extension HTML {
       if fields[i].1.isEmpty { /* Plain text node */
         div.add(fields[i].0)
       } else {
-        let a = DOMTreeNode(name: "a", attr: ["href" : fields[i].1])
+        let a = DOMTreeNode(
+          name: "a",
+          attr: ["href" : (is_blog ? "../" : "") + fields[i].1]
+        )
         a.add(fields[i].0)
         div.add(a)
       }
@@ -124,13 +131,16 @@ extension HTML {
     return div
   }
   
-  func get_foot_box(date: String) -> DOMTreeNode {
+  func get_foot_box(date: String, _ is_blog : Bool = false) -> DOMTreeNode {
     let author = settings[ZYY_SET_OPT_AUTHOR]!
     let site_url = settings[ZYY_SET_OPT_URL]!
     let div = DOMTreeNode(name: "div",
                           attr: ["class" : "purplebox foot-box"])
     let i = DOMTreeNode(name: "i", attr: [:])
-    let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
+    let a = DOMTreeNode(
+      name: "a", 
+      attr: ["href" : (is_blog ? "../" : "") + site_url]
+    )
     a.add(author)
     i.add("Last updated \(date) by ")
     i.add(a)
@@ -139,7 +149,7 @@ extension HTML {
     return div
   }
   
-  func get_footer() -> DOMTreeNode {
+  func get_footer(_ is_blog : Bool = false) -> DOMTreeNode {
     let site_url = settings[ZYY_SET_OPT_URL]!
     let author = settings[ZYY_SET_OPT_AUTHOR]!
     let st_year = settings[ZYY_SET_OPT_START_YEAR]!
@@ -150,7 +160,10 @@ extension HTML {
     }
     let div = DOMTreeNode(name: "div", attr: ["class" : "footer"])
     div.add("Made with ♡")
-    let a = DOMTreeNode(name: "a", attr: ["href" : site_url])
+    let a = DOMTreeNode(
+      name: "a", 
+      attr: ["href" : (is_blog ? "../" : "") + site_url]
+    )
     a.add("by \(author)")
     div.add(a)
     let a2 = DOMTreeNode(name: "a", attr: ["href" : zyy.GITHUB_REPO])
@@ -223,7 +236,7 @@ extension HTML {
     /* Body */
     let body = DOMTreeNode(name: "body", attr: [:])
     body.add(get_title(title_text: page.title))
-    body.add(get_head_box())
+    body.add(get_head_box(page.is_blog == 1 || page.title == "Blog"))
     
     /* Replace $...$ and $$...$$ with a unique string */
     /* Should not use $ for other purpose. */
@@ -305,7 +318,6 @@ extension HTML {
       page.content = page.content.replacingOccurrences(of: i.value,
                                                        with: i.key)
     }
-    //body.add(page.content)
     let page_container = DOMTreeNode(name: "div",
                                      attr: ["class" : "page-container"])
     page_container.add(page.content)
@@ -313,19 +325,28 @@ extension HTML {
     if page.is_blog == 1 {
       body.add(get_reaction(slug: page.link.components(separatedBy: ".")[0]))
     }
-    body.add(get_foot_box(date: page.date))
+    body.add(
+      get_foot_box(date: page.date, page.is_blog == 1 || page.title == "Blog")
+    )
     body.add(DOMTreeNode(name: "br", attr: [:]))
-    body.add(get_footer())
+    body.add(get_footer(page.is_blog == 1 || page.title == "Blog"))
     
-    let head = get_head(title_text: page.title)
+    let head = get_head(
+      title_text: page.title,
+      page.is_blog == 1 || page.title == "Blog"
+    )
     if has_math {
       head.add(MATHJAX_JS)
     }
     if has_code {
-      head.add(DOMTreeNode(name: "link",
-                           attr: ["href" : HTML.CHL_CSS_FILENAME,
-                                  "rel" : "stylesheet",
-                                  "type" : "text/css"]))
+      head.add(
+        DOMTreeNode(
+          name: "link",
+          attr: ["href" : (page.is_blog == 1 ? "../" : "") + HTML.CHL_CSS_FILE,
+                 "rel" : "stylesheet",
+                 "type" : "text/css"]
+        )
+      )
     }
     html.add(head)
     html.add(body)

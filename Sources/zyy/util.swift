@@ -35,3 +35,12 @@ struct PosixProcess {
     }
   }
 }
+
+func directory_exists(at path : String) -> Bool {
+    var isdirectory : ObjCBool = true
+    let exists = FileManager.default.fileExists(
+      atPath: path,
+      isDirectory: &isdirectory
+    )
+    return exists && isdirectory.boolValue
+}

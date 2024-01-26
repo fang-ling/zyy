@@ -104,7 +104,7 @@ extension zyy {
     \(ZYY_SET_OPT_EDITOR) = \(db.get_setting(with: ZYY_SET_OPT_EDITOR)!)
     # The title of your website
     \(ZYY_SET_OPT_TITLE) = \(db.get_setting(with: ZYY_SET_OPT_TITLE)!)
-    # The URL of your website, must starts with http:// or https://
+    # The URL of your website, please set it as index.html
     \(ZYY_SET_OPT_URL) = \(db.get_setting(with: ZYY_SET_OPT_URL)!)
     # Your name
     \(ZYY_SET_OPT_AUTHOR) = \(db.get_setting(with: ZYY_SET_OPT_AUTHOR)!)
