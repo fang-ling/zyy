@@ -131,7 +131,12 @@ extension zyy {
       let page_file = try! String(contentsOfFile: ZYY_MD_TEMP,
                                   encoding: .utf8)
       var new_page = parse_page_file(page_file: page_file)
-      new_page.id = page.id /// Be careful
+      /*
+       * The following field(s) are not user changeable, so they need to be
+       * copied.
+       */
+      new_page.id = page.id
+      new_page.date_created = page.date_created
       /* Write to database */
       db.set_page(new_page)
       /* Remove temp file */
