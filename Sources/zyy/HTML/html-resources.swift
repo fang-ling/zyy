@@ -179,7 +179,8 @@ A:hover {
 }
 
 .head-box {
-    text-align: center;
+  margin-bottom: 0.5em;
+  text-align: center;
 }
 
 .foot-box {

@@ -59,7 +59,8 @@ struct HTML {
           artwork += "<source srcset='\(aw)' "
           artwork += "type='image/\(aw.components(separatedBy: ".").last!)'>"
         }
-        artwork += "<img src='\(fallback)'></picture></a></td>"
+        artwork += "<img style='left:0px;top:0px' src='\(fallback)'>" +
+                   "</picture></a></td>"
         
         var link = "<td><a class='heading' href='\(bp.link)'>\(bp.title)</a>"
         link += "<p class='caption'>Originally published \(bp.date_created)."
