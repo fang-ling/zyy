@@ -2008,7 +2008,7 @@ let CHL_CSS =
 
 .gist .gist-meta a {
     font-weight: var(--base-text-weight-semibold, 600);
-    color: #666;
+    /*color: #666;*/
     text-decoration: none;
     border:0
 }

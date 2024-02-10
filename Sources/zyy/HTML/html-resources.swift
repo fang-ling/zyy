@@ -297,9 +297,9 @@ table td, table th {
         color: var(--color-fg-default) !important;
     }
 
-    .gist .gist-meta a {
+    /*.gist .gist-meta a {
         color: var(--dark-link-pcolor) !important;
-    }
+    }*/
 
     html {
         font-size: 15px;
