@@ -179,9 +179,9 @@ extension HTML {
       name: "a",
       attr: ["href" : "https://erikdemaine.org"]
     )
-    a3.add("by Prof. Erik Demaine")
+    a3.add("of Prof. Erik Demaine")
     div.add(DOMTreeNode(name: "br", attr: [:]))
-    div.add("Blog theme is highly inspired")
+    div.add("Theme based on the design")
     div.add(a3)
     
     let p = DOMTreeNode(name: "p", attr: ["class" : "copyright"])
