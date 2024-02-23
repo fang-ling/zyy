@@ -261,14 +261,31 @@ table td, table th {
   margin: 0 auto
 }
 
+/* Blog index page */
+.bg-index {
+  display: flex
+}
+
+.bg-index-link {
+  margin: auto
+}
+
 /* iPhone OS */
 @media screen and (max-width:500px) {
-    body {
-        padding-left: 20px;
-        padding-right: 20px;
-        /* fix gist font size bug on iPhone OS */
-        -webkit-text-size-adjust: 100%;
-    }
+  body {
+    padding-left: 20px;
+    padding-right: 20px;
+    /* fix gist font size bug on iPhone OS */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .bg-index {
+    display: block
+  }
+
+  .bg-index-link {
+    margin-top: 1rem
+  }
 }
 
 /* Dark mode */

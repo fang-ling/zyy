@@ -49,26 +49,27 @@ struct HTML {
       blog_page.date = date2string(
         blog_pages.map({ string2date($0.date) }).sorted().last!
       )
-      blog_page.content = "<table><tbody>"
       for bp in blog_pages {
+        blog_page.content += "<div class='bg-index'>"
+        
         var artworks = bp.artwork.components(separatedBy: ",")
         let fallback = artworks.removeLast()
-        var artwork = "<td class='image'><a href='\(bp.link)'>"
+        var artwork = "<div class='bg-index-aw image'><a href='\(bp.link)'>"
         artwork += "<picture>"
         for aw in artworks {
           artwork += "<source srcset='\(aw)' "
           artwork += "type='image/\(aw.components(separatedBy: ".").last!)'>"
         }
         artwork += "<img style='left:0px;top:0px' src='\(fallback)'>" +
-                   "</picture></a></td>"
+                   "</picture></a></div>"
         
-        var link = "<td><a class='heading' href='\(bp.link)'>\(bp.title)</a>"
+        var link = "<div class='bg-index-link'>" +
+                   "<a class='heading' href='\(bp.link)'>\(bp.title)</a>"
         link += "<p class='caption'>Originally published \(bp.date_created)."
-        link += "<br>Last updated \(bp.date).</p></td>"
+        link += "<br>Last updated \(bp.date).</p></div>"
         
-        blog_page.content += "<tr>\(artwork)\(link)</tr>"
+        blog_page.content += "\(artwork)\(link)</div>"
       }
-      blog_page.content += "</tbody></table>"
       
       if !directory_exists(at: "blog") {
         try FileManager.default.createDirectory(
