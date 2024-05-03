@@ -10,4 +10,6 @@ import Vapor
 func routes(_ app : Application) throws {
   try app.register(collection: AddController())
   try app.register(collection: GetController())
+  
+  try app.register(collection: AuthenticationController())
 }

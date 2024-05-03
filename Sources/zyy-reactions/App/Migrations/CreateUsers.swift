@@ -18,7 +18,7 @@ extension User {
         .field("first_name", .string, .required)
         .field("last_name", .string, .required)
         .field("birthday", .date, .required)
-        .field("avatar", .string, .required)
+        .field("avatar", .string)
         .field("email", .string, .required)
         .field("password_hash", .string, .required)
         .field("registered_at", .date, .required)

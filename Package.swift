@@ -41,5 +41,12 @@ let package = Package(
       name: "zyyTests",
       dependencies: ["zyy"]
     ),
+    .testTarget(
+      name: "zyy-reactionsTests",
+      dependencies: [
+        .target(name: "zyy-reactions"),
+        .product(name: "XCTVapor", package: "vapor")
+      ]
+    )
   ]
 )
