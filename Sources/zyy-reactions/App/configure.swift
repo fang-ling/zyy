@@ -15,7 +15,8 @@ public func configure(_ app: Application) async throws {
     as: .sqlite
   )
   
-  app.migrations.add(Reaction.TableCreation())
+  app.migrations.add(Reaction.CreateReactions())
+  app.migrations.add(User.CreateUsers())
   
   try routes(app)
 }

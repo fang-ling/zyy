@@ -1,5 +1,5 @@
 //
-//  table-creation.swift
+//  CreateReactions.swift
 //
 //
 //  Created by Fang Ling on 2024/4/23.
@@ -9,8 +9,8 @@ import Fluent
 import Foundation
 
 extension Reaction {
-  struct TableCreation : AsyncMigration {
-    var name : String { "Database Table Creation" }
+  struct CreateReactions : AsyncMigration {
+    var name : String { "Create Reactions Table" }
     
     func prepare(on database: Database) async throws {
       try await database.schema("Reactions")
