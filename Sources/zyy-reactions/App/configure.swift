@@ -10,6 +10,7 @@ import Fluent
 import FluentSQLiteDriver
 
 let USER_REGISTRATION_LIMIT = 1
+var TOKEN_EXPIRATION_MINUTES = 43200.0
 
 public func configure(_ app: Application) async throws {
   if app.environment == .testing {
@@ -22,7 +23,9 @@ public func configure(_ app: Application) async throws {
   }
   
   app.migrations.add(Reaction.CreateReactions())
+  
   app.migrations.add(User.CreateUsers())
+  app.migrations.add(UserToken.CreateUserTokens())
   
   try await app.autoMigrate()
   

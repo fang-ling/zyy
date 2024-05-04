@@ -60,4 +60,57 @@ final class AuthenticationTests: XCTestCase {
       XCTAssertEqual(res.status, .badRequest)
     })
   }
+  
+  func test_login() async throws {
+    let app = Application(.testing)
+    defer {
+      app.shutdown()
+    }
+    try await configure(app)
+    
+    /* Correct register */
+    try app.test(.POST, "auth/register", beforeRequest: { req in
+      try req.content.encode([
+        "first_name" : "Yüan",
+        "last_name" : "Yüeh",
+        "birthday" : "2024-05-03T11:17:04+0800",
+        "email" : "test@example.com",
+        "password" : "top_secret58",
+        "confirm_password" : "top_secret58",
+      ])
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .created)
+    })
+    
+    /* No such user */
+    try app.test(.POST, "auth/login", beforeRequest: { req in
+      req.headers.add(
+        name: "Authorization",
+        value: "Basic " + "test3@example.com:top_secret58".base64String()
+      )
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .unauthorized)
+    })
+    
+    /* Wrong password */
+    try app.test(.POST, "auth/login", beforeRequest: { req in
+      req.headers.add(
+        name: "Authorization",
+        value: "Basic " + "test@example.com:top_secret59".base64String()
+      )
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .unauthorized)
+    })
+    
+    /* Correct login */
+    try app.test(.POST, "auth/login", beforeRequest: { req in
+      req.headers.add(
+        name: "Authorization",
+        value: "Basic " + "test@example.com:top_secret58".base64String()
+      )
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .ok)
+      let _ = try res.content.decode(UserToken.self)
+    })
+  }
 }

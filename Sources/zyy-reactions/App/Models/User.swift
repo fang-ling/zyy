@@ -33,8 +33,8 @@ final class User : Model {
   @Field(key: "password_hash")
   var password_hash : String
   
-  @Field(key: "registered_at")
-  var registered_at : Date
+  @Timestamp(key: "registered_at", on: .create)
+  var registered_at : Date?
   
   init() { }
   
@@ -46,7 +46,7 @@ final class User : Model {
     avatar: String? = nil,
     email: String,
     password_hash: String,
-    registered_at: Date
+    registered_at: Date? = nil
   ) {
     self.id = id
     self.first_name = first_name
@@ -59,6 +59,26 @@ final class User : Model {
   }
 }
 
+extension User : ModelAuthenticatable {
+  static let usernameKey = \User.$email
+  static let passwordHashKey = \User.$password_hash
+  
+  func verify(password: String) throws -> Bool {
+    try Bcrypt.verify(password, created: self.password_hash)
+  }
+}
+
+extension User {
+  func generate_token() throws -> UserToken {
+    try UserToken(
+      value: [UInt8].random(count: 32).base64,
+      expires_at: Date() + TOKEN_EXPIRATION_MINUTES * 60,
+      user_id: self.requireID()
+    )
+  }
+}
+
+/* Fields for data exchanges */
 extension User {
   struct Registration : Content, Validatable {
     var first_name : String

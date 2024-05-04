@@ -13,7 +13,7 @@ struct AuthenticationController : RouteCollection {
   func boot(routes : RoutesBuilder) throws {
     routes.group("auth") { auth in
       auth.post("register", use: register_handler)
-//      auth.grouped(User.authenticator()).post("login", use: login)
+      auth.grouped(User.authenticator()).post("login", use: login_handler)
     }
   }
   
@@ -33,10 +33,19 @@ struct AuthenticationController : RouteCollection {
       last_name: registration.last_name,
       birthday: registration.birthday,
       email: registration.email,
-      password_hash: Bcrypt.hash(registration.password),
-      registered_at: Date()
+      password_hash: Bcrypt.hash(registration.password)
     )
     try await user.save(on: req.db)
     return .created
+  }
+  
+  /* Basic auth */
+  func login_handler(req : Request) async throws -> UserToken {
+    let user = try req.auth.require(User.self)
+    let token = try user.generate_token()
+    
+    try await token.save(on: req.db)
+    
+    return token
   }
 }
