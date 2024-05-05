@@ -27,6 +27,8 @@ public func configure(_ app: Application) async throws {
   app.migrations.add(User.CreateUsers())
   app.migrations.add(UserToken.CreateUserTokens())
   
+  app.migrations.add(Page.CreatePages())
+  
   try await app.autoMigrate()
   
   try routes(app)

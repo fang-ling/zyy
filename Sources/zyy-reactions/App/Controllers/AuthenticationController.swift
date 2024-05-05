@@ -9,6 +9,25 @@ import Foundation
 import Vapor
 import Fluent
 
+/*
+ * +--------+--------------------+--------+-----------------------------------+
+ * | Method |        Routes      | Authen |            Description            |
+ * +--------+--------------------+--------+-----------------------------------+
+ * |        |                    |        | Success:                          |
+ * |        |                    |        |   201: Registration successful    |
+ * | POST   | /auth/register     | None   | Error:                            |
+ * |        |                    |        |   400: Invalid registration form  |
+ * |        |                    |        |   400: Registration limit reached |
+ * +--------+--------------------+--------+-----------------------------------+
+ * |        |                    |        | Success:                          |
+ * |        |                    |        |   200: Return user token          |
+ * | POST   | /auth/login        | Basic  | Error:                            |
+ * |        |                    |        |   401: Invalid credentials        |
+ * +--------+--------------------+--------+-----------------------------------+
+ *
+ * TODO: PASSWORD MODIFICATION
+ *
+ */
 struct AuthenticationController : RouteCollection {
   func boot(routes : RoutesBuilder) throws {
     routes.group("auth") { auth in

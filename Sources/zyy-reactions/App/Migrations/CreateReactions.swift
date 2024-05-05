@@ -15,12 +15,12 @@ extension Reaction {
     func prepare(on database: Database) async throws {
       try await database.schema("Reactions")
         .id()
-        .field("slug", .string, .required)
+        .field("page_id", .uuid, .required, .references("Pages", "id"))
         .field("emoji_1", .int, .required)
         .field("emoji_2", .int, .required)
         .field("emoji_3", .int, .required)
         .field("emoji_4", .int, .required)
-        .unique(on: "slug")
+        .unique(on: "page_id")
         .create()
     }
     

@@ -15,8 +15,8 @@ final class Reaction : Model, Content {
   @ID(key: .id)
   var id : UUID?
   
-  @Field(key: "slug")
-  var slug : String
+  @Parent(key: "page_id")
+  var page : Page
   
   @Field(key: "emoji_1")
   var emoji_1 : Int
@@ -34,14 +34,14 @@ final class Reaction : Model, Content {
   
   init(
     id: UUID? = nil,
-    slug: String,
-    emoji_1: Int,
-    emoji_2: Int,
-    emoji_3: Int,
-    emoji_4: Int
+    page_id: Page.IDValue,
+    emoji_1: Int = 0,
+    emoji_2: Int = 0,
+    emoji_3: Int = 0,
+    emoji_4: Int = 0
   ) {
     self.id = id
-    self.slug = slug
+    self.$page.id = page_id
     self.emoji_1 = emoji_1
     self.emoji_2 = emoji_2
     self.emoji_3 = emoji_3
