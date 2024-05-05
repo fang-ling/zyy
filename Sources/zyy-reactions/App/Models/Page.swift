@@ -75,3 +75,45 @@ final class Page : Model {
     self.is_blog_article = is_blog_article
   }
 }
+
+/* Fields for data exchanges */
+extension Page {
+  struct Create : Content, Validatable {
+    var title : String
+    var content : String
+    var link : String
+    var artwork : String
+    var caption : String
+    var is_hidden : Bool
+    var is_blog_article : Bool
+    
+    static func validations(_ validations: inout Validations) {
+      validations.add("title", as: String.self, is: !.empty)
+      validations.add("content", as: String.self, is: !.empty)
+      validations.add("link", as: String.self, is: !.empty)
+      validations.add("artwork", as: String.self, is: !.empty)
+      validations.add("caption", as: String.self, is: !.empty)
+    }
+  }
+  
+//  struct Read : Content {
+//    var title : String
+//    var content : String
+//    var link : String
+//    var artwork : String
+//    var caption : String
+//    var is_hidden : Bool
+//    var is_blog_article : Bool
+//    var created_at : Date
+//    var modified_at : Date
+//    var user_full_name : String
+//    var user_link : String
+//  }
+  
+  struct List : Content {
+    var id : UUID
+    var title : String
+    var created_at : Date
+    var modified_at : Date
+  }
+}

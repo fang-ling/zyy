@@ -27,6 +27,7 @@ final class AuthenticationTests: XCTestCase {
         "email" : "test@example.com",
         "password" : "top_secret48",
         "confirm_password" : "top_secret",
+        "link" : "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .badRequest)
@@ -41,6 +42,7 @@ final class AuthenticationTests: XCTestCase {
         "email" : "test@example.com",
         "password" : "top_secret58",
         "confirm_password" : "top_secret58",
+        "link" : "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .created)
@@ -55,6 +57,7 @@ final class AuthenticationTests: XCTestCase {
         "email" : "test2@example.com",
         "password" : "top_secret42",
         "confirm_password" : "top_secret42",
+        "link" : "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .badRequest)
@@ -77,6 +80,7 @@ final class AuthenticationTests: XCTestCase {
         "email" : "test@example.com",
         "password" : "top_secret58",
         "confirm_password" : "top_secret58",
+        "link" : "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .created)

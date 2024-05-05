@@ -36,6 +36,10 @@ final class User : Model {
   @Timestamp(key: "registered_at", on: .create)
   var registered_at : Date?
   
+  /* The user website URL */
+  @Field(key: "link")
+  var link : String
+  
   init() { }
   
   init(
@@ -46,7 +50,8 @@ final class User : Model {
     avatar: String? = nil,
     email: String,
     password_hash: String,
-    registered_at: Date? = nil
+    registered_at: Date? = nil,
+    link: String
   ) {
     self.id = id
     self.first_name = first_name
@@ -56,6 +61,7 @@ final class User : Model {
     self.email = email
     self.password_hash = password_hash
     self.registered_at = registered_at
+    self.link = link
   }
 }
 
@@ -87,12 +93,14 @@ extension User {
     var email : String
     var password : String
     var confirm_password : String
+    var link : String
     
     static func validations(_ validations: inout Validations) {
       validations.add("first_name", as: String.self, is: !.empty)
       validations.add("last_name", as: String.self, is: !.empty)
       validations.add("email", as: String.self, is: .email)
       validations.add("password", as: String.self, is: .count(8...))
+      validations.add("link", as: String.self, is: !.empty)
     }
   }
 }

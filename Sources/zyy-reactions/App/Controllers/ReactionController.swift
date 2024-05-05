@@ -14,7 +14,7 @@ import SQLKit
  * | Method |        Routes      | Authen |            Description            |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
- * |        |                    |        |   201: Return reaction            |
+ * |        |                    |        |   200: Return reaction            |
  * | GET    | /reaction?id       | None   | Error:                            |
  * |        |                    |        |   400: Invalid page id            |
  * +--------+--------------------+--------+-----------------------------------+
@@ -39,7 +39,6 @@ struct ReactionController : RouteCollection {
       reaction
         .grouped(UserToken.authenticator())
         .post(use: create_reaction_handler)
-      
     }
   }
   
@@ -105,7 +104,7 @@ struct ReactionController : RouteCollection {
     guard let page = ret.first else {
       throw Abort(.badRequest, reason: "No such page with id: \(id)")
     }
-    if page.user.id != user.id {
+    if page.$user.id != user.id {
       throw Abort(.forbidden, reason: "Author mismatch")
     }
     

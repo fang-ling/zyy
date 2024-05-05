@@ -52,7 +52,8 @@ struct AuthenticationController : RouteCollection {
       last_name: registration.last_name,
       birthday: registration.birthday,
       email: registration.email,
-      password_hash: Bcrypt.hash(registration.password)
+      password_hash: Bcrypt.hash(registration.password),
+      link: registration.link
     )
     try await user.save(on: req.db)
     return .created

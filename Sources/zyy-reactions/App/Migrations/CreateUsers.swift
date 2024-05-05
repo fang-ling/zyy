@@ -22,6 +22,7 @@ extension User {
         .field("email", .string, .required)
         .field("password_hash", .string, .required)
         .field("registered_at", .date, .required)
+        .field("link", .string, .required)
         .create()
     }
     

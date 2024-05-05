@@ -11,4 +11,6 @@ func routes(_ app : Application) throws {
   try app.register(collection: ReactionController())
   
   try app.register(collection: AuthenticationController())
+  
+  try app.register(collection: PageController())
 }
