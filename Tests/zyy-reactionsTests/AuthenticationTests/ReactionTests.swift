@@ -107,7 +107,7 @@ final class ReactionTests: XCTestCase {
       XCTAssertEqual(res.status, .badRequest)
     })
     
-    /* 403 test case skipped */
+    /* Author mismatch test case skipped */
     
     /* Correct create reaction */
     try app.test(.POST, "reaction?id=\(id)", beforeRequest: { req in
@@ -117,6 +117,16 @@ final class ReactionTests: XCTestCase {
       )
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .created)
+    })
+    
+    /* Duplicate create reaction */
+    try app.test(.POST, "reaction?id=\(id)", beforeRequest: { req in
+      req.headers.add(
+        name: "Authorization",
+        value: "Bearer \(user_token.value)"
+      )
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .conflict)
     })
     
     /* Get test, invalid query */
@@ -175,6 +185,26 @@ final class ReactionTests: XCTestCase {
       XCTAssertEqual(reaction.emoji_3, 1)
       XCTAssertEqual(reaction.emoji_4, 1)
     }
+   
+    /* Test case for read reactions */
+    try app.test(.GET, "reactions") { res in
+      XCTAssertEqual(res.status, .unauthorized)
+    }
     
+    try app.test(.GET, "reactions", beforeRequest: { req in
+      req.headers.add(
+        name: "Authorization",
+        value: "Bearer \(user_token.value)"
+      )
+    }, afterResponse: { res in
+      XCTAssertEqual(res.status, .ok)
+      let reactions = try res.content.decode([Reaction.List].self)
+      XCTAssertEqual(reactions.count, 1)
+      XCTAssertEqual(reactions.first!.page_link, "hello-world.html")
+      XCTAssertEqual(reactions.first!.emoji_1, 1)
+      XCTAssertEqual(reactions.first!.emoji_2, 1)
+      XCTAssertEqual(reactions.first!.emoji_3, 1)
+      XCTAssertEqual(reactions.first!.emoji_4, 1)
+    })
   }
 }

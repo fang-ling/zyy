@@ -29,6 +29,12 @@ import SQLKit
  * | POST   | /reaction?id       | Bearer |   400: Invalid page id            |
  * |        |                    |        |   401: Unauthorized               |
  * |        |                    |        |   403: Author mismatch            |
+ * |        |                    |        |   409: Duplicate reactions        |
+ * +--------+--------------------+--------+-----------------------------------+
+ * |        |                    |        | Success:                          |
+ * |        |                    |        |   200: Return reaction list       |
+ * | GET    | /reactions         | Bearer | Error:                            |
+ * |        |                    |        |   401: Unauthorized               |
  * +--------+--------------------+--------+-----------------------------------+
  */
 struct ReactionController : RouteCollection {
@@ -39,6 +45,11 @@ struct ReactionController : RouteCollection {
       reaction
         .grouped(UserToken.authenticator())
         .post(use: create_reaction_handler)
+    }
+    routes.group("reactions") { reactions in
+      reactions
+        .grouped(UserToken.authenticator())
+        .get(use: read_reactions_handler)
     }
   }
   
@@ -109,9 +120,34 @@ struct ReactionController : RouteCollection {
     }
     
     let reaction = Reaction(page_id: id)
-    try await reaction.save(on: req.db)
+    do {
+      try await reaction.save(on: req.db)
+    } catch {
+      throw Abort(
+        .conflict,
+        reason: "Duplicate reaction violates unique constraint "
+      )
+    }
     
     return .created
+  }
+  
+  func read_reactions_handler(req : Request) async throws -> [Reaction.List] {
+    try req.auth.require(User.self)
+    
+    return try await Reaction
+      .query(on: req.db)
+      .with(\.$page)
+      .all()
+      .map({
+        Reaction.List(
+          page_link: $0.page.link,
+          emoji_1: $0.emoji_1,
+          emoji_2: $0.emoji_2,
+          emoji_3: $0.emoji_3,
+          emoji_4: $0.emoji_4
+        )
+      })
   }
 }
 

@@ -48,3 +48,14 @@ final class Reaction : Model, Content {
     self.emoji_4 = emoji_4
   }
 }
+
+/* Fields for data exchanges */
+extension Reaction {
+  struct List : Content {
+    var page_link : String
+    var emoji_1 : Int
+    var emoji_2 : Int
+    var emoji_3 : Int
+    var emoji_4 : Int
+  }
+}
