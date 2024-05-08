@@ -17,32 +17,61 @@ struct LoginView: CustomStringConvertible {
         meta_charset
         meta_viewport
         link_en_font
-        link_cjk_font
         link_main_style
         title {
           "Sign in to zyy"
         }
       }
       body {
-        div(attributes: ["class": "page-container", "style": "width: 330px;margin: 0 auto;"]) {
-          h2(attributes: ["style": "text-align: center;padding-top:32px"]) {
+        div(attributes: ["class": "page-container auth-form"]) {
+          h2(attributes: ["class": "auth-form-header"]) {
             "Sign in to zyy"
           }
-          div(attributes: ["style": "border-top: 1px solid hsla(210,18%,87%,1);border-radius: 6px;padding: 16px;font-size: 14px;background-color: #f6f8fa;border: 1px solid hsla(210,18%,87%,1);box-sizing: border-box;"]) {
-            form(attributes: ["id": "login", "action": "", /* style='box-sizing: border-box;*/]) {
-              label(attributes: ["for": "username", "style": "display: block;margin-bottom: 8px;"]) {
+          div(attributes: ["class": "auth-form-body"]) {
+            form(attributes: ["id": "login", "action": ""]) {
+              label(attributes: ["for": "username"]) {
                 "Email address"
               }
-              input(attributes: ["style": "margin-top: 4px;margin-bottom: 16px;display: block;width: 100%;padding: 5px 12px;font-size: 14px;line-height: 20px;border-radius: 6px;border: 1px solid #d0d7de;", "required": "required", "type": "text", "id": "username", "autocomplete": "on"])
-              label(attributes: ["for": "password", "style": "display: block;margin-bottom: 8px;"]) {
+              input(
+                attributes: [
+                  "class": "auth-form-input-block",
+                  "required": "required",
+                  "type": "text",
+                  "id": "username",
+                  "autocomplete": "on"
+                ]
+              )
+              label(attributes: ["for": "password"]) {
                 "Password"
               }
-              input(attributes: ["style": "margin-top: 4px;margin-bottom: 16px;display: block;width: 100%;padding: 5px 12px;font-size: 14px;line-height: 20px;border-radius: 6px;border: 1px solid #d0d7de;", "required": "required", "type": "password", "id": "password", "autocomplete": "on"])
-              input(attributes: ["style": "display: block;margin-top: 16px;width: 100%;text-align: center;padding: 5px 16px;font-size: 14px;line-height: 20px;border: 1px solid var(--purple-box-color);border-radius: 6px;color: var(--purple-box-link-color);background: var(--purple-box-color);font-weight: 500;", "type": "submit", "value": "Sign in"])
+              input(
+                attributes: [
+                  "class": "auth-form-input-block",
+                  "required": "required",
+                  "type": "password",
+                  "id": "password",
+                  "autocomplete": "on"
+                ]
+              )
+              input(
+                attributes: [
+                  "class": "btn-primary auth-form-submit",
+                  "type": "submit",
+                  "value": "Sign in"
+                ]
+              )
+            }
+          }
+          div(attributes: ["class": "login-callout"]) {
+            p {
+              "New to zyy? "
+              a(attributes: ["href": "signup.html"]) {
+                "Create an account"
+              }
             }
           }
         }
-        div(attributes: ["class": "footer", "style": "margin-top: 40px"]) {
+        div(attributes: ["class": "footer auth-form-footer"]) {
           p {
             "Made with ♡"
             a(attributes: ["href": "https://fangl.ing"]) {
