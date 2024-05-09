@@ -22,6 +22,8 @@ public func configure(_ app: Application) async throws {
     )
   }
   
+  app.middleware.use(FileMiddleware(publicDirectory: "output"))
+  
   app.migrations.add(Reaction.CreateReactions())
   
   app.migrations.add(User.CreateUsers())

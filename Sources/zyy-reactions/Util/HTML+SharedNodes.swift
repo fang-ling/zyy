@@ -13,6 +13,7 @@ let EN_FONT =
 let CJK_FONT =
   "https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.2.0/style.css"
 let MAIN_STYLE = "zyy.css"
+let MAIN_JS = "zyy.js"
 
 let link_en_font = link(attributes: ["rel": "stylesheet", "href": EN_FONT])
 let link_cjk_font = link(attributes: ["rel": "stylesheet", "href": CJK_FONT])
@@ -26,3 +27,4 @@ let meta_viewport = meta(
   ]
 )
 
+let script_main_js = script(attributes: ["src": MAIN_JS])

@@ -37,7 +37,8 @@ let package = Package(
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver")
       ],
       resources: [
-        .copy("Resources/zyy.css")
+        .copy("Resources/zyy.css"),
+        .copy("Resources/zyy.js")
       ]
     ),
     .testTarget(

@@ -28,7 +28,7 @@ struct SignupView: CustomStringConvertible {
             "Create Your zyy Account"
           }
           div(attributes: ["class": "auth-form-body"]) {
-            form(attributes: ["id": "login", "action": ""]) {
+            form(attributes: ["id": "signup", "action": ""]) {
               label(attributes: ["for": "first-name"]) {
                 "First name"
               }
@@ -142,6 +142,7 @@ struct SignupView: CustomStringConvertible {
             "© 2022-\(Calendar.current.component(.year,from: Date())) Fang Ling"
           }
         }
+        script_main_js
       }
     }
   }

@@ -17,11 +17,35 @@ struct BuildCommand: AsyncCommand {
   var help: String = "Build zyy server front-end"
   
   func run(using context: CommandContext, signature: Signature) async throws {
-    let main_style_url = Bundle.module.url(forResource: "zyy", withExtension: "css")!
+    let main_style_url = Bundle.module.url(
+      forResource: "zyy",
+      withExtension: "css"
+    )!
+    let main_js_url = Bundle.module.url(
+      forResource: "zyy",
+      withExtension: "js"
+    )!
     
-    try String(contentsOf: main_style_url).write(toFile: signature.path + "/zyy.css", atomically: true, encoding: .utf8)
+    try String(contentsOf: main_style_url).write(
+      toFile: signature.path + "/zyy.css",
+      atomically: true,
+      encoding: .utf8
+    )
+    try String(contentsOf: main_js_url).write(
+      toFile: signature.path + "/zyy.js",
+      atomically: true,
+      encoding: .utf8
+    )
     
-    try LoginView().description.write(toFile: signature.path + "/login.html", atomically: true, encoding: .utf8)
-    try SignupView().description.write(toFile: signature.path + "/signup.html", atomically: true, encoding: .utf8)
+    try LoginView().description.write(
+      toFile: signature.path + "/login.html",
+      atomically: true,
+      encoding: .utf8
+    )
+    try SignupView().description.write(
+      toFile: signature.path + "/signup.html",
+      atomically: true,
+      encoding: .utf8
+    )
   }
 }

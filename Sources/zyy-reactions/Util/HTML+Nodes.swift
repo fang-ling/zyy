@@ -52,6 +52,33 @@ struct HTMLNodeWithoutChildren: HTML {
   }
 }
 
+struct script: HTML {
+  var tag: String = "script"
+  var attributes: [String: String] = [:]
+  var content: String
+
+  func render_as_HTML(into stream: inout HTMLOutputStream) {
+    stream.write("<")
+    stream.write(tag)
+    for (k, v) in attributes.sorted(by: { $0.0 < $1.0 }) {
+      stream.write(" ")
+      stream.write(k)
+      stream.write("=")
+      stream.write_double_quoted(v)
+    }
+    stream.write(">")
+    stream.write(content)
+    stream.write("</")
+    stream.write(tag)
+    stream.write(">")
+  }
+  
+  init(attributes: [String: String] = [:], _ content: String = "") {
+    self.attributes = attributes
+    self.content = content
+  }
+}
+
 extension String: HTML {
   func render_as_HTML(into stream: inout HTMLOutputStream) {
     stream.write_escaped(self)
