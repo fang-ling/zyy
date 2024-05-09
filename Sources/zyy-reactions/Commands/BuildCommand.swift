@@ -22,5 +22,6 @@ struct BuildCommand: AsyncCommand {
     try String(contentsOf: main_style_url).write(toFile: signature.path + "/zyy.css", atomically: true, encoding: .utf8)
     
     try LoginView().description.write(toFile: signature.path + "/login.html", atomically: true, encoding: .utf8)
+    try SignupView().description.write(toFile: signature.path + "/signup.html", atomically: true, encoding: .utf8)
   }
 }

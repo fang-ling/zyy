@@ -189,14 +189,32 @@ A:hover {
     text-align: center;
 }
 
-.footer a, .footer span {
-    margin-left: 4px;
-    color: var(--purple-box-font-color) !important;
-    text-decoration: none;
-    font-size: 13px;
-    padding: 4px 8px;
-    border-radius: 3px;
-    background: var(--purple-box-color) !important;
+.footer a {
+  margin-left: 4px;
+  color: var(--purple-box-link-color) !important;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: var(--purple-box-color) !important;
+}
+
+.footer a:hover {
+  background: var(--purple-box-color-darker) !important;
+}
+
+.footer a:active {
+  background: var(--purple-box-color-darkest) !important;
+}
+
+.footer span {
+  margin-left: 4px;
+  color: var(--purple-box-text-color) !important;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: var(--purple-box-color) !important;
 }
 
 #reset-all {
@@ -308,6 +326,9 @@ table td, table th {
     --gist-border-scolor: #444;
   }
 
+  .auth-form-input-block {
+    color-scheme: dark;
+  }
   /*body {
     max-width: 55em;
   }*/
@@ -436,7 +457,6 @@ table td, table th {
   font-size: 14px;
   background-color: var(--auth-form-bg);
   border: 1px solid var(--color-border-muted);
-/*  box-sizing: border-box;*/
 }
 
 .auth-form-footer {
