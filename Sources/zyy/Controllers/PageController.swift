@@ -14,31 +14,33 @@ import Vapor
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   201: Create new page            |
- * | POST   | /page              | Bearer | Error:                            |
+ * | POST   | /api/page          | Bearer | Error:                            |
  * |        |                    |        |   400: Invalid page form          |
  * |        |                    |        |   401: Unauthorized               |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   200: Return the page list       |
- * | GET    | /pages             | Bearer | Error:                            |
+ * | GET    | /api/pages         | Bearer | Error:                            |
  * |        |                    |        |   401: Unauthorized               |
  * +--------+--------------------+--------+-----------------------------------+
  */
-struct PageController : RouteCollection {
-  func boot(routes : RoutesBuilder) throws {
-    routes.group("page") { page in
-      page
-        .grouped(UserToken.authenticator())
-        .post(use: create_page_handler)
-    }
-    routes.group("pages") { pages in
-      pages
-        .grouped(UserToken.authenticator())
-        .get(use: read_pages_handler)
+struct PageController: RouteCollection {
+  func boot(routes: RoutesBuilder) throws {
+    routes.group("api") { api in
+      api.group("page") { page in
+        page
+          .grouped(UserToken.authenticator())
+          .post(use: create_page_handler)
+      }
+      api.group("pages") { pages in
+        pages
+          .grouped(UserToken.authenticator())
+          .get(use: read_pages_handler)
+      }
     }
   }
   
-  func create_page_handler(req : Request) async throws -> HTTPStatus {
+  func create_page_handler(req: Request) async throws -> HTTPStatus {
     let user = try req.auth.require(User.self)
     
     try Page.Create.validate(content: req)
@@ -60,7 +62,7 @@ struct PageController : RouteCollection {
     return .created
   }
   
-  func read_pages_handler(req : Request) async throws -> [Page.List] {
+  func read_pages_handler(req: Request) async throws -> [Page.List] {
     let user = try req.auth.require(User.self)
     
     return try await Page

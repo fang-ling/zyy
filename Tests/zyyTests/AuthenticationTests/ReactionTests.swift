@@ -19,15 +19,15 @@ final class ReactionTests: XCTestCase {
     try await configure(app)
     
     /* Correct register */
-    try app.test(.POST, "auth/register", beforeRequest: { req in
+    try app.test(.POST, "api/auth/register", beforeRequest: { req in
       try req.content.encode([
-        "first_name" : "Yüan",
-        "last_name" : "Yüeh",
-        "birthday" : "2024-05-03T11:17:04+0800",
-        "email" : "test@example.com",
-        "password" : "top_secret58",
-        "confirm_password" : "top_secret58",
-        "link" : "https://example.com/about"
+        "first_name": "Yüan",
+        "last_name": "Yüeh",
+        "birthday": "2024-05-03T11:17:04+0800",
+        "email": "test@example.com",
+        "password": "top_secret58",
+        "confirm_password": "top_secret58",
+        "link": "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .created)
@@ -35,7 +35,7 @@ final class ReactionTests: XCTestCase {
     
     /* Login */
     var user_token = UserToken()
-    try app.test(.POST, "auth/login", beforeRequest: { req in
+    try app.test(.POST, "api/auth/login", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Basic " + "test@example.com:top_secret58".base64String()
@@ -46,7 +46,7 @@ final class ReactionTests: XCTestCase {
     })
     
     /* Correct create page */
-    try app.test(.POST, "page", beforeRequest: { req in
+    try app.test(.POST, "api/page", beforeRequest: { req in
       req.headers.add(
         name: "Authorization", 
         value: "Bearer \(user_token.value)"
@@ -67,7 +67,7 @@ final class ReactionTests: XCTestCase {
     
     /* Read page list (to get id) */
     var id = UUID()
-    try app.test(.GET, "pages", beforeRequest: { req in
+    try app.test(.GET, "api/pages", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"
@@ -78,7 +78,7 @@ final class ReactionTests: XCTestCase {
     })
     
     /* Invalid create reaction */
-    try app.test(.POST, "reaction", beforeRequest: { req in
+    try app.test(.POST, "api/reaction", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"
@@ -88,7 +88,7 @@ final class ReactionTests: XCTestCase {
     })
     
     /* Invalid token */
-    try app.test(.POST, "reaction?id=\(id)", beforeRequest: { req in
+    try app.test(.POST, "api/reaction?id=\(id)", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \([UInt8].random(count: 32).base64)"
@@ -98,7 +98,7 @@ final class ReactionTests: XCTestCase {
     })
     
     /* No such id */
-    try app.test(.POST, "reaction?id=\(UUID())", beforeRequest: { req in
+    try app.test(.POST, "api/reaction?id=\(UUID())", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"
@@ -110,7 +110,7 @@ final class ReactionTests: XCTestCase {
     /* Author mismatch test case skipped */
     
     /* Correct create reaction */
-    try app.test(.POST, "reaction?id=\(id)", beforeRequest: { req in
+    try app.test(.POST, "api/reaction?id=\(id)", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"
@@ -120,7 +120,7 @@ final class ReactionTests: XCTestCase {
     })
     
     /* Duplicate create reaction */
-    try app.test(.POST, "reaction?id=\(id)", beforeRequest: { req in
+    try app.test(.POST, "api/reaction?id=\(id)", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"
@@ -130,17 +130,17 @@ final class ReactionTests: XCTestCase {
     })
     
     /* Get test, invalid query */
-    try app.test(.GET, "reaction") { res in
+    try app.test(.GET, "api/reaction") { res in
       XCTAssertEqual(res.status, .badRequest)
     }
     
     /* Get test, invalid id */
-    try app.test(.GET, "reaction?id=\(UUID())") { res in
+    try app.test(.GET, "api/reaction?id=\(UUID())") { res in
       XCTAssertEqual(res.status, .badRequest)
     }
     
     /* Get test, success */
-    try app.test(.GET, "reaction?id=\(id)") { res in
+    try app.test(.GET, "api/reaction?id=\(id)") { res in
       XCTAssertEqual(res.status, .ok)
       let reaction = try res.content.decode(Reaction.self)
       XCTAssertEqual(reaction.emoji_1, 0)
@@ -150,34 +150,34 @@ final class ReactionTests: XCTestCase {
     }
     
     /* Update test, invalid query */
-    try app.test(.PATCH, "reaction") { res in
+    try app.test(.PATCH, "api/reaction") { res in
       XCTAssertEqual(res.status, .badRequest)
     }
     
     /* Update test, invalid id */
-    try app.test(.PATCH, "reaction?id=\(UUID())&emoji=1") { res in
+    try app.test(.PATCH, "api/reaction?id=\(UUID())&emoji=1") { res in
       XCTAssertEqual(res.status, .badRequest)
     }
     
     /* Update test, invalid emoji */
-    try app.test(.PATCH, "reaction?id=\(id)&emoji=6") { res in
+    try app.test(.PATCH, "api/reaction?id=\(id)&emoji=6") { res in
       XCTAssertEqual(res.status, .badRequest)
     }
     
     /* Update test, success */
-    try app.test(.PATCH, "reaction?id=\(id)&emoji=1") { res in
+    try app.test(.PATCH, "api/reaction?id=\(id)&emoji=1") { res in
       XCTAssertEqual(res.status, .ok)
     }
-    try app.test(.PATCH, "reaction?id=\(id)&emoji=2") { res in
+    try app.test(.PATCH, "api/reaction?id=\(id)&emoji=2") { res in
       XCTAssertEqual(res.status, .ok)
     }
-    try app.test(.PATCH, "reaction?id=\(id)&emoji=3") { res in
+    try app.test(.PATCH, "api/reaction?id=\(id)&emoji=3") { res in
       XCTAssertEqual(res.status, .ok)
     }
-    try app.test(.PATCH, "reaction?id=\(id)&emoji=4") { res in
+    try app.test(.PATCH, "api/reaction?id=\(id)&emoji=4") { res in
       XCTAssertEqual(res.status, .ok)
     }
-    try app.test(.GET, "reaction?id=\(id)") { res in
+    try app.test(.GET, "api/reaction?id=\(id)") { res in
       XCTAssertEqual(res.status, .ok)
       let reaction = try res.content.decode(Reaction.self)
       XCTAssertEqual(reaction.emoji_1, 1)
@@ -187,11 +187,11 @@ final class ReactionTests: XCTestCase {
     }
    
     /* Test case for read reactions */
-    try app.test(.GET, "reactions") { res in
+    try app.test(.GET, "api/reactions") { res in
       XCTAssertEqual(res.status, .unauthorized)
     }
     
-    try app.test(.GET, "reactions", beforeRequest: { req in
+    try app.test(.GET, "api/reactions", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer \(user_token.value)"

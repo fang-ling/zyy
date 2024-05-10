@@ -9,8 +9,8 @@ import Foundation
 import Fluent
 
 extension Page {
-  struct CreatePages : AsyncMigration {
-    var name : String { "Create Pages Table" }
+  struct CreatePages: AsyncMigration {
+    var name: String { "Create Pages Table" }
     
     func prepare(on database: Database) async throws {
       try await database.schema("Pages")

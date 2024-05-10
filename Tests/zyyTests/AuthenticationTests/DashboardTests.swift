@@ -19,22 +19,22 @@ final class DashboardTests: XCTestCase {
     try await configure(app)
     
     /* Correct register */
-    try app.test(.POST, "auth/register", beforeRequest: { req in
+    try app.test(.POST, "api/auth/register", beforeRequest: { req in
       try req.content.encode([
-        "first_name" : "Yüan",
-        "last_name" : "Yüeh",
-        "birthday" : "2024-05-03T11:17:04+0800",
-        "email" : "test@example.com",
-        "password" : "top_secret58",
-        "confirm_password" : "top_secret58",
-        "link" : "https://example.com/about"
+        "first_name": "Yüan",
+        "last_name": "Yüeh",
+        "birthday": "2024-05-03T11:17:04+0800",
+        "email": "test@example.com",
+        "password": "top_secret58",
+        "confirm_password": "top_secret58",
+        "link": "https://example.com/about"
       ])
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .created)
     })
     
     /* Invalid user */
-    try app.test(.GET, "me", beforeRequest: { req in
+    try app.test(.GET, "api/dash/me", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer " + "test@example.com:top_secret58".base64String()
@@ -42,10 +42,13 @@ final class DashboardTests: XCTestCase {
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .unauthorized)
     })
+    try app.test(.GET, "api/dash/me") { res in
+      XCTAssertEqual(res.status, .unauthorized)
+    }
     
     /* Correct login */
     var user_token = UserToken()
-    try app.test(.POST, "auth/login", beforeRequest: { req in
+    try app.test(.POST, "api/auth/login", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Basic " + "test@example.com:top_secret58".base64String()
@@ -56,7 +59,7 @@ final class DashboardTests: XCTestCase {
     })
     
     /* Correct get me */
-    try app.test(.GET, "me", beforeRequest: { req in
+    try app.test(.GET, "api/dash/me", beforeRequest: { req in
       req.headers.add(
         name: "Authorization",
         value: "Bearer " + user_token.value

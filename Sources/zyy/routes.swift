@@ -7,7 +7,12 @@
 
 import Vapor
 
-func routes(_ app : Application) throws {
+func routes(_ app: Application) throws {
+  /* Redirect / to index.html */
+  app.get { req in
+    req.redirect(to: "index.html")
+  }
+  
   try app.register(collection: ReactionController())
   
   try app.register(collection: AuthenticationController())

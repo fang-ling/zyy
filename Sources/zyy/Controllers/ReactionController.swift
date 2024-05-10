@@ -15,45 +15,47 @@ import SQLKit
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   200: Return reaction            |
- * | GET    | /reaction?id       | None   | Error:                            |
+ * | GET    | /api/reaction?id   | None   | Error:                            |
  * |        |                    |        |   400: Invalid page id            |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
- * |        | /reaction?id       |        |   200: Increase emoji by one      |
+ * |        | /api/reaction?id   |        |   200: Increase emoji by one      |
  * | PATCH  | &emoji             | None   | Error:                            |
  * |        |                    |        |   400: Invalid page id or emoji   |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   201: Create new reaction        |
  * |        |                    |        | Error:                            |
- * | POST   | /reaction?id       | Bearer |   400: Invalid page id            |
+ * | POST   | /api/reaction?id   | Bearer |   400: Invalid page id            |
  * |        |                    |        |   401: Unauthorized               |
  * |        |                    |        |   403: Author mismatch            |
  * |        |                    |        |   409: Duplicate reactions        |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   200: Return reaction list       |
- * | GET    | /reactions         | Bearer | Error:                            |
+ * | GET    | /api/reactions     | Bearer | Error:                            |
  * |        |                    |        |   401: Unauthorized               |
  * +--------+--------------------+--------+-----------------------------------+
  */
-struct ReactionController : RouteCollection {
-  func boot(routes : RoutesBuilder) throws {
-    routes.group("reaction") { reaction in
-      reaction.get(use: read_reaction_handler)
-      reaction.patch(use: update_reaction_handler)
-      reaction
-        .grouped(UserToken.authenticator())
-        .post(use: create_reaction_handler)
-    }
-    routes.group("reactions") { reactions in
-      reactions
-        .grouped(UserToken.authenticator())
-        .get(use: read_reactions_handler)
+struct ReactionController: RouteCollection {
+  func boot(routes: RoutesBuilder) throws {
+    routes.group("api") { api in
+      api.group("reaction") { reaction in
+        reaction.get(use: read_reaction_handler)
+        reaction.patch(use: update_reaction_handler)
+        reaction
+          .grouped(UserToken.authenticator())
+          .post(use: create_reaction_handler)
+      }
+      api.group("reactions") { reactions in
+        reactions
+          .grouped(UserToken.authenticator())
+          .get(use: read_reactions_handler)
+      }
     }
   }
   
-  func read_reaction_handler(req : Request) async throws -> Reaction {
+  func read_reaction_handler(req: Request) async throws -> Reaction {
     guard let id = req.query[UUID.self, at: "id"] else {
       throw Abort(.badRequest, reason: "No id found in URL query")
     }
@@ -70,7 +72,7 @@ struct ReactionController : RouteCollection {
     return reaction
   }
   
-  func update_reaction_handler(req : Request) async throws -> HTTPStatus {
+  func update_reaction_handler(req: Request) async throws -> HTTPStatus {
     guard let id = req.query[UUID.self, at: "id"],
           let emoji = req.query[Int.self, at: "emoji"] else {
       throw Abort(.badRequest, reason: "No id or emoji found in URL query")
@@ -101,7 +103,7 @@ struct ReactionController : RouteCollection {
     return .ok
   }
   
-  func create_reaction_handler(req : Request) async throws -> HTTPStatus {
+  func create_reaction_handler(req: Request) async throws -> HTTPStatus {
     let user = try req.auth.require(User.self)
     
     guard let id = req.query[UUID.self, at: "id"] else {
@@ -132,7 +134,7 @@ struct ReactionController : RouteCollection {
     return .created
   }
   
-  func read_reactions_handler(req : Request) async throws -> [Reaction.List] {
+  func read_reactions_handler(req: Request) async throws -> [Reaction.List] {
     try req.auth.require(User.self)
     
     return try await Reaction

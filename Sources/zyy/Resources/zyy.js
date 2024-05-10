@@ -1,13 +1,29 @@
 const ZYY_SERVER_PREFIX = "http://127.0.0.1:8080";
 
 const ZYY_CONFIG = {
-  LOGIN_URL: ZYY_SERVER_PREFIX + "/auth/login",
+  TOKEN: "zyy-token",
+  
+  LOGIN_URL: ZYY_SERVER_PREFIX + "/api/auth/login",
   LOGIN_METHOD: "POST",
   
-  SIGNUP_URL: ZYY_SERVER_PREFIX + "/auth/register",
-  SIGNUP_METHOD: "POST"
+  SIGNUP_URL: ZYY_SERVER_PREFIX + "/api/auth/register",
+  SIGNUP_METHOD: "POST",
+  
+  DASHBOARD_ME_URL: ZYY_SERVER_PREFIX + "/api/dash/me",
+  DASHBOARD_ME_METHOD: "GET"
 }
 
+
+/* MARK: - Utility */
+
+function redirect_to_login(p1) {
+  alert(p1);
+  window.location.href = "/login.html";
+}
+
+function redirect_to_index() {
+  window.location.href = "/";
+}
 
 /* MARK: - Authentication */
 
@@ -42,8 +58,7 @@ if (signup_form !== null) {
     xhr.onreadystatechange=function() {
       if (this.readyState == 4) {
         if (this.status == 201) {
-          alert("Your registration is complete and successful.");
-          window.location.href = "/login.html";
+          redirect_to_login("Your registration is complete and successful.");
         } else if (this.status == 400) {
           alert(
             "Registration failed. " +
@@ -53,4 +68,65 @@ if (signup_form !== null) {
       }
     }
   });
+}
+
+/* Login */
+let login_form = document.getElementById("login");
+if (login_form !== null) {
+  login_form.addEventListener("submit", function(e) {
+    e.preventDefault(); /* to prevent form submission */
+  
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let auth = btoa(`${username}:${password}`);
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open(ZYY_CONFIG.LOGIN_METHOD, ZYY_CONFIG.LOGIN_URL);
+    xhr.setRequestHeader("Authorization", `Basic ${auth}`);
+    xhr.send();
+    xhr.onreadystatechange=function() {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let uj = JSON.parse(xhr.responseText);
+          window.localStorage.setItem(ZYY_CONFIG.TOKEN, uj.value);
+          redirect_to_index();
+        } else if (this.status == 401) {
+          alert("Email address/password do not match.");
+        }
+      }
+    }
+  });
+}
+
+/* MARK: - Dashboard */
+
+/* me */
+function dashboard_me() {
+  let token = window.localStorage.getItem(ZYY_CONFIG.TOKEN);
+  if (token == null) {
+    redirect_to_login(
+      "Please log in to your account to access" +
+      " the full range of features and services."
+    );
+  }
+  
+  let xhr = new XMLHttpRequest();
+  xhr.open(ZYY_CONFIG.DASHBOARD_ME_METHOD, ZYY_CONFIG.DASHBOARD_ME_URL);
+  xhr.setRequestHeader("Authorization", "Bearer " + token);
+  xhr.send();
+  xhr.onreadystatechange=function() {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        let mj = JSON.parse(xhr.responseText);
+        let me = `<a href="${mj.link}">${mj.first_name} ${mj.last_name}</a>`
+        
+        document.getElementById("dashboard-me").innerHTML = me;
+      } else if (this.status == 401) {
+        redirect_to_login(
+          "Please log in to your account to access" +
+          " the full range of features and services."
+        );
+      }
+    }
+  }
 }

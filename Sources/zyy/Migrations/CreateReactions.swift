@@ -9,8 +9,8 @@ import Fluent
 import Foundation
 
 extension Reaction {
-  struct CreateReactions : AsyncMigration {
-    var name : String { "Create Reactions Table" }
+  struct CreateReactions: AsyncMigration {
+    var name: String { "Create Reactions Table" }
     
     func prepare(on database: Database) async throws {
       try await database.schema("Reactions")

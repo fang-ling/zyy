@@ -163,6 +163,14 @@ func html(
   return HTMLNode(tag: "html", attributes: attributes, children: makeChildren())
 }
 
+func i(
+  attributes: [String: String] = [:],
+  @HTMLBuilder makeChildren: () -> [HTML]
+) -> HTMLNode {
+  return HTMLNode(tag: "i", attributes: attributes, children: makeChildren())
+}
+
+
 func input(attributes: [String: String] = [:]) -> HTMLNodeWithoutChildren {
   return HTMLNodeWithoutChildren(tag: "input", attributes: attributes)
 }

@@ -85,6 +85,7 @@ struct LoginView: CustomStringConvertible {
             "© 2022-\(Calendar.current.component(.year,from: Date())) Fang Ling"
           }
         }
+        script_main_js
       }
     }
   }

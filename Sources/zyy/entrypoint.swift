@@ -7,9 +7,6 @@
 
 import Vapor
 
-let VERSION = "1.0.0"
-let GITHUB_LINK = "https://github.com/fang-ling/zyy/"
-
 @main
 enum Entrypoint {
   static func main() async throws {
@@ -22,7 +19,6 @@ enum Entrypoint {
     }
     
     app.asyncCommands.use(VersionCommand(), as: "version")
-    app.asyncCommands.use(BuildCommand(), as: "build")
     
     do {
       try await configure(app)

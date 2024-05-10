@@ -9,20 +9,20 @@ import Foundation
 import Fluent
 import Vapor
 
-final class UserToken : Model, Content {
+final class UserToken: Model, Content {
   static let schema = "UserTokens"
   
   @ID(key: .id)
-  var id : UUID?
+  var id: UUID?
   
   @Field(key: "value")
-  var value : String
+  var value: String
   
   @Field(key: "expires_at")
-  var expires_at : Date
+  var expires_at: Date
   
   @Parent(key: "user_id")
-  var user : User
+  var user: User
   
   init() { }
   
@@ -39,11 +39,11 @@ final class UserToken : Model, Content {
   }
 }
 
-extension UserToken : ModelTokenAuthenticatable {
+extension UserToken: ModelTokenAuthenticatable {
   static let valueKey = \UserToken.$value
   static let userKey = \UserToken.$user
   
-  var isValid : Bool {
+  var isValid: Bool {
     Date() <= expires_at
   }
 }

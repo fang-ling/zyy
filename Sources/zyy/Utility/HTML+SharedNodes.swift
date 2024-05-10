@@ -28,3 +28,7 @@ let meta_viewport = meta(
 )
 
 let script_main_js = script(attributes: ["src": MAIN_JS])
+
+let span_purplebox_separator = span(attributes: ["class": "pbox-separator"]) {
+  "•"
+}

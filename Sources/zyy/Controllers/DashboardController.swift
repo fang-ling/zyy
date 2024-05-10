@@ -15,15 +15,19 @@ import Fluent
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   200: Return User.Me             |
- * | GET    | /me                | Bearer | Error:                            |
+ * | GET    | /api/dash/me       | Bearer | Error:                            |
  * |        |                    |        |   401: Unauthorized               |
  * +--------+--------------------+--------+-----------------------------------+
  */
 
 struct DashboardController: RouteCollection {
   func boot(routes: RoutesBuilder) throws {
-    routes.group("me") { me in
-      me.grouped(UserToken.authenticator()).get(use: me_handler)
+    routes.group("api") { api in
+      api.group("dash") { dash in
+        dash.group("me") { me in
+          me.grouped(UserToken.authenticator()).get(use: me_handler)
+        }
+      }
     }
   }
   

@@ -9,8 +9,8 @@ import Foundation
 import Fluent
 
 extension UserToken {
-  struct CreateUserTokens : AsyncMigration {
-    var name : String { "Create UserTokens Table" }
+  struct CreateUserTokens: AsyncMigration {
+    var name: String { "Create UserTokens Table" }
     
     func prepare(on database: Database) async throws {
       try await database.schema("UserTokens")

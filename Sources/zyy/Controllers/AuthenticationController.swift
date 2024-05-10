@@ -15,29 +15,31 @@ import Fluent
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   201: Registration successful    |
- * | POST   | /auth/register     | None   | Error:                            |
+ * | POST   | /api/auth/register | None   | Error:                            |
  * |        |                    |        |   400: Invalid registration form  |
  * |        |                    |        |   400: Registration limit reached |
  * +--------+--------------------+--------+-----------------------------------+
  * |        |                    |        | Success:                          |
  * |        |                    |        |   200: Return user token          |
- * | POST   | /auth/login        | Basic  | Error:                            |
+ * | POST   | /api/auth/login    | Basic  | Error:                            |
  * |        |                    |        |   401: Invalid credentials        |
  * +--------+--------------------+--------+-----------------------------------+
  *
  * TODO: PASSWORD MODIFICATION
  *
  */
-struct AuthenticationController : RouteCollection {
-  func boot(routes : RoutesBuilder) throws {
-    routes.group("auth") { auth in
-      auth.post("register", use: register_handler)
-      auth.grouped(User.authenticator()).post("login", use: login_handler)
+struct AuthenticationController: RouteCollection {
+  func boot(routes: RoutesBuilder) throws {
+    routes.group("api") { api in
+      api.group("auth") { auth in
+        auth.post("register", use: register_handler)
+        auth.grouped(User.authenticator()).post("login", use: login_handler)
+      }
     }
   }
   
   /* Returns HTTP 201 created when success */
-  func register_handler(req : Request) async throws -> HTTPStatus {
+  func register_handler(req: Request) async throws -> HTTPStatus {
     if try await User.query(on: req.db).all().count >= USER_REGISTRATION_LIMIT {
       throw Abort(.badRequest, reason: "User Registration Limit Reached")
     }
@@ -60,7 +62,7 @@ struct AuthenticationController : RouteCollection {
   }
   
   /* Basic auth */
-  func login_handler(req : Request) async throws -> UserToken {
+  func login_handler(req: Request) async throws -> UserToken {
     let user = try req.auth.require(User.self)
     let token = try user.generate_token()
     

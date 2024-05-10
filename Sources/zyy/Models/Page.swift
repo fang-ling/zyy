@@ -9,43 +9,43 @@ import Fluent
 import Foundation
 import Vapor
 
-final class Page : Model {
+final class Page: Model {
   static let schema = "Pages"
   
   @ID(key: .id)
-  var id : UUID?
+  var id: UUID?
   
   @Field(key: "title")
-  var title : String
+  var title: String
   
   @Field(key: "content")
-  var content : String
+  var content: String
   
   @Field(key: "link")
-  var link : String
+  var link: String
   
   /* Artwork link */
   @Field(key: "artwork")
-  var artwork : String
+  var artwork: String
   
   @Field(key: "caption")
-  var caption : String
+  var caption: String
   
   /* Author */
   @Parent(key: "user_id")
-  var user : User
+  var user: User
   
   @Timestamp(key: "created_at", on: .create)
-  var created_at : Date?
+  var created_at: Date?
   
   @Timestamp(key: "modified_at", on: .update)
-  var modified_at : Date?
+  var modified_at: Date?
   
   @Field(key: "is_hidden")
-  var is_hidden : Bool
+  var is_hidden: Bool
   
   @Field(key: "is_blog_article")
-  var is_blog_article : Bool
+  var is_blog_article: Bool
   
   init() { }
   
@@ -78,14 +78,14 @@ final class Page : Model {
 
 /* Fields for data exchanges */
 extension Page {
-  struct Create : Content, Validatable {
-    var title : String
-    var content : String
-    var link : String
-    var artwork : String
-    var caption : String
-    var is_hidden : Bool
-    var is_blog_article : Bool
+  struct Create: Content, Validatable {
+    var title: String
+    var content: String
+    var link: String
+    var artwork: String
+    var caption: String
+    var is_hidden: Bool
+    var is_blog_article: Bool
     
     static func validations(_ validations: inout Validations) {
       validations.add("title", as: String.self, is: !.empty)
@@ -96,24 +96,10 @@ extension Page {
     }
   }
   
-//  struct Read : Content {
-//    var title : String
-//    var content : String
-//    var link : String
-//    var artwork : String
-//    var caption : String
-//    var is_hidden : Bool
-//    var is_blog_article : Bool
-//    var created_at : Date
-//    var modified_at : Date
-//    var user_full_name : String
-//    var user_link : String
-//  }
-  
-  struct List : Content {
-    var id : UUID
-    var title : String
-    var created_at : Date
-    var modified_at : Date
+  struct List: Content {
+    var id: UUID
+    var title: String
+    var created_at: Date
+    var modified_at: Date
   }
 }

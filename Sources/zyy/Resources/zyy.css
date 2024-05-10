@@ -109,6 +109,12 @@ A:hover {
     text-decoration: none
 }
 
+/* &bull in purple box */
+.pbox-separator {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .stackpreview-container {
     text-align: center;
 }
