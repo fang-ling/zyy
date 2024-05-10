@@ -21,7 +21,7 @@ let package = Package(
   ],
   targets: [
     .executableTarget(
-      name: "zyy",
+      name: "zyy-old",
       dependencies: [
         .product(name: "SystemSQLite", package: "system-sqlite"),
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
@@ -30,7 +30,7 @@ let package = Package(
       ]
     ),
     .executableTarget(
-      name: "zyy-reactions",
+      name: "zyy",
       dependencies: [
         .product(name: "Vapor", package: "vapor"),
         .product(name: "Fluent", package: "fluent"),
@@ -42,13 +42,13 @@ let package = Package(
       ]
     ),
     .testTarget(
-      name: "zyyTests",
-      dependencies: ["zyy"]
+      name: "zyy-oldTests",
+      dependencies: ["zyy-old"]
     ),
     .testTarget(
-      name: "zyy-reactionsTests",
+      name: "zyyTests",
       dependencies: [
-        .target(name: "zyy-reactions"),
+        .target(name: "zyy"),
         .product(name: "XCTVapor", package: "vapor")
       ]
     )

@@ -9,36 +9,36 @@ import Fluent
 import Foundation
 import Vapor
 
-final class User : Model {
+final class User: Model {
   static let schema = "Users"
   
   @ID(key: .id)
-  var id : UUID?
+  var id: UUID?
   
   @Field(key: "first_name")
-  var first_name : String
+  var first_name: String
   
   @Field(key: "last_name")
-  var last_name : String
+  var last_name: String
   
   @Field(key: "birthday")
-  var birthday : Date
+  var birthday: Date
   
   @Field(key: "avatar")
-  var avatar : String?
+  var avatar: String?
   
   @Field(key: "email")
-  var email : String
+  var email: String
   
   @Field(key: "password_hash")
-  var password_hash : String
+  var password_hash: String
   
   @Timestamp(key: "registered_at", on: .create)
-  var registered_at : Date?
+  var registered_at: Date?
   
   /* The user website URL */
   @Field(key: "link")
-  var link : String
+  var link: String
   
   init() { }
   
@@ -65,7 +65,7 @@ final class User : Model {
   }
 }
 
-extension User : ModelAuthenticatable {
+extension User: ModelAuthenticatable {
   static let usernameKey = \User.$email
   static let passwordHashKey = \User.$password_hash
   
@@ -86,14 +86,14 @@ extension User {
 
 /* Fields for data exchanges */
 extension User {
-  struct Registration : Content, Validatable {
-    var first_name : String
-    var last_name : String
-    var birthday : Date
-    var email : String
-    var password : String
-    var confirm_password : String
-    var link : String
+  struct Registration: Content, Validatable {
+    var first_name: String
+    var last_name: String
+    var birthday: Date
+    var email: String
+    var password: String
+    var confirm_password: String
+    var link: String
     
     static func validations(_ validations: inout Validations) {
       validations.add("first_name", as: String.self, is: !.empty)
@@ -102,5 +102,11 @@ extension User {
       validations.add("password", as: String.self, is: .count(8...))
       validations.add("link", as: String.self, is: !.empty)
     }
+  }
+  
+  struct Me: Content {
+    var first_name: String
+    var last_name: String
+    var link: String
   }
 }

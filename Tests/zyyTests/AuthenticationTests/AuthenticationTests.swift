@@ -5,7 +5,7 @@
 //  Created by Fang Ling on 2024/5/3.
 //
 
-@testable import zyy_reactions
+@testable import zyy
 import Foundation
 import Fluent
 import XCTVapor

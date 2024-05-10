@@ -5,7 +5,7 @@
 //  Created by Fang Ling on 2024/5/5.
 //
 
-@testable import zyy_reactions
+@testable import zyy
 import Foundation
 import Fluent
 import XCTVapor
@@ -74,7 +74,7 @@ final class ReactionTests: XCTestCase {
       )
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .ok)
-      id = try res.content.decode([zyy_reactions.Page.List].self).first!.id
+      id = try res.content.decode([zyy.Page.List].self).first!.id
     })
     
     /* Invalid create reaction */
