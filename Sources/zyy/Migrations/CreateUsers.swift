@@ -27,7 +27,7 @@ extension User {
     }
     
     func revert(on database: Database) async throws {
-      try await database.schema("Reactions").delete()
+      try await database.schema("Users").delete()
     }
   }
 }
