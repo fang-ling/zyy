@@ -51,7 +51,7 @@ final class ReactionTests: XCTestCase {
         name: "Authorization", 
         value: "Bearer \(user_token.value)"
       )
-      let page = Page.Create(
+      let page = PageReceiver.Create(
         title: "Hello, world!",
         content: "This is a test article.",
         link: "hello-world.html",
@@ -74,7 +74,7 @@ final class ReactionTests: XCTestCase {
       )
     }, afterResponse: { res in
       XCTAssertEqual(res.status, .ok)
-      id = try res.content.decode([zyy.Page.List].self).first!.id
+      id = try res.content.decode([zyy.PageReceiver.List].self).first!.id
     })
     
     /* Invalid create reaction */

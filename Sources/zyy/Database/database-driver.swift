@@ -227,7 +227,7 @@ struct DatabaseDriver {
   }
   
   // MARK: - Page table
-  func get_page(by id : Int) -> Page? {
+  func get_page(by id : Int) -> PageModel? {
     do {
       let result = try db.run(
         """
@@ -249,7 +249,7 @@ struct DatabaseDriver {
       guard let page_data = result.first else {
         return nil
       }
-      var page = Page()
+      var page = PageModel()
       page.id = id
       if let date = page_data[ZYY_PAGE_COL_DATE] {
         page.date = date
@@ -282,8 +282,8 @@ struct DatabaseDriver {
     }
   }
   
-  func get_pages() -> [Page] {
-    var result = [Page]()
+  func get_pages() -> [PageModel] {
+    var result = [PageModel]()
     do {
       let pages = try db.run(
         """
@@ -291,7 +291,7 @@ struct DatabaseDriver {
         """
       )
       for page in pages {
-        var delta = Page()
+        var delta = PageModel()
         guard let id_str = page[ZYY_PAGE_COL_ID] else {
           fatalError("Failed to parse page id")
         }
@@ -330,7 +330,7 @@ struct DatabaseDriver {
     return result
   }
   
-  func add_page(_ page : Page) {
+  func add_page(_ page : PageModel) {
     var page = page
     page.title = page.title.to_base64()
     page.content = page.content.to_base64()
@@ -365,7 +365,7 @@ struct DatabaseDriver {
     }
   }
   
-  func set_page(_ page : Page) {
+  func set_page(_ page : PageModel) {
     var page = page
     page.title = page.title.to_base64()
     page.content = page.content.to_base64()

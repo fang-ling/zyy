@@ -58,16 +58,19 @@ let ZYY_SET_OPT_CUSTOM_FIELD_URLS = [
   "custom_field_url_5", "custom_field_url_6",
   "custom_field_url_7", "custom_field_url_8"
 ]
+
 @main
-struct zyy : ParsableCommand {
+struct zyy: ParsableCommand {
+  /* Command Line related String constants */
+  static let VERSION = "1.0.0"
+  static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
+  
   static var configuration = CommandConfiguration(
     abstract: "A utility for building personal websites.",
     version: VERSION,
-    subcommands: [Init.self, Config.self, Build.self,
-                  List.self, Add.self, Edit.self, Remove.self]
+    subcommands: [/*Init.self, Config.self, Build.self,
+                  List.self, Add.self, Edit.self, Remove.self*/
+      Page.self
+                 ]
   )
-  
-  /* Command Line related String constants */
-  public static let VERSION = "0.1.8"
-  public static let GITHUB_REPO = "https://github.com/fang-ling/zyy"
 }

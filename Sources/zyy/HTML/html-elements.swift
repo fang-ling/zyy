@@ -230,7 +230,7 @@ extension HTML {
     return "<!DOCTYPE html>\n" + string
   }
   
-  func get_page(page : Page) -> String {
+  func get_page(page : PageModel) -> String {
     var page = page
     let html = DOMTreeNode(name: "html", attr: ["lang" : "en"])
     /* Body */

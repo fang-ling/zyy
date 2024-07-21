@@ -8,7 +8,7 @@
 import Foundation
 
 struct HTML {
-  var pages : [Page]
+  var pages : [PageModel]
   var sections : [Section]
   var settings : [String : String]
   
@@ -43,7 +43,7 @@ struct HTML {
       let blog_pages = pages.filter({ $0.is_blog == 1 })
       /* Normal pages should be in / */
       let pages = pages.filter({ $0.is_blog == 0 })
-      var blog_page = Page()
+      var blog_page = PageModel()
       blog_page.title = "Blog"
       blog_page.link = "index.html"
       blog_page.date = date2string(
