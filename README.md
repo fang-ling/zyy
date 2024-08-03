@@ -2,33 +2,56 @@
 
 The way we create the website: [fangling.uk](https://fangling.uk).
 
-## Building zyy
+## Big Pictures
 
-### Build Requirements
+### Design Pattern
 
-#### macOS
+```plain
+┌────────────────────┐
+│        Models      │
+│ - Page             │
+│ - ..               │
+└────────────────────┘
 
-  - [Homebrew](https://brew.sh): The Missing Package Manager for macOS (or Linux)
-  - Install `cmark-gfm`
+┌────────────────────┐
+│     Controllers    │
+│ - PageController   │
+│   - PC+Creation    │
+│   - PC+Retrieval   │
+│   - PC+Update      │
+│   - PC+Deletion    │
+│ - ...              │
+└────────────────────┘
 
-```shell
-brew install cmark-gfm
+┌────────────────────┐
+│        View        │
+│ - PageView         │
+│ - ...              │
+└────────────────────┘
 ```
 
-### Build Procedure
+### Architecture
 
-```shell
-cd zyy
-swift build -c release
-
-# Run built-in tests
-swift test
+```plain
+┌───────────────────┐
+│┌──────────┐┌─────┐│
+││ PageView ││ ... ││←─────────────────────────╮
+│└─────↑────┘└─────┘│                          │
+└──────┼────────────┘                          │
+       ╰─╮                                     │
+┌────────┼───────────────────────────────────┐ │          
+│┌───────┼────────┐┌─────┐┌─────────────────┐│ │
+││ PageController ││ ... ││ BuildController ││ │
+│└────────────────┘└─────┘└─────────↑───────┘│ │
+└───────────────────────────────────┼────────┘ │
+       ↑              ╭─────────────╯       ╭──╯
+┌──────┼──────────────┼─────────────────────┼────────────┐
+│┌─────┼─────┐┌───────┼────────┐┌───────────┼───────────┐│
+││ SwiftData ││ Swift DSL HTML ││ Swift Argument Parser ││
+│└───────────┘└────────────────┘└───────────────────────┘│
+└────────────────────────────────────────────────────────┘
+                            ↑
+┌───────────────────────────┼────────────────────────────┐ 
+│                      Foundation                        │ 
+└────────────────────────────────────────────────────────┘ 
 ```
-
-## Credits
-
-This repo relies on the following third-party projects:
-
-  - [sqlite/sqlite](https://github.com/sqlite/sqlite)
-  - [github/cmark-gfm](https://github.com/github/cmark-gfm)
-  - [apple/swift-argument-parser](https://github.com/apple/swift-argument-parser)

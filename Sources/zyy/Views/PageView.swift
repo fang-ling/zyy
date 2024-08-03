@@ -1,5 +1,5 @@
 //
-//  PageClient.swift
+//  PageView.swift
 //
 //
 //  Created by Fang Ling on 2023/5/17.
@@ -176,18 +176,19 @@ extension zyy.Page {
       abstract: "Add new page."
     )
     
+    @MainActor 
     func run() throws {
-      var newPage = PageModel()
-      newPage.title = "test"
-      
-      let pageReceiver = PageReceiver()
-      let addPageCommand = AddPageCommand(
-        page: pageReceiver,
-        pageModel: newPage
+      let pageDTO = PageDTO(
+        title: "4",
+        content: "1",
+        link: "1",
+        date: Date(),
+        isHidden: false,
+        isBlog: true,
+        createdAt: Date(),
+        artworkLink: "1"
       )
-      let pageInvoker = PageInvoker()
-      
-      pageInvoker.execute(command: addPageCommand)
+      PageController.default.create(pageDTO: pageDTO)
     }
   }
 }

@@ -59,6 +59,10 @@ let ZYY_SET_OPT_CUSTOM_FIELD_URLS = [
   "custom_field_url_7", "custom_field_url_8"
 ]
 
+/* The URL of SwiftData database */
+fileprivate let HOME_DIRECTORY = FileManager.default.homeDirectoryForCurrentUser
+let ZYY_DATABASE_URL = HOME_DIRECTORY.appending(path: ".db/zyy.sqlite")
+
 @main
 struct zyy: ParsableCommand {
   /* Command Line related String constants */

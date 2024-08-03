@@ -1,10 +1,10 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 
 import PackageDescription
 
 let package = Package(
   name: "zyy",
-  platforms: [.macOS(.v13)],
+  platforms: [.macOS(.v14)],
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-argument-parser.git",
@@ -27,6 +27,14 @@ let package = Package(
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "cmark-gfm", package: "ccmark-gfm"),
         .product(name: "cmark-gfm-extensions", package: "ccmark-gfm"),
+      ],
+      linkerSettings: [
+        .unsafeFlags([
+          "-Xlinker", "-sectcreate",
+          "-Xlinker", "__TEXT",
+          "-Xlinker", "__info_plist",
+          "-Xlinker", "Sources/Resources/Info.plist"
+        ])
       ]
     ),
     .executableTarget(
