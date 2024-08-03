@@ -1,14 +1,14 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 
 import PackageDescription
 
 let package = Package(
   name: "zyy",
-  platforms: [.macOS(.v13)],
+  platforms: [.macOS(.v14)],
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-argument-parser.git",
-      from: "1.3.1"
+      from: "1.0.0"
     ),
     .package(url: "https://github.com/fang-ling/ccmark-gfm", branch: "master"),
     .package(url: "https://github.com/fang-ling/system-sqlite", from: "0.1.0"),
@@ -21,16 +21,24 @@ let package = Package(
   ],
   targets: [
     .executableTarget(
-      name: "zyy-old",
+      name: "zyy",
       dependencies: [
         .product(name: "SystemSQLite", package: "system-sqlite"),
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
         .product(name: "cmark-gfm", package: "ccmark-gfm"),
         .product(name: "cmark-gfm-extensions", package: "ccmark-gfm"),
+      ],
+      linkerSettings: [
+        .unsafeFlags([
+          "-Xlinker", "-sectcreate",
+          "-Xlinker", "__TEXT",
+          "-Xlinker", "__info_plist",
+          "-Xlinker", "Sources/Resources/Info.plist"
+        ])
       ]
     ),
     .executableTarget(
-      name: "zyy",
+      name: "zyy-deprecate",
       dependencies: [
         .product(name: "Vapor", package: "vapor"),
         .product(name: "Fluent", package: "fluent"),
@@ -42,13 +50,13 @@ let package = Package(
       ]
     ),
     .testTarget(
-      name: "zyy-oldTests",
-      dependencies: ["zyy-old"]
+      name: "zyyTests",
+      dependencies: ["zyy"]
     ),
     .testTarget(
-      name: "zyyTests",
+      name: "zyy-deprecateTests",
       dependencies: [
-        .target(name: "zyy"),
+        .target(name: "zyy-deprecate"),
         .product(name: "XCTVapor", package: "vapor")
       ]
     )

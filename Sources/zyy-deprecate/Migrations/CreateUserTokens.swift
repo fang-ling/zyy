@@ -16,7 +16,7 @@ extension UserToken {
       try await database.schema("UserTokens")
         .id()
         .field("value", .string, .required)
-        .field("expires_at", .data, .required)
+        .field("expires_at", .datetime, .required)
         .field("user_id", .uuid, .required, .references("Users", "id"))
         .create()
     }
